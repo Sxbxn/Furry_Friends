@@ -148,9 +148,12 @@
                     android:textColor="@color/black"
 
                     android:text="배변량"/>
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="0dp"/>
                 <Spinner
                     android:id="@+id/poobStatus"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginStart="30dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:spinnerMode="dropdown"/>

@@ -20,14 +20,12 @@
         >
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabDaily"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/clear_day"
             android:text="@string/tab_day_text" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabDiagnosis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/diagnosis"

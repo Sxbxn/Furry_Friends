@@ -14,7 +14,7 @@
         />
 
     <item
-        android:id="@+id/calendar"
+        android:id="@+id/checklist"
         android:icon="@drawable/post_add"
         android:enabled="true"
         android:title="@string/add_checklist"
