@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -29,15 +31,61 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    viewBinding {
+        enabled true
+    }
 }
 
 dependencies {
+    def room_version = "2.4.2"
+    def coroutines_version = "1.6.0"
+    def retrofit_version = "2.9.0"
+    def interceptor_version = "4.9.3"
+    def dagger_version = "2.41"
+
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    // Retrofit2
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    // OkHttp3 Logging-interceptor
+    implementation "com.squareup.okhttp3:logging-interceptor:$interceptor_version"
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    kapt 'com.github.bumptech.glide:compiler:4.10.0'
+    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
+    implementation 'androidx.preference:preference:1.2.0'
+    // Dagger - Hilt
+    implementation "com.google.dagger:hilt-android:$dagger_version"
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_version"
+    // Activity Ktx
+    implementation "androidx.activity:activity-ktx:1.4.0"
+    // Fragment ktx
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
+
+
+
+    // loading shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    // custom toggle button
+    implementation 'com.github.angads25:toggle:1.1.0'
+    // custom calendar view
+    implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
 }

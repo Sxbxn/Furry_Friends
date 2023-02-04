@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="false">
+        <shape>
+            <corners android:radius="100sp" />
+            <stroke android:background="@color/white" android:width="2dp" android:color="@color/main_color_op" android:dashWidth="10dp" android:dashGap="10dp" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape>
+            <corners android:radius="100sp" />
+            <stroke android:background="@color/white" android:width="2dp" android:color="#55747474" android:dashWidth="10dp" android:dashGap="10dp" />
+        </shape>
+    </item>
+</selector>

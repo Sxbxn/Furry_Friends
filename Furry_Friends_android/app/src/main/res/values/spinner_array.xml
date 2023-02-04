@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="kind">
+        <item>강아지</item>
+        <item>고양이</item>
+    </string-array>
+</resources>
