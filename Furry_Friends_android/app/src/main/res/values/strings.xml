@@ -49,4 +49,8 @@
     <string name="cancel">취소</string>
     <string name="loading">로딩중...</string>
     <string name="weights">몸무게:</string>
+    <string name="require_login">로그인 후, 서비스 이용이 가능합니다.</string>
+    <string name="failed_login">로그인에 실패하였습니다.</string>
+    <string name="error_response">오류 발생</string>
+    <string name="failed_sign_in">회원가입에 실패하였습니다.</string>
 </resources>

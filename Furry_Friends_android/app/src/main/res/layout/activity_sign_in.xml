@@ -133,7 +133,7 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@color/gray"
                     android:hint="@string/email_hint_text"
-                    android:inputType="text"
+                    android:inputType="textEmailAddress"
                     android:paddingBottom="16dp"
                     android:textColor="@color/black"
                     android:textColorHint="@color/menu_color"

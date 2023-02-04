@@ -2,6 +2,8 @@ package com.k_bootcamp.furry_friends.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.ActivityMainBinding
@@ -15,7 +17,8 @@ import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var  binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
+    private var backPressedTime: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() = with(binding) {
         bottomNavigationView.setOnItemSelectedListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.home -> {
                     showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
                     true
@@ -52,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.bottomNavigationView.selectedItemId = R.id.home
     }
+
     private fun showFragment(fragment: Fragment, tag: String) {
         // 기존의 프래그먼트 아이디를 찾아서
         val findFragment = supportFragmentManager.findFragmentByTag(tag)
@@ -68,4 +72,14 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.fragmentContainerView, fragment, tag).commitAllowingStateLoss()
         }
     }
+
+    override fun onBackPressed() {
+        if (System.currentTimeMillis() > backPressedTime + 2000) {
+            backPressedTime = System.currentTimeMillis()
+            Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+        } else if (System.currentTimeMillis() <= backPressedTime + 2000) {
+            finish()
+        }
+    }
+
 }

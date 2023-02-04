@@ -8,7 +8,7 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.util.*
 
-private fun holidayColor(view: MaterialCalendarView) =
+fun holidayColor(view: MaterialCalendarView) =
     view.addDecorators(
         SundayDecorator(),
         SaturdayDecorator()

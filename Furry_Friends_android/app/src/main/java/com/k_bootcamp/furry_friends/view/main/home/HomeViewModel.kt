@@ -8,5 +8,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
 
 ): BaseViewModel() {
+    fun getAnimalInfo() {
+        // 해당 유저의 등록된 반려동물 정보를 가져와서 반환함
+    }
 
 }
