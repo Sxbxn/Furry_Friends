@@ -56,7 +56,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
     private lateinit var animal: Animal
     private var name: String = ""
     private var birthDay: String = ""
-    private var weight: String = ""
+    private var weight: Float = 0.0f
     private var sex: String = "남"
     private var isNeutered: Boolean = false
     private lateinit var sendFile: File
@@ -155,7 +155,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         editTextAnimalWeight.doOnTextChanged { text, _, _, _ ->
             initValidate(weightInputLayout)
             viewModel.weightLiveData.value = text.toString()
-            weight = text.toString()
+            weight = text.toString().toFloat()
         }
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -243,7 +243,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                 shake(editTextAnimalAge, requireContext())
                 check = false
             }
-            if (!validateEmpty(weightInputLayout, weight)) {
+            if (!validateEmpty(weightInputLayout, weight.toString())) {
                 shake(editTextAnimalWeight, requireContext())
                 check = false
             }

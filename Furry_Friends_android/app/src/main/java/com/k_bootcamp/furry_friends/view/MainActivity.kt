@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.home -> {
-//                    showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
-                    showFragment(SubmitAnimalFragment(),"")
+                    showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+//                    showFragment(SubmitAnimalFragment(),"")
                     true
                 }
                 R.id.routine -> {

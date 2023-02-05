@@ -45,7 +45,7 @@
     <string name="logout">로그아웃</string>
     <string name="opensource_license">오픈소스 라이센스</string>
     <string name="withdraw_user">회원탈퇴</string>
-    <string name="retry">다시시도</string>
+    <string name="retry">재시도</string>
     <string name="cancel">취소</string>
     <string name="loading">로딩중...</string>
     <string name="weights">몸무게:</string>
@@ -55,4 +55,5 @@
     <string name="failed_sign_in">회원가입에 실패하였습니다.</string>
     <string name="submit_animal">반려동물을 등록하세요:)</string>
     <string name="failed_submit_animal">반려동물 등록에 실패했습니다.</string>
+    <string name="load_fail_animal_info">정보를 불러오는데 실패하였습니다.</string>
 </resources>

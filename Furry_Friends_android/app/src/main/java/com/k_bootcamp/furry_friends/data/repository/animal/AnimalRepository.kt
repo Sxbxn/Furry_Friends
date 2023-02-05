@@ -10,4 +10,5 @@ import com.k_bootcamp.furry_friends.util.network.APIResponse
 
 interface AnimalRepository {
     suspend fun submitAnimal(animal: Animal): SubmitAnimalResponse?
+    suspend fun getAnimalInfo(session: Session?): Animal?
 }

@@ -63,6 +63,7 @@
                         android:layout_weight="0.03"
                         />
                     <TextView
+                        android:id="@+id/animal_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="멍멍이"
@@ -78,6 +79,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/animal_sex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="남"
@@ -93,6 +95,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/animal_age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="5세"

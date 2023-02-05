@@ -4,7 +4,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/profile"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"
+        />
     <LinearLayout
         android:id="@+id/profile"
         android:layout_width="0dp"
@@ -39,6 +47,7 @@
                 android:layout_margin="20dp"
                 android:src="@drawable/ic_baseline_person_outline_24"/>
         </LinearLayout>
+
         <include
             android:id="@+id/submit"
             layout="@layout/submit_cardview"
