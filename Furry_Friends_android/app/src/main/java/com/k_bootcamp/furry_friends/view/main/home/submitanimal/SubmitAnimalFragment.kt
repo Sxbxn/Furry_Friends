@@ -183,8 +183,6 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         }
     }
 
-
-
     @RequiresApi(Build.VERSION_CODES.N)
     private fun initButton() = with(binding) {
         imageButtonImageSelect.setOnClickListener {
@@ -205,11 +203,11 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         dialog.init("사진 가져올 곳을 선택해주세요", "카메라", "갤러리")
         dialog.getPositive().setOnClickListener {
             dialog.exit()
-            getCameraImage()
+            getCameraImage(mainActivity, permissionLauncher, getCameraImageLauncher)
         }
         dialog.getNegative().setOnClickListener {
             dialog.exit()
-            getGalleryImage()
+            getGalleryImage(mainActivity, permissionLauncher, getGalleryImageLauncher)
         }
 
     }
@@ -232,34 +230,6 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
             curCalendar.get(Calendar.DAY_OF_WEEK)
         )
         datePickerDialog.show()
-    }
-
-    private fun getGalleryImage() {
-        if (ActivityCompat.checkSelfPermission(
-                mainActivity,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_DENIED
-        ) {
-            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-        } else {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            getGalleryImageLauncher.launch(intent)
-        }
-    }
-
-    private fun getCameraImage() {
-        if (ActivityCompat.checkSelfPermission(
-                mainActivity,
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_DENIED
-        ) {
-            permissionLauncher.launch(Manifest.permission.CAMERA)
-        } else {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//            intent.type = "image/*"
-            getCameraImageLauncher.launch(intent)
-        }
     }
 
     private fun checkValidation(): Boolean {
