@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object CoroutinesDispatcherModule {
+object CoroutineDispatcherModule {
     // 타입이 같은 주입은 duplicate error를 일으키키에 어노테이션 quailifier 한정자로 qnsfl
     @IoDispatcher
     @Provides

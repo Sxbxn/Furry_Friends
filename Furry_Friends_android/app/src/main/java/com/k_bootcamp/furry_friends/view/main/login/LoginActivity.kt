@@ -8,10 +8,7 @@ import com.fc.baeminclone.screen.base.BaseActivity
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.databinding.ActivityLogInBinding
 import com.k_bootcamp.furry_friends.model.user.LoginUser
-import com.k_bootcamp.furry_friends.util.etc.LoadingDialog
-import com.k_bootcamp.furry_friends.util.etc.initValidate
-import com.k_bootcamp.furry_friends.util.etc.shake
-import com.k_bootcamp.furry_friends.util.etc.validateLoginEmail
+import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.main.signin.SignInActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,7 +49,7 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
         buttonLogin.setOnClickListener {
             user = LoginUser(editTextLoginId.text.toString(), editTextLoginPwd.text.toString())
 
-            if (!validateLoginEmail(emailInputLayout, editTextLoginId.text.toString())) {
+            if (!validateId(emailInputLayout, editTextLoginId.text.toString())) {
                 shake(editTextLoginId, this@LoginActivity)
             } else {
                 // 로그인 요청

@@ -1,5 +1,6 @@
 package com.k_bootcamp.furry_friends.di
 
+import com.k_bootcamp.furry_friends.data.service.AnimalService
 import com.k_bootcamp.furry_friends.data.service.UserService
 import com.k_bootcamp.furry_friends.data.url.Url
 import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
@@ -29,5 +30,16 @@ class NetModule {
             .baseUrl(Url.BASE_URL)
             .client(okHttpClient)
             .build().create(UserService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun providesAnimalService(okHttpClient: OkHttpClient): AnimalService {
+        return Retrofit.Builder()
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(Url.BASE_URL)
+            .client(okHttpClient)
+            .build().create(AnimalService::class.java)
     }
 }

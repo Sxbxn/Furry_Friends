@@ -10,6 +10,7 @@ import com.k_bootcamp.furry_friends.databinding.ActivityMainBinding
 import com.k_bootcamp.furry_friends.view.main.TabWriting.TabWritingFragment
 import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistFragment
 import com.k_bootcamp.furry_friends.view.main.home.HomeFragment
+import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.routine.RoutineFragment
 import com.k_bootcamp.furry_friends.view.main.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.home -> {
-                    showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+//                    showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+                    showFragment(SubmitAnimalFragment(),"")
                     true
                 }
                 R.id.routine -> {
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.selectedItemId = R.id.home
     }
 
-    private fun showFragment(fragment: Fragment, tag: String) {
+    fun showFragment(fragment: Fragment, tag: String) {
         // 기존의 프래그먼트 아이디를 찾아서
         val findFragment = supportFragmentManager.findFragmentByTag(tag)
         supportFragmentManager.fragments.forEach {

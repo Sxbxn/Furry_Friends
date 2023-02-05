@@ -2,6 +2,7 @@ package com.k_bootcamp.furry_friends.data.service
 
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.data.response.user.SessionResponse
+import com.k_bootcamp.furry_friends.data.response.user.SignInResponse
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.model.user.SignInUser
 import retrofit2.Response
@@ -24,5 +25,5 @@ interface UserService {
     @POST("/")
     suspend fun signInUser(
         @Body user: SignInUser
-    ): Response<Boolean>
+    ): Response<SignInResponse>
 }

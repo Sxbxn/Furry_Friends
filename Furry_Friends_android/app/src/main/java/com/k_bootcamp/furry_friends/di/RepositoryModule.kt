@@ -1,7 +1,10 @@
 package com.k_bootcamp.furry_friends.di
 
+import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
+import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepositoryImpl
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepositoryImpl
+import com.k_bootcamp.furry_friends.data.service.AnimalService
 import com.k_bootcamp.furry_friends.data.service.UserService
 import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.Module
@@ -22,5 +25,13 @@ class RepositoryModule {
         @IoDispatcher ioDispatcher: CoroutineDispatcher
     ): UserRepository {
         return UserRepositoryImpl(userService, ioDispatcher)
+    }
+    @Singleton
+    @Provides
+    fun provideAnimalRepository(
+        animalService: AnimalService,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher
+    ): AnimalRepository {
+        return AnimalRepositoryImpl(animalService, ioDispatcher)
     }
 }

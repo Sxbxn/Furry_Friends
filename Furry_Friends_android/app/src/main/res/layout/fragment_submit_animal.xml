@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
+<!--        <DatePicker-->
+<!--        android:id="@+id/datePicker"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:calendarViewShown="false"-->
+<!--        android:datePickerMode="spinner"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:visibility="gone"-->
+<!--        android:background="@color/main_color_op"-->
+<!--        />-->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,24 +30,23 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_marginTop="10dp"
                 android:text="@string/submit_animal_info"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_gravity="start"
                 android:textSize="20sp"
-                />
+                android:textStyle="bold" />
+
             <View
                 android:layout_width="300dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/gray_op"
-                />
+                android:background="@color/gray_op" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_member"
@@ -43,23 +55,23 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:elevation="6dp"
-                app:cardCornerRadius="100dp"
->
-<!--                <ImageView-->
-<!--                    android:id="@+id/iv_member"-->
-<!--                    android:layout_width="200dp"-->
-<!--                    android:layout_height="200dp"-->
-<!--                    android:src="@drawable/ic_baseline_add_circle_outline"-->
+                app:cardCornerRadius="100dp">
+                <!--                <ImageView-->
+                <!--                    android:id="@+id/iv_member"-->
+                <!--                    android:layout_width="200dp"-->
+                <!--                    android:layout_height="200dp"-->
+                <!--                    android:src="@drawable/ic_baseline_add_circle_outline"-->
 
-<!--                    tools:srcCompat="@tools:sample/avatars" />-->
+                <!--                    tools:srcCompat="@tools:sample/avatars" />-->
                 <ImageButton
-                    android:id="@+id/iv_member"
+                    android:id="@+id/imageButtonImageSelect"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:background="@drawable/dash_line"
                     android:contentDescription="uploadFile"
                     app:srcCompat="@drawable/add_screen_image_placeholder" />
             </androidx.cardview.widget.CardView>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nameInputLayout"
                 style="@style/EditTextAppStyle"
@@ -92,17 +104,33 @@
                 android:textColorHint="@color/menu_color"
                 android:theme="@style/EditTextAppStyle">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editText_animal_age"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/gray"
-                    android:hint="@string/age"
-                    android:inputType="text"
-                    android:paddingBottom="16dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editText_animal_age"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:backgroundTint="@color/gray"
+                        android:enabled="false"
+                        android:hint="@string/age"
+                        android:inputType="date"
+                        android:paddingBottom="16dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="14sp" />
+
+                    <Button
+                        android:id="@+id/datePickerButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="입력" />
+                </LinearLayout>
+
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,19 +161,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sex"
                     android:layout_gravity="center"
-                    android:textColor="@color/black"/>
+                    android:text="@string/sex"
+                    android:textColor="@color/black" />
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="0.03"
-                    />
+                    android:layout_weight="0.03" />
+
                 <RadioGroup
                     android:id="@+id/radioGroup"
                     android:layout_width="wrap_content"
@@ -153,59 +183,62 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:checked="true"
                         android:id="@+id/radioButtonMale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/selector_radio_button"
-                        android:textColor="@drawable/selector_radio_text"
                         android:button="@null"
+                        android:checked="true"
+                        android:text="@string/male"
                         android:textAlignment="center"
-                        android:text="@string/male" />
+                        android:textColor="@drawable/selector_radio_text" />
 
                     <RadioButton
                         android:id="@+id/radioButtonFemale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/selector_radio_button"
-                        android:textColor="@drawable/selector_radio_text"
                         android:button="@null"
+                        android:text="@string/female"
                         android:textAlignment="center"
-                        android:text="@string/female" />
+                        android:textColor="@drawable/selector_radio_text" />
 
                 </RadioGroup>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/neutered"
                     android:layout_gravity="center"
-                    android:textColor="@color/black"/>
+                    android:text="@string/neutered"
+                    android:textColor="@color/black" />
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="0.03"
-                    />
+                    android:layout_weight="0.03" />
+
                 <CheckBox
                     android:id="@+id/idNeutered"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_signIn"
+                android:id="@+id/button_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/button_style_reverse"
                 android:text="@string/submit"
-                android:textColor="@color/main_color"
-                android:layout_marginBottom="20dp"/>
+                android:textColor="@color/main_color" />
 
         </LinearLayout>
 

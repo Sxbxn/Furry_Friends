@@ -53,4 +53,6 @@
     <string name="failed_login">로그인에 실패하였습니다.</string>
     <string name="error_response">오류 발생</string>
     <string name="failed_sign_in">회원가입에 실패하였습니다.</string>
+    <string name="submit_animal">반려동물을 등록하세요:)</string>
+    <string name="failed_submit_animal">반려동물 등록에 실패했습니다.</string>
 </resources>

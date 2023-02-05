@@ -1,6 +1,7 @@
 package com.k_bootcamp.furry_friends.data.repository.user
 
 import com.k_bootcamp.furry_friends.data.response.user.Session
+import com.k_bootcamp.furry_friends.data.response.user.SignInResponse
 import com.k_bootcamp.furry_friends.data.service.UserService
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.model.user.SignInUser
@@ -29,12 +30,12 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun signInUser(user: SignInUser): Boolean? = withContext(ioDispatcher) {
+    override suspend fun signInUser(user: SignInUser): SignInResponse? = withContext(ioDispatcher) {
         val response = userService.signInUser(user)
         if(response.isSuccessful) {
-            response.body() ?: false
+            response.body()
         } else {
-            false
+            null
         }
     }
 

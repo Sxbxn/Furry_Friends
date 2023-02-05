@@ -57,7 +57,7 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO)  {
             val response = userRepository.signInUser(user)
             response?.let{
-                _state.postValue(SignInState.Success(it))
+                _state.postValue(SignInState.Success(it.isOk))
             } ?: kotlin.run {
                 _state.postValue(SignInState.Error(context.getString(R.string.failed_sign_in)))
             }
