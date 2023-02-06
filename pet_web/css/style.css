@@ -12703,10 +12703,10 @@ textarea.form-control {
   }
 }
 
-.ftco-animate {
+/* .ftco-animate {
   opacity: 0;
   visibility: hidden;
-}
+} */
 
 .about-author .desc h3 {
   font-size: 24px;
@@ -13537,7 +13537,7 @@ textarea.form-control {
 }
 
 .blog-entry .text .heading {
-  font-size: 18px;
+  font-size: 20px;
   margin-bottom: 16px;
   font-weight: 400;
 }
@@ -14116,3 +14116,8 @@ textarea.form-control {
   -webkit-box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.2);
 }
+
+/* .blog-entry h3 {
+  color: #000;
+  font-size: 50px;
+} */

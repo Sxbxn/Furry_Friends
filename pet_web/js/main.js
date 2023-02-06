@@ -1,7 +1,5 @@
 (function ($) {
-
 	"use strict";
-
 
 	$(window).stellar({
 		responsive: true,
@@ -11,7 +9,6 @@
 		hideDistantElements: false,
 		scrollProperty: 'scroll'
 	});
-
 
 	var fullHeight = function () {
 
@@ -187,75 +184,86 @@
 
 
 
+
 // JS 이벤트
-function create_diary(data) {
-	img_url = data[i].img_url;
-	title = data[i].title;
-	content = data[i].content;
-	date = data[i].date;
+function createDiary(data) {
+	// img_url = data[i].img_url;
+	// title = data[i].title;
+	// content = data[i].content;
+	// date = data[i].date;
+
+	// img_url = data.thumbnailUrl;
+	img_url = 'https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt33f405afcb51730d/63d99ad0ce01a9413960b3cc/Image_20230131_193955_051.png';
+	title = data.title;
+	content = data.title;
+	date = data.id;
+
+	console.log(img_url, title, content, date)
+
+	// let test_div = document.createElement("div");
+	// test_div.textContent = "??????????";
+	// document.getElementById('diary').append(test_div);
 
 	let col_div = document.createElement("div");
-	col_div.setAttribute('class', 'col-md-4 d-flex ftco-animate')
-	document.getElementById('diary').appendChild(col_div);
+	col_div.setAttribute('class', 'col-md-4 d-flex ftco-animate');
+	col_div.setAttribute('id', 'col_div' + date);
+	document.getElementById('diary').append(col_div);
 
 	let blog_div = document.createElement("div");
-	blog_div.setAttribute('class', 'blog-entry align-self-stretch')
-	document.getElementById('col_div').appendChild(blog_div);
+	blog_div.setAttribute('class', 'blog-entry align-self-stretch');
+	blog_div.setAttribute('id', 'blog_div' + date);
+	document.getElementById('col_div' + date).append(blog_div);
 
-	let img_div = document.createAttribute("div");
-	img_div.setAttribute('style', 'background-image: url(' + img_url + ');');
+	let img_div = document.createElement("div");
 	img_div.setAttribute('class', 'block-20 rounded');
+	img_div.setAttribute('id', 'img_div' + date);
+	img_div.setAttribute('style', 'background-image: url(' + img_url + ');');
+	// img_div.setAttribute('style', 'background-image: https://via.placeholder.com/150/771796');
+	document.getElementById('blog_div' + date).append(img_div);
 
+	let text_div = document.createElement("div");
+	text_div.setAttribute('class', 'text p-4');
+	text_div.setAttribute('id', 'text_div' + date);
+	document.getElementById('blog_div' + date).append(text_div);
 
+	let meta_div = document.createElement("div");
+	meta_div.setAttribute('class', 'meta mb-2');
+	meta_div.setAttribute('id', 'meta_div' + date);
+	document.getElementById('text_div' + date).append(meta_div);
 
+	let date_div = document.createElement("div");
+	date_div.setAttribute('id', 'date' + date);
+	date_div.textContent = date;
+	document.getElementById('meta_div' + date).append(date_div);
 
+	let title_div = document.createElement("div");
+	title_div.textContent = title;
+	// title_div.setAttribute();
+	document.getElementById('meta_div' + date).append(title_div);
 
-
-
-	let one = document.createElement("li");
-	one.setAttribute('id', 'one' + id);
-	document.getElementById('webtoon_list').appendChild(one);
-
-	let thumbnail = document.createElement("div");
-	thumbnail.setAttribute('id', 'thumbnail' + id);
-	document.getElementById("one" + id).appendChild(thumbnail);
-
-	// let img_a = document.createElement("a");
-	// img_a.setAttribute('id', 'img_a' + id);
-	// img_a.setAttribute('href', web_url);
-	// document.getElementById('thumbnail' + id).appendChild(img_a);
-
-	let img_src = document.createElement("img");
-	img_src.setAttribute('src', img_url);
-	img_src.setAttribute('width', '83');
-	img_src.setAttribute('height', '90');
-	document.getElementById('img_a' + id).appendChild(img_src);
-	//
-	//
-	let m_dl = document.createElement("dl");
-	m_dl.setAttribute('id', 'dl' + id);
-	document.getElementById("one" + id).appendChild(m_dl);
-
-	let m_dt = document.createElement("dt");
-	m_dt.setAttribute('id', 'dt' + id);
-	document.getElementById("dl" + id).appendChild(m_dt);
-
-	let m_a = document.createElement("a");
-	m_a.setAttribute('href', web_url);
-	m_a.textContent = title;
-	document.getElementById("dt" + id).appendChild(m_a);
-
-	let m_dd1 = document.createElement("dd");
-	m_dd1.setAttribute('id', 'author' + id);
-	document.getElementById("dl" + id).appendChild(m_dd1);
-
-	let m_p = document.createElement("p");
-	m_p.innerText = author;
-	document.getElementById("author" + id).appendChild(m_p);
-
-
-	let m_dd2 = document.createElement("dd");
-	m_dd2.setAttribute('id', 'wish' + id);
-	document.getElementById("dl" + id).appendChild(m_dd2);
-
+	let content_h3 = document.createElement("h3");
+	content_h3.setAttribute('class', 'heading');
+	content_h3.textContent = content;
+	document.getElementById('text_div' + date).append(content_h3);
 }
+
+function showDiary() {
+	fetch('https://jsonplaceholder.typicode.com/photos')
+		.then((response) => response.json())
+		// .then((data) =>(console.log(data.length)))
+		// .then((data) => console.log(data[0]))
+		.then((data) => callCreateDiary(data));
+		// .then((data) => create_diary(data.data));
+}
+
+function callCreateDiary(data) {
+	for(let i = 0; i < 5; i++) {
+		console.log(data[i]);
+		createDiary(data[i]);
+	}
+}
+
+showDiary();
+
+// https://jsonplaceholder.typicode.com/photos
+// https://www.objgen.com/json/local/T3trUbCRX
