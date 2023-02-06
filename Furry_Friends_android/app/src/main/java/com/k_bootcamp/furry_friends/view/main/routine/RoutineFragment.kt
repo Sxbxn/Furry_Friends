@@ -13,6 +13,7 @@ import com.k_bootcamp.furry_friends.databinding.FragmentHomeBinding
 import com.k_bootcamp.furry_friends.databinding.FragmentRoutineBinding
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
+import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import com.k_bootcamp.furry_friends.util.provider.ResourcesProviderImpl
 import com.k_bootcamp.furry_friends.view.adapter.RoutineAdapter
@@ -54,6 +55,7 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                         }
                         else -> {
                             binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
+                            requireContext().toast(it.message)
                         }
                     }
                     Log.e("message", it.message)

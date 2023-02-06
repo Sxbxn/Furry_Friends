@@ -10,12 +10,12 @@ data class Routine(
     val session: String,
     val animalId: Int,
     val routineName: String,
-    val isOn: Boolean
-//    val mon: Boolean,
-//    val tue: Boolean,
-//    val wed: Boolean,
-//    val thu: Boolean,
-//    val fri: Boolean,
-//    val sat: Boolean,
-//    val sun: Boolean
+    val isOn: Boolean,
+    val mon: Boolean = false,
+    val tue: Boolean = false,
+    val wed: Boolean = false,
+    val thu: Boolean = false,
+    val fri: Boolean = false,
+    val sat: Boolean = false,
+    val sun: Boolean = false
 )

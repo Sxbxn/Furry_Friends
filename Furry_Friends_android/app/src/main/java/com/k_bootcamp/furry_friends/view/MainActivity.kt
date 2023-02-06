@@ -13,6 +13,7 @@ import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistFragment
 import com.k_bootcamp.furry_friends.view.main.home.HomeFragment
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.routine.RoutineFragment
+import com.k_bootcamp.furry_friends.view.main.routine.RoutineViewModel
 import com.k_bootcamp.furry_friends.view.main.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -20,6 +21,7 @@ import java.util.*
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
     private var backPressedTime: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
-        Application.prefs.session = "123"
+        Application.prefs.session = "123"  ///////////////////
     }
 
     private fun initViews() = with(binding) {

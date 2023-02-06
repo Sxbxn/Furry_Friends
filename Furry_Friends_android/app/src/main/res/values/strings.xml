@@ -59,4 +59,5 @@
     <string name="not_loged_in">로그인 되어있지 않음</string>
     <string name="not_register_animal">동물 등록이 되어있지 않음</string>
     <string name="add_routine">루틴 추가</string>
+    <string name="exist_routine">이미 존재하는 루틴</string>
 </resources>

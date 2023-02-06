@@ -4,16 +4,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
-import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
 import com.k_bootcamp.furry_friends.databinding.ViewholderRoutineBinding
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import com.k_bootcamp.furry_friends.util.provider.ResourcesProviderImpl
 import com.k_bootcamp.furry_friends.view.main.routine.RoutineViewModel
 import kotlinx.coroutines.*
-import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
+
 
 class RoutineAdapter(
     private val routineList: List<Routine>,
@@ -22,7 +19,13 @@ class RoutineAdapter(
 ) : RecyclerView.Adapter<RoutineAdapter.RoutineViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoutineViewHolder =
-        RoutineViewHolder(ViewholderRoutineBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        RoutineViewHolder(
+            ViewholderRoutineBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
 
     override fun onBindViewHolder(holder: RoutineViewHolder, position: Int) {
         holder.bind(routineList[position])
@@ -30,11 +33,19 @@ class RoutineAdapter(
 
     override fun getItemCount(): Int = routineList.size
 
-    inner class RoutineViewHolder(private val binding: ViewholderRoutineBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class RoutineViewHolder(private val binding: ViewholderRoutineBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(routine: Routine) {
             binding.routineName.text = routine.routineName
             binding.routineControl.isOn = routine.isOn
+            binding.chkMon.isChecked = routine.mon
+            binding.chkTue.isChecked = routine.tue
+            binding.chkWed.isChecked = routine.wed
+            binding.chkThu.isChecked = routine.thu
+            binding.chkFri.isChecked = routine.fri
+            binding.chkSat.isChecked = routine.sat
+            binding.chkSun.isChecked = routine.sun
             Log.e("text", routine.routineName)
             binding.routineControl.setOnToggledListener { toggleableView, isChecked ->
                 // 토글 상태 저장
@@ -42,8 +53,12 @@ class RoutineAdapter(
                     isOn = isChecked
                 )
                 CoroutineScope(Dispatchers.IO).launch {
-//                    routineDao.updateRoutine(updatedRoutine)
-                    viewModel.rDao.updateRoutine(updatedRoutine.isOn, updatedRoutine.session, updatedRoutine.animalId, updatedRoutine.routineName)
+                    viewModel.rDao.updateRoutine(
+                        updatedRoutine.isOn,
+                        updatedRoutine.session,
+                        updatedRoutine.animalId,
+                        updatedRoutine.routineName
+                    )
                 }
             }
             initCheckBox(binding, routine)
@@ -60,6 +75,7 @@ class RoutineAdapter(
             }
         }
     }
+
     private fun submitDateRoutine(routine: RoutineResponse) {
         CoroutineScope(Dispatchers.IO).launch {
 //            val response = animalRepository.submitDateRoutine(routine)
@@ -82,9 +98,15 @@ class RoutineAdapter(
             when (isChecked) {
                 true -> {
                     submitDateRoutine(sendRoutine)
+                    Log.e("mon", "true")
+                    // 상태 저장
+                    updateMonday(true, sendRoutine)
                 }
                 false -> {
                     deleteDateRoutine(sendRoutine)
+                    Log.e("mon", "false")
+                    // 상태 저장
+                    updateMonday(false, sendRoutine)
                 }
             }
         }
@@ -98,9 +120,11 @@ class RoutineAdapter(
             when (isChecked) {
                 true -> {
                     submitDateRoutine(sendRoutine)
+                    updateTuesday(true, sendRoutine)
                 }
                 false -> {
                     deleteDateRoutine(sendRoutine)
+                    updateTuesday(false, sendRoutine)
                 }
             }
         }
@@ -114,9 +138,11 @@ class RoutineAdapter(
             when (isChecked) {
                 true -> {
                     submitDateRoutine(sendRoutine)
+                    updateWednesday(true, sendRoutine)
                 }
                 false -> {
                     deleteDateRoutine(sendRoutine)
+                    updateWednesday(false, sendRoutine)
                 }
             }
         }
@@ -130,9 +156,11 @@ class RoutineAdapter(
             when (isChecked) {
                 true -> {
                     submitDateRoutine(sendRoutine)
+                    updateThursday(true, sendRoutine)
                 }
                 false -> {
                     deleteDateRoutine(sendRoutine)
+                    updateThursday(false, sendRoutine)
                 }
             }
         }
@@ -146,9 +174,11 @@ class RoutineAdapter(
             when (isChecked) {
                 true -> {
                     submitDateRoutine(sendRoutine)
+                    updateFriday(true, sendRoutine)
                 }
                 false -> {
                     deleteDateRoutine(sendRoutine)
+                    updateFriday(false, sendRoutine)
                 }
             }
         }
@@ -162,9 +192,11 @@ class RoutineAdapter(
             when (isChecked) {
                 true -> {
                     submitDateRoutine(sendRoutine)
+                    updateSaturday(true, sendRoutine)
                 }
                 false -> {
                     deleteDateRoutine(sendRoutine)
+                    updateSaturday(false, sendRoutine)
                 }
             }
         }
@@ -178,11 +210,76 @@ class RoutineAdapter(
             when (isChecked) {
                 true -> {
                     submitDateRoutine(sendRoutine)
+                    updateSunday(true, sendRoutine)
                 }
                 false -> {
                     deleteDateRoutine(sendRoutine)
+                    updateSaturday(false, sendRoutine)
                 }
             }
         }
     }
+
+    private fun updateMonday(isChecked: Boolean, routine: RoutineResponse) =
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.rDao.updateMonday(
+                isChecked,
+                routine.animalId,
+                routine.routineName
+            )
+        }
+
+    private fun updateTuesday(isChecked: Boolean, routine: RoutineResponse) =
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.rDao.updateTuesday(
+                isChecked,
+                routine.animalId,
+                routine.routineName
+            )
+        }
+
+    private fun updateWednesday(isChecked: Boolean, routine: RoutineResponse) =
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.rDao.updateWednesday(
+                isChecked,
+                routine.animalId,
+                routine.routineName
+            )
+        }
+
+    private fun updateThursday(isChecked: Boolean, routine: RoutineResponse) =
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.rDao.updateThursday(
+                isChecked,
+                routine.animalId,
+                routine.routineName
+            )
+        }
+
+    private fun updateFriday(isChecked: Boolean, routine: RoutineResponse) =
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.rDao.updateFriday(
+                isChecked,
+                routine.animalId,
+                routine.routineName
+            )
+        }
+
+    private fun updateSaturday(isChecked: Boolean, routine: RoutineResponse) =
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.rDao.updateSaturday(
+                isChecked,
+                routine.animalId,
+                routine.routineName
+            )
+        }
+
+    private fun updateSunday(isChecked: Boolean, routine: RoutineResponse) =
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.rDao.updateSunday(
+                isChecked,
+                routine.animalId,
+                routine.routineName
+            )
+        }
 }

@@ -23,4 +23,27 @@ interface RoutineDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)   // 충돌나면 무시 (기본 3개는 유지되어야 하므로)
     suspend fun insertRoutine(routine: Routine)
 
+    @Query("UPDATE routine set mon = :date where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateMonday(date:Boolean, animalId:Int, routineName: String )
+
+    @Query("UPDATE routine set tue = :date where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateTuesday(date:Boolean, animalId:Int, routineName: String )
+
+    @Query("UPDATE routine set wed = :date where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateWednesday(date:Boolean, animalId:Int, routineName: String )
+
+    @Query("UPDATE routine set thu = :date where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateThursday(date:Boolean, animalId:Int, routineName: String )
+
+    @Query("UPDATE routine set fri = :date where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateFriday(date:Boolean, animalId:Int, routineName: String )
+
+    @Query("UPDATE routine set sat = :date where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateSaturday(date:Boolean, animalId:Int, routineName: String )
+
+    @Query("UPDATE routine set sun = :date where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateSunday(date:Boolean, animalId:Int, routineName: String )
+
+
+
 }
