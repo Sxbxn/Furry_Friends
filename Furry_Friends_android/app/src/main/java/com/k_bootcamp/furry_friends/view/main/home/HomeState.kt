@@ -4,6 +4,7 @@ sealed class HomeState{
     object Loading: HomeState()
 
     data class Success(
+        val id: Int,
         val name: String,
         val birthDay: String,
         val weight: Float,

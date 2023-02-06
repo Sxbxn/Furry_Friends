@@ -1,5 +1,6 @@
 package com.k_bootcamp.furry_friends.di
 
+import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepositoryImpl
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
@@ -30,8 +31,9 @@ class RepositoryModule {
     @Provides
     fun provideAnimalRepository(
         animalService: AnimalService,
+        routineDao: RoutineDao,
         @IoDispatcher ioDispatcher: CoroutineDispatcher
     ): AnimalRepository {
-        return AnimalRepositoryImpl(animalService, ioDispatcher)
+        return AnimalRepositoryImpl(animalService, routineDao, ioDispatcher)
     }
 }

@@ -34,6 +34,7 @@ class HomeViewModel @Inject constructor(
             val info = animalRepository.getAnimalInfo(session)
             info?.let {
                 _animalInfoLiveData.postValue(HomeState.Success(
+                    it.id,
                     it.name,
                     it.birthDay,
                     it.weight,

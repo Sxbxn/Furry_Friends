@@ -1,5 +1,6 @@
 package com.k_bootcamp.furry_friends.data.service
 
+import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
 import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.animal.Animal
@@ -23,5 +24,5 @@ interface AnimalService {
     @GET("/")
     suspend fun getAnimalInfo(
       @Body session: Session?
-    ): Response<Animal>
+    ): Response<AnimalResponse>
 }
