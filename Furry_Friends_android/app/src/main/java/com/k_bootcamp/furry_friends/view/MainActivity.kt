@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.ActivityMainBinding
 import com.k_bootcamp.furry_friends.view.main.TabWriting.TabWritingFragment
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
+        Application.prefs.session = "123"
     }
 
     private fun initViews() = with(binding) {

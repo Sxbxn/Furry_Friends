@@ -56,4 +56,7 @@
     <string name="submit_animal">반려동물을 등록하세요:)</string>
     <string name="failed_submit_animal">반려동물 등록에 실패했습니다.</string>
     <string name="load_fail_animal_info">정보를 불러오는데 실패하였습니다.</string>
+    <string name="not_loged_in">로그인 되어있지 않음</string>
+    <string name="not_register_animal">동물 등록이 되어있지 않음</string>
+    <string name="add_routine">루틴 추가</string>
 </resources>

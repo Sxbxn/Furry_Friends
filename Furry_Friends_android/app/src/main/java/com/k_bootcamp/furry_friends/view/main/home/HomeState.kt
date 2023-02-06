@@ -5,6 +5,7 @@ sealed class HomeState{
 
     data class Success(
         val id: Int,
+        val userId: String,
         val name: String,
         val birthDay: String,
         val weight: Float,

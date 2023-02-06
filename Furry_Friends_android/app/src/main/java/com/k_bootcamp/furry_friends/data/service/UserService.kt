@@ -16,7 +16,7 @@ interface UserService {
     ): Response<SessionResponse>
 
     // 정보가져오기
-    @GET("/")
+    @GET("/{sessionId}")
     suspend fun getInfo(
         @Path("sessionId") sessionId: String?
     ): Response<String>

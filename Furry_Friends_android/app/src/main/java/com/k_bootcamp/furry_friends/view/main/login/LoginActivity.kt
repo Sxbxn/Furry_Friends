@@ -114,6 +114,7 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
         }
     }
 
+    // 마이페이지에서 XXX님 보여주기
     private fun getInfo(sessionId: String) {
         viewModel.getUserInfo(sessionId)
         viewModel.getInfo.observe(this@LoginActivity) { response ->

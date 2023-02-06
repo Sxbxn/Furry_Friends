@@ -11,16 +11,16 @@ interface RoutineDao {
 
     // 해당 동물의 Routine 을 가져온다
     @Query("SELECT * FROM routine WHERE animalId = :animalId")
-    suspend fun getRoutineFromId(animalId: String): List<Routine>
+    suspend fun getRoutineFromId(animalId: Int): List<Routine>
 
-    @Query("DELETE FROM routine WHERE animalId = :animalId")
-    suspend fun deleteAllLocalRoutine(animalId: String)
+    @Query("UPDATE routine SET isOn = :isChecked WHERE session = :session AND animalId = :animalId AND routineName = :routineName")
+    suspend fun updateRoutine(isChecked: Boolean, session: String, animalId:Int, routineName: String)
 
     // 해당 Routine 을 삭제한다
     @Delete
-    suspend fun deleteRoutine(Routine: Routine)
+    suspend fun deleteRoutine(routine: Routine)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)   // 충돌나면 무시 (기본 3개는 유지되어야 하므로)
-    suspend fun insertRoutine(Routine: Routine)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)   // 충돌나면 무시 (기본 3개는 유지되어야 하므로)
+    suspend fun insertRoutine(routine: Routine)
 
 }

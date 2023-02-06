@@ -1,15 +1,15 @@
 package com.k_bootcamp.furry_friends.data.service
 
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
+import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
+import com.k_bootcamp.furry_friends.data.response.animal.RoutineSubmit
 import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.animal.Animal
+import com.k_bootcamp.furry_friends.model.animal.Routine
 import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Part
+import retrofit2.http.*
 
 interface AnimalService {
     // 동물 정보 보내기
@@ -21,8 +21,28 @@ interface AnimalService {
 
 
     // 동물 정보 가져오기
-    @GET("/")
+    @GET("/{session}")
     suspend fun getAnimalInfo(
-      @Body session: Session?
+      @Path("session") session: Session?
     ): Response<AnimalResponse>
+
+
+    // 루틴 정보 가져오기
+    @GET("/{animalId}")
+    suspend fun getRoutinesFromId(
+        @Path("animalId") animalId: Int?
+    ): Response<List<RoutineResponse>>
+
+    @POST("/")
+    suspend fun submitDateRoutine(
+        @Body routine: RoutineResponse
+    ): Response<RoutineSubmit>
+
+    @POST("/")
+    suspend fun deleteDateRoutine(
+        @Body routine: RoutineResponse
+    ): Response<RoutineSubmit>
+
+
+
 }
