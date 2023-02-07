@@ -2405,7 +2405,11 @@ textarea.form-control {
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.form-group .puppy-info {
+  font-size: 1.15rem;
 }
 
 .form-text {
@@ -9108,7 +9112,7 @@ button.bg-dark:focus {
 
 .mb-4,
 .my-4 {
-  margin-bottom: 1.5rem !important;
+  margin-bottom: 2.2rem !important;
 }
 
 .ml-4,
@@ -13702,20 +13706,20 @@ textarea.form-control {
   width: 100%;
 }
 
-.contactForm .label {
+.myPageDiv .label {
   color: #00bd56 !important;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 20px;
   font-weight: 600;
 }
 
-.contactForm .form-control {
+.myPageDiv .form-control {
   border: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0;
 }
 
-.contactForm .form-control {
+.myPageDiv .form-control {
   height: 36px;
   background: #fff;
   color: rgba(0, 0, 0, 0.5);
@@ -13726,32 +13730,32 @@ textarea.form-control {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.contactForm .form-control::-webkit-input-placeholder {
+.myPageDiv .form-control::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
   color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.contactForm .form-control::-moz-placeholder {
+.myPageDiv .form-control::-moz-placeholder {
   /* Firefox 19+ */
   color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.contactForm .form-control:-ms-input-placeholder {
+.myPageDiv .form-control:-ms-input-placeholder {
   /* IE 0+ */
   color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.contactForm .form-control:-moz-placeholder {
+.myPageDiv .form-control:-moz-placeholder {
   /* Firefox 18- */
   color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.contactForm .form-control:focus,
-.contactForm .form-control:active {
+.myPageDiv .form-control:focus,
+.myPageDiv .form-control:active {
   border-color: #00bd56 !important;
 }
 
-.contactForm textarea.form-control {
+.myPageDiv textarea.form-control {
   height: inherit !important;
 }
 
