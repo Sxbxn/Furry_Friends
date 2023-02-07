@@ -21,28 +21,32 @@ interface AnimalService {
 
 
     // 동물 정보 가져오기
-    @GET("/{session}")
+    @GET("/{session}")  ////
     suspend fun getAnimalInfo(
       @Path("session") session: Session?
     ): Response<AnimalResponse>
 
 
     // 루틴 정보 가져오기
-    @GET("/{animalId}")
+    @GET("/{animalId}")  ////
     suspend fun getRoutinesFromId(
         @Path("animalId") animalId: Int?
     ): Response<List<RoutineResponse>>
 
-    @POST("/")
+    @POST("/routine")
     suspend fun submitDateRoutine(
         @Body routine: RoutineResponse
     ): Response<RoutineSubmit>
 
-    @POST("/")
+    @POST("/weekdayRoutine")
     suspend fun deleteDateRoutine(
         @Body routine: RoutineResponse
     ): Response<RoutineSubmit>
 
+    @POST("/routinedelete")
+    suspend fun deleteRoutineByServer(
+        @Body routine: Routine
+    ): Response<RoutineSubmit>
 
 
 }

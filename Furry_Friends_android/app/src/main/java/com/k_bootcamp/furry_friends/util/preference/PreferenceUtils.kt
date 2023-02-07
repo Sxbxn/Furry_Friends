@@ -28,6 +28,7 @@ class PreferenceUtils(context: Context) {
             prefs.edit().putString("name", value).apply()
         }
 
+
     fun clear() {
         prefs.edit().clear().apply()
     }

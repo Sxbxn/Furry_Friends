@@ -56,7 +56,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
     private lateinit var animal: Animal
     private var name: String = ""
     private var birthDay: String = ""
-    private var weight: Float = 0.0f
+    private var weight: String = ""
     private var sex: String = "남"
     private var isNeutered: Boolean = false
     private lateinit var sendFile: File
@@ -118,6 +118,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
     }
 
     private fun submitAnimal(animal: Animal) {
+        Log.e("animal", animal.toString())
         viewModel.submitAnimal(animal)
         viewModel.isSuccess.observe(this) { response ->
             when (response) {
@@ -148,14 +149,14 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
             name = text.toString()
         }
 
-        editTextAnimalAge.doOnTextChanged { text, _, _, _ ->
+        editTextAnimalAge.doOnTextChanged { _, _, _, _ ->
             initValidate(ageInputLayout)
         }
 
         editTextAnimalWeight.doOnTextChanged { text, _, _, _ ->
             initValidate(weightInputLayout)
             viewModel.weightLiveData.value = text.toString()
-            weight = text.toString().toFloat()
+            weight = text.toString()
         }
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -193,7 +194,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         }
         buttonSubmit.setOnClickListener {
             if (checkValidation()) {
-                animal = Animal(name, birthDay, weight, sex, isNeutered)
+                animal = Animal(name, birthDay, weight.toFloat(), sex, isNeutered)
                 submitAnimal(animal)
             }
         }
@@ -215,7 +216,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
     private fun getBirthDay() = with(binding) {
         val curCalendar = Calendar.getInstance()
         val datePicker =
-            DatePickerDialog.OnDateSetListener { datePicker, year, month, dayOfMonth ->
+            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                 val text = "$year.${month + 1}.$dayOfMonth"
                 viewModel.birthDayLiveData.value = text
                 editTextAnimalAge.setText(text)

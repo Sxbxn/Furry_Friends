@@ -7,8 +7,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -24,7 +26,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -161,31 +162,102 @@ class RoutineViewModel @Inject constructor(
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun setAlarm(routine:Routine){
+    fun setAlarm(routine:Routine, time: String?){
+        initManager()
+        val mon = routine.mon
+        val tue = routine.tue
+        val wed = routine.wed
+        val thu = routine.thu
+        val fri = routine.fri
+        val sat = routine.sat
+        val sun = routine.sun
+        val weekStatus: BooleanArray = booleanArrayOf(false, sun, mon, tue, wed, thu, fri, sat)
+        //AlarmReceiver에 값 전달
+        val receiverIntent = Intent(context, AlarmReceiver::class.java)
+        // 번들로 합치고 인텐트에 넣어서 보내주어야 소실이 안됨.... 이거 때문에 3시간넘게 날려먹었네...
+        val bundle = Bundle()
+        bundle.putParcelable("registerRoutine", routine)
+        bundle.putBooleanArray("dayOfWeek", weekStatus)
+        receiverIntent.putExtra("bundle",bundle)
+
+        val pendingIntent = PendingIntent.getBroadcast(context, routine.routineId, receiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        //날짜 포맷을 바꿔주는 코드
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        var datetime: Date? = null
+
+        // 특정 시간
+        val cal = Calendar.getInstance()
+        if(time != "00:00" && time != null) {
+            val hourMinute = time.split(":")
+            cal.set(Calendar.HOUR_OF_DAY, hourMinute[0].toInt())
+            cal.set(Calendar.MINUTE, hourMinute[1].toInt())
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            Log.e("정상",routine.toString())
+            Log.e("time", hourMinute.joinToString(""))
+        } else {
+            cal.set(Calendar.HOUR_OF_DAY, 12)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            Log.e("기본","기본")
+        }
+//        val date = Date()
+        val intervalDay: Long = 24 * 60 * 60 * 1000
+        var selectTime: Long = cal.timeInMillis
+        val currentTime: Long = System.currentTimeMillis()
+
+        //만약 설정한 시간이, 현재 시간보다 작다면 알람이 부정확하게 울리기 때문에 다음주 울리게 설정
+        if(currentTime > selectTime){
+            Log.e("over","over")
+            selectTime += intervalDay * 7
+        }
+
+//        cal[Calendar.SECOND] = cal[Calendar.SECOND] + 3 // 10초 뒤
+
+//       fromList.forEach{ from ->
+//            try {
+//                datetime = dateFormat.parse(from)
+//            } catch (e: ParseException) {
+//                e.printStackTrace()
+//            }
+//
+//            val calendar: Calendar = Calendar.getInstance()
+//
+//
+//            calendar.time = datetime
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, selectTime, intervalDay, pendingIntent)
+//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, selectTime, intervalDay, pendingIntent)
+        Log.e("selectTime", selectTime.toString())
+
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pendingIntent)
+//        alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, selectTime, pendingIntent)
+//        }
+    }
+
+    fun cancelAlarm(routineId: Int) {
+        initManager()
+        val receiverIntent = Intent(context, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, routineId, receiverIntent, 0)
+        alarmManager.cancel(pendingIntent)
+    }
+
+    private fun initManager() {
         notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         mCalendar = GregorianCalendar()
+    }
 
-        //AlarmReceiver에 값 전달
-        val receiverIntent = Intent(context, AlarmReceiver::class.java).apply {
-
+    @SuppressLint("SimpleDateFormat")
+    private fun todayToNextWeek(): List<String> {
+        val cal = Calendar.getInstance()
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val list = mutableListOf<String>()
+        for(i in 1..7) {
+            cal.add(Calendar.DAY_OF_MONTH, +1)
+            list.add(sdf.format(cal.time))
         }
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, receiverIntent, 0)
-
-        val from = "2023-02-06 20:44:00" //임의로 날짜와 시간을 지정
-
-        //날짜 포맷을 바꿔주는 코드
-
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        var datetime: Date? = null
-        try {
-            datetime = dateFormat.parse(from)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.time = datetime
-        alarmManager.set(AlarmManager.RTC, calendar.timeInMillis, pendingIntent)
+        return list.toList()
     }
 }

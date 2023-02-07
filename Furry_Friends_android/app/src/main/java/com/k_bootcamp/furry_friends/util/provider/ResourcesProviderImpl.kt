@@ -3,7 +3,9 @@ package com.k_bootcamp.furry_friends.util.provider
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 
@@ -17,4 +19,7 @@ class ResourcesProviderImpl(
 
     @SuppressLint("NewApi")
     override fun getColorStateList(@ColorRes resId: Int): ColorStateList = context.getColorStateList(resId)
+
+    @SuppressLint("ResourceType", "UseCompatLoadingForDrawables")
+    override fun getDrawable(@IdRes id: Int): Drawable? = context.getDrawable(id)
 }

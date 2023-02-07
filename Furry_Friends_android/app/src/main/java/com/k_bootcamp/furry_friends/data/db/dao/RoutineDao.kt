@@ -44,6 +44,10 @@ interface RoutineDao {
     @Query("UPDATE routine set sun = :date where animalId = :animalId AND routineName = :routineName")
     suspend fun updateSunday(date:Boolean, animalId:Int, routineName: String )
 
+    @Query("UPDATE routine set time = :time where animalId = :animalId AND routineName = :routineName")
+    suspend fun updateTime(time: String, animalId:Int, routineName: String)
 
+    @Query("SELECT time FROM routine where animalId = :animalId AND routineName = :routineName")
+    suspend fun getTimeRoutine(animalId:Int, routineName: String): String
 
 }

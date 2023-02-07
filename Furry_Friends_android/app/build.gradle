@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -89,4 +90,5 @@ dependencies {
     implementation 'com.github.angads25:toggle:1.1.0'
     // custom calendar view
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
+
 }

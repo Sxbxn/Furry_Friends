@@ -1,8 +1,12 @@
 package com.k_bootcamp.furry_friends.model.animal
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
 @Entity(tableName = "routine")
 data class Routine(
     @PrimaryKey(autoGenerate = true)
@@ -17,5 +21,6 @@ data class Routine(
     val thu: Boolean = false,
     val fri: Boolean = false,
     val sat: Boolean = false,
-    val sun: Boolean = false
-)
+    val sun: Boolean = false,
+    val time: String = "00:00"
+) :Parcelable
