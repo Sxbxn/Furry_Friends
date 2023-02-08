@@ -29,7 +29,7 @@ class AlarmReceiver: BroadcastReceiver() {
         val routine = bundle?.getParcelable<Routine>("registerRoutine")
 
         Log.e("routine", routine.toString())
-        Log.e("week", week.toString())
+        Log.e("week", week.contentToString())
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val cal = Calendar.getInstance()
 

@@ -76,6 +76,7 @@ class RoutineAdapter(
                     CoroutineScope(Dispatchers.Main).launch {
                         when (isChecked) {
                             true -> {
+//                                viewModel.cancelAlarm(alarmRoutine.routineId)
                                 viewModel.setAlarm(alarmRoutine, alarmRoutine.time)
                             }
                             false -> {
@@ -369,6 +370,7 @@ class RoutineAdapter(
                             viewModel.animalRepo.getRoutinesFromId(routine.animalId)[position]
                         // 시간을 바꿨을 때 토글이 켜져 있다면 바꾼 시간으로 다시 알람 세팅
                         if (alarmRoutine.isOn) {
+//                            viewModel.cancelAlarm(alarmRoutine.routineId)
                             viewModel.setAlarm(
                                 alarmRoutine,
                                 if (minute < 10) "$hour:0$minute"

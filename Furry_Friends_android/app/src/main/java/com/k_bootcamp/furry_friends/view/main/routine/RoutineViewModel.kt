@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -164,6 +163,7 @@ class RoutineViewModel @Inject constructor(
     @SuppressLint("SimpleDateFormat")
     fun setAlarm(routine:Routine, time: String?){
         initManager()
+        cancelAlarm(routine.routineId)
         val mon = routine.mon
         val tue = routine.tue
         val wed = routine.wed
@@ -172,8 +172,22 @@ class RoutineViewModel @Inject constructor(
         val sat = routine.sat
         val sun = routine.sun
         val weekStatus: BooleanArray = booleanArrayOf(false, sun, mon, tue, wed, thu, fri, sat)
+
+
+        var isRepeat = false
+        val len: Int = weekStatus.size
+        for (i in 0 until len) {
+            if (weekStatus[i]) {
+                isRepeat = true
+                break
+            }
+        }
+
+
         //AlarmReceiver에 값 전달
         val receiverIntent = Intent(context, AlarmReceiver::class.java)
+
+
         // 번들로 합치고 인텐트에 넣어서 보내주어야 소실이 안됨.... 이거 때문에 3시간넘게 날려먹었네...
         val bundle = Bundle()
         bundle.putParcelable("registerRoutine", routine)
@@ -210,8 +224,7 @@ class RoutineViewModel @Inject constructor(
 
         //만약 설정한 시간이, 현재 시간보다 작다면 알람이 부정확하게 울리기 때문에 다음주 울리게 설정
         if(currentTime > selectTime){
-            Log.e("over","over")
-            selectTime += intervalDay * 7
+            selectTime += intervalDay
         }
 
 //        cal[Calendar.SECOND] = cal[Calendar.SECOND] + 3 // 10초 뒤
