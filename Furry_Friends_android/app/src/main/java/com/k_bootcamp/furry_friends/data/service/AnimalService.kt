@@ -8,15 +8,17 @@ import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.animal.Animal
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
 interface AnimalService {
     // 동물 정보 보내기
+    @Multipart
     @POST("/")
     suspend fun submitAnimal(
-//        @Part animalImg: MultipartBody.Part,
-        @Body animal: Animal
+        @Part animalImg: MultipartBody.Part,
+        @Part("animalJson") animal: RequestBody
     ): Response<SubmitAnimalResponse>
 
 

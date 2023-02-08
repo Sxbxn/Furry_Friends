@@ -12,14 +12,16 @@ import com.k_bootcamp.furry_friends.model.animal.Animal
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class AnimalRepositoryImpl(
     private val animalService: AnimalService,
     private val routineDao: RoutineDao,
     private val ioDispatcher: CoroutineDispatcher
 ): AnimalRepository {
-    override suspend fun submitAnimal(animal: Animal): SubmitAnimalResponse?= withContext(ioDispatcher){
-        val response = animalService.submitAnimal(animal)
+    override suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): SubmitAnimalResponse?= withContext(ioDispatcher){
+        val response = animalService.submitAnimal(body, json)
         if(response.isSuccessful) {
             response.body()
         } else {

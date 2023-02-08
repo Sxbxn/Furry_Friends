@@ -14,11 +14,13 @@ import com.k_bootcamp.furry_friends.model.animal.Routine
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.model.user.SignInUser
 import com.k_bootcamp.furry_friends.util.network.APIResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 interface AnimalRepository {
     // remote service
     // 동물 등록
-    suspend fun submitAnimal(animal: Animal): SubmitAnimalResponse?
+    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): SubmitAnimalResponse?
     // 정보 가져오기
     suspend fun getAnimalInfo(session: Session?): AnimalResponse?
     // 서버에 저장된 루틴 목록 가져오기
