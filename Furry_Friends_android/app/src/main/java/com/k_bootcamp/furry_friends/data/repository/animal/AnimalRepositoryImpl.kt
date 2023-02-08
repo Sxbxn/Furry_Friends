@@ -1,5 +1,6 @@
 package com.k_bootcamp.furry_friends.data.repository.animal
 
+import com.google.gson.JsonObject
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
@@ -8,8 +9,7 @@ import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.data.service.AnimalService
 import com.k_bootcamp.furry_friends.data.service.UserService
-import com.k_bootcamp.furry_friends.model.animal.Animal
-import com.k_bootcamp.furry_friends.model.animal.Routine
+import com.k_bootcamp.furry_friends.model.animal.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
@@ -76,6 +76,24 @@ class AnimalRepositoryImpl(
         }
     }
 
+    override suspend fun getRoutinesFromDate(session:String, animalId: Int): List<RoutineResponse>? = withContext(ioDispatcher) {
+        val response = animalService.getRoutinesFromDate(session, animalId)
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+    override suspend fun submitDailyChecklist(checkList: CheckList): JsonObject? =  withContext(ioDispatcher) {
+        val response = animalService.submitDailyChecklist(checkList)
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+
+
     override suspend fun insertRoutine(routine: Routine) = routineDao.insertRoutine(routine)
 
     override suspend fun getAllRoutines(): List<Routine> = routineDao.getAllRoutines()
@@ -102,5 +120,8 @@ class AnimalRepositoryImpl(
 
     override suspend fun getTimeRoutine(animalId: Int, routineName: String): String = routineDao.getTimeRoutine(animalId, routineName)
 
+    override suspend fun getAllStatus(): List<RoutineStatus> = routineDao.getAllStatus()
+
+    override suspend fun deleteAllStatus() = routineDao.deleteAllStatus()
 
 }

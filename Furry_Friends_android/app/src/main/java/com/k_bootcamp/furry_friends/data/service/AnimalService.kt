@@ -1,11 +1,14 @@
 package com.k_bootcamp.furry_friends.data.service
 
+import com.google.gson.JsonObject
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineSubmit
 import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.animal.Animal
+import com.k_bootcamp.furry_friends.model.animal.CheckList
+import com.k_bootcamp.furry_friends.model.animal.ChecklistRoutine
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -25,7 +28,7 @@ interface AnimalService {
     // 동물 정보 가져오기
     @GET("/{session}")  ////
     suspend fun getAnimalInfo(
-      @Path("session") session: Session?
+        @Path("session") session: Session?
     ): Response<AnimalResponse>
 
 
@@ -50,5 +53,15 @@ interface AnimalService {
         @Body routine: Routine
     ): Response<RoutineSubmit>
 
+    @GET("/checklist")  ////
+    suspend fun getRoutinesFromDate(
+        @Header("login") session: String,
+        @Header("curr_animal") animalId: Int
+    ): Response<List<RoutineResponse>>
+
+    @POST("/checklist")
+    suspend fun submitDailyChecklist(
+        @Body checkList: CheckList
+    ): Response<JsonObject>
 
 }

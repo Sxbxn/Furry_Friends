@@ -60,4 +60,13 @@
     <string name="not_register_animal">동물 등록이 되어있지 않음</string>
     <string name="add_routine">루틴 추가</string>
     <string name="exist_routine">이미 존재하는 루틴</string>
+    <string name="sunday">일요일</string>
+    <string name="monday">월요일</string>
+    <string name="tuesday">화요일</string>
+    <string name="wednesday">수요일</string>
+    <string name="thursday">목요일</string>
+    <string name="friday">금요일</string>
+    <string name="saturday">토요일</string>
+    <string name="error">오류</string>
+    <string name="add_animal">추가</string>
 </resources>

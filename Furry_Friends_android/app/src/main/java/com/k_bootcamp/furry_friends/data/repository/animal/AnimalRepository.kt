@@ -3,14 +3,14 @@ package com.k_bootcamp.furry_friends.data.repository.animal
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.google.gson.JsonObject
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineSubmit
 import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.data.response.user.SessionResponse
-import com.k_bootcamp.furry_friends.model.animal.Animal
-import com.k_bootcamp.furry_friends.model.animal.Routine
+import com.k_bootcamp.furry_friends.model.animal.*
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.model.user.SignInUser
 import com.k_bootcamp.furry_friends.util.network.APIResponse
@@ -31,6 +31,10 @@ interface AnimalRepository {
     suspend fun deleteDateRoutine(routine: RoutineResponse): RoutineSubmit?
     // 서버에 있는 특정 루틴 지우기
     suspend fun deleteRoutineByServer(routineName: Routine): RoutineSubmit?
+    // 현재요일에 기록된 루틴 가져오기
+    suspend fun getRoutinesFromDate(session:String, animalId: Int): List<RoutineResponse>?
+    // 금일 체크리스트 등록(저장)하기
+    suspend fun submitDailyChecklist(checkList: CheckList): JsonObject?
 
 
 
@@ -60,4 +64,10 @@ interface AnimalRepository {
     suspend fun updateTime(time: String, animalId:Int, routineName: String)
 
     suspend fun getTimeRoutine(animalId:Int, routineName: String): String
+
+    suspend fun getAllStatus(): List<RoutineStatus>
+
+    suspend fun deleteAllStatus()
+
+
 }

@@ -2,6 +2,7 @@ package com.k_bootcamp.furry_friends.data.db.dao
 
 import androidx.room.*
 import com.k_bootcamp.furry_friends.model.animal.Routine
+import com.k_bootcamp.furry_friends.model.animal.RoutineStatus
 
 @Dao
 interface RoutineDao {
@@ -16,6 +17,8 @@ interface RoutineDao {
     @Query("UPDATE routine SET isOn = :isChecked WHERE session = :session AND animalId = :animalId AND routineName = :routineName")
     suspend fun updateRoutine(isChecked: Boolean, session: String, animalId:Int, routineName: String)
 
+
+    // 루틴 설정 관련
     // 해당 Routine 을 삭제한다
     @Delete
     suspend fun deleteRoutine(routine: Routine)
@@ -49,5 +52,20 @@ interface RoutineDao {
 
     @Query("SELECT time FROM routine where animalId = :animalId AND routineName = :routineName")
     suspend fun getTimeRoutine(animalId:Int, routineName: String): String
+
+
+
+    // status 관련
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutineStatus(status: RoutineStatus)
+
+    @Query("DELETE FROM routineStatus WHERE routineId =:routineId and routineName=:routineName and date=:date")
+    suspend fun deleteRoutineStatus(routineId: Int, routineName: String, date: String)
+
+    @Query("SELECT * FROM routineStatus")
+    suspend fun getAllStatus(): List<RoutineStatus>
+
+    @Query("DELETE FROM routineStatus")
+    suspend fun deleteAllStatus()
 
 }

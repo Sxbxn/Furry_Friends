@@ -12,10 +12,10 @@ class PreferenceUtils(context: Context) {
         set(value){
             prefs.edit().putString("session", value).apply()
         }
-    var userId:String?
-        get() = prefs.getString("userId", null)
+    var animalId:Int
+        get() = prefs.getInt("animalId", -1)
         set(value) {
-            prefs.edit().putString("userId", value).apply()
+            prefs.edit().putInt("animalId", value).apply()
         }
     var email:String?
         get() = prefs.getString("email", null)

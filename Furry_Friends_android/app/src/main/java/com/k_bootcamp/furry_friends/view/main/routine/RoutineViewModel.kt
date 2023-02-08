@@ -43,7 +43,6 @@ class RoutineViewModel @Inject constructor(
         get() = _routineLiveData
     private var defaultRoutines = listOf("양치", "빗질", "산책")
     val animalRepo = animalRepository
-    val rDao = routineDao
 
     // notification setting
     private lateinit var alarmManager: AlarmManager

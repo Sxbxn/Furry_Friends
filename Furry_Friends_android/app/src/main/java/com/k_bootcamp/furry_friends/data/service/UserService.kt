@@ -16,7 +16,7 @@ interface UserService {
     ): Response<SessionResponse>
 
     // 정보가져오기
-    @GET("/{sessionId}")  ////
+    @GET("/{sessionId}")  //// session 객체로 교환 필요
     suspend fun getInfo(
         @Path("sessionId") sessionId: String?
     ): Response<String>
@@ -26,4 +26,7 @@ interface UserService {
     suspend fun signInUser(
         @Body user: SignInUser
     ): Response<SignInResponse>
+
+    @GET("/logout")
+    suspend fun logoutUser(): Response<Void>
 }

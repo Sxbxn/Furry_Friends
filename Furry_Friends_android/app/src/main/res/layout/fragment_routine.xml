@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="20sp"
         android:textColor="@color/black"
-        android:text="123123"/>
+        tools:text="123123"/>
 <!--    <com.facebook.shimmer.ShimmerFrameLayout-->
 <!--        android:id="@+id/shimmerLayout"-->
 <!--        android:layout_width="0dp"-->

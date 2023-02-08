@@ -106,7 +106,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     style="?attr/selectableItemBackground"
                     app:layout_constraintEnd_toStartOf="@id/routineControl"
-                    android:text="시간 선택" />
+                    tools:text="시간 선택" />
 
                 <com.github.angads25.toggle.widget.DayNightSwitch
                     android:id="@+id/routineControl"
