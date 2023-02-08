@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500&display=swap" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="../fonts/icomoon/style.css">
 
     <link href='../fullcalendar/packages/core/main.css' rel='stylesheet' />
     <link href='../fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
@@ -59,7 +59,8 @@
                     <li class="nav-item"><a href="medical-record.html" class="nav-link">Medical Record</a></li>
                     <li class="nav-item active"><a href="calendar.html" class="nav-link">Calendar</a></li>
                     <li class="nav-item"><a href="sign.html" class="nav-link">Login</a></li>
-                    <li class="nav-item"><a href="mypage.html" class="nav-link">My Page</a></li>                </ul>
+                    <li class="nav-item"><a href="mypage.html" class="nav-link">My Page</a></li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -222,14 +223,35 @@
                 eventLimit: true,
                 eventColor: '#00BD56',
                 events: [
+                    $.ajax({
+                        url: 'https://jsonplaceholder.typicode.com/photos/',
+                        type: 'GET',
+                        dataType: 'json',
+
+                        success: function (data) {
+                            console.log(data);
+                            for (let i = 0; i < 1; i++) {
+                                data = data[i];
+                                calendar.addEvent({
+                                    id: data.id,
+                                    title: data.albumId,
+                                    start: '2023-02-10'
+                                })
+                            }
+
+                        }
+                    }),
                     {
+                        id: 1,
                         title: '애견카페 방문!',
                         start: '2023-02-02'
                     },
                     {
+                        id: 2,
                         title: '미용한 날~~',
                         start: '2023-02-13'
                     },
+                
                 ]
             });
 
@@ -239,6 +261,8 @@
     </script>
 
     <script src="../js/main.js"></script>
+    <script src="../js/calendar.js"></script>
+
 
 </body>
 
