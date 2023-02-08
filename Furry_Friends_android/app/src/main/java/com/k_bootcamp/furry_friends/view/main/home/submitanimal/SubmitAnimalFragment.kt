@@ -13,6 +13,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -28,6 +29,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.Rotate
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.fc.baeminclone.screen.base.BaseFragment
+import com.google.gson.Gson
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentSubmitAnimalBinding
@@ -44,6 +46,13 @@ import com.k_bootcamp.furry_friends.view.main.signin.SignInState
 import com.k_bootcamp.furry_friends.view.main.signin.SignInViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.http.Multipart
 import java.io.File
 import java.util.*
 
@@ -60,7 +69,10 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
     private var sex: String = "남"
     private var isNeutered: Boolean = false
     private lateinit var sendFile: File
+    private lateinit var body: MultipartBody.Part
+    private lateinit var jsonAnimal: RequestBody
     private lateinit var dialog: CustomAlertDialog
+
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
@@ -117,9 +129,9 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         initButton()
     }
 
-    private fun submitAnimal(animal: Animal) {
+    private fun submitAnimal(body: MultipartBody.Part, json: RequestBody) {
         Log.e("animal", animal.toString())
-        viewModel.submitAnimal(animal)
+        viewModel.submitAnimal(body, json)
         viewModel.isSuccess.observe(this) { response ->
             when (response) {
                 is SubmitAnimalState.Success -> {
@@ -180,7 +192,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         // 요청 다시시도
         loading.retryButton().setOnClickListener {
             loading.setInvisible()
-            submitAnimal(animal)
+            submitAnimal(body, jsonAnimal)
         }
     }
 
@@ -195,7 +207,15 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         buttonSubmit.setOnClickListener {
             if (checkValidation()) {
                 animal = Animal(name, birthDay, weight.toFloat(), sex, isNeutered)
-                submitAnimal(animal)
+                if (!::sendFile.isInitialized) {
+                    Toast.makeText(requireContext(), "이미지를 불러와 주십시오", Toast.LENGTH_SHORT).show()
+                } else {
+                    val fileName = sendFile.name
+                    val requestFile = sendFile.asRequestBody("image/*".toMediaTypeOrNull())
+                    jsonAnimal = Gson().toJson(animal).toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                    body = MultipartBody.Part.createFormData("file", fileName, requestFile)
+                    submitAnimal(body, jsonAnimal)
+                }
             }
         }
     }
