@@ -43,13 +43,13 @@
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
             android:background="@color/gray_op"
-
             app:layout_constraintTop_toBottomOf="@id/titleTv" />
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/divide"
+            app:shimmer_auto_start="false"
             >
             <androidx.cardview.widget.CardView
                 android:id="@+id/viewholder_day_writing"

@@ -4,20 +4,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.ActivityMainBinding
-import com.k_bootcamp.furry_friends.view.main.TabWriting.TabWritingFragment
+import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
 import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistFragment
 import com.k_bootcamp.furry_friends.view.main.home.HomeFragment
-import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.routine.RoutineFragment
-import com.k_bootcamp.furry_friends.view.main.routine.RoutineViewModel
 import com.k_bootcamp.furry_friends.view.main.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
