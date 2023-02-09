@@ -29,7 +29,6 @@
             android:layout_margin="5dp"
             android:textColor="@color/black"
             tools:text="2023."
-            android:text="2023."
             />
         <TextView
             android:id="@+id/monthTextView"
@@ -39,7 +38,6 @@
             android:textSize="30sp"
             android:layout_margin="5dp"
             android:textColor="@color/black"
-            android:text="2."
             tools:text="2."/>
         <TextView
             android:id="@+id/dayOfMonthTextView"
@@ -49,7 +47,6 @@
             android:textSize="30sp"
             android:layout_margin="5dp"
             android:textColor="@color/black"
-            android:text="3"
             tools:text="3"/>
         <TextView
             android:id="@+id/dayofWeekTextView"
@@ -59,7 +56,6 @@
             android:textSize="30sp"
             android:layout_margin="5dp"
             android:textColor="@color/black"
-            android:text="금요일"
             tools:text="금요일"
             />
     </LinearLayout>
@@ -153,12 +149,12 @@
                 <TextView
                     android:id="@+id/poobQuantity"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_marginBottom="10dp"
                     android:text="배변상태"
                     android:textColor="@color/black"
-                    android:layout_gravity="top"
+                    android:layout_gravity="center"
                     android:textSize="12sp"
                     android:textStyle="bold" />
                 <View
@@ -170,7 +166,15 @@
                     android:layout_marginStart="30dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:spinnerMode="dropdown"/>
+                    android:spinnerMode="dropdown"
+                    android:visibility="visible"/>
+                <TextView
+                    android:id="@+id/poobStatusTextView"
+                    android:layout_marginStart="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="정상"
+                    android:visibility="gone"/>
 
             </LinearLayout>
             <LinearLayout

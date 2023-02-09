@@ -92,6 +92,14 @@ class AnimalRepositoryImpl(
             null
         }
     }
+    override suspend fun getChecklistDatas(date: String): CheckList? =  withContext(ioDispatcher) {
+        val response = animalService.getChecklistDatas(date)
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
 
 
     override suspend fun insertRoutine(routine: Routine) = routineDao.insertRoutine(routine)

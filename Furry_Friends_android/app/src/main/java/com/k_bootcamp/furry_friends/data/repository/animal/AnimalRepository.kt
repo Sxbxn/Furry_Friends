@@ -35,6 +35,8 @@ interface AnimalRepository {
     suspend fun getRoutinesFromDate(session:String, animalId: Int): List<RoutineResponse>?
     // 금일 체크리스트 등록(저장)하기
     suspend fun submitDailyChecklist(checkList: CheckList): JsonObject?
+    // 캘린더에서 접근하여 해당일자 데이터 가져오기
+    suspend fun getChecklistDatas(date: String): CheckList?
 
 
 

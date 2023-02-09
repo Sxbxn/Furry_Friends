@@ -3,6 +3,7 @@ package com.k_bootcamp.furry_friends.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.k_bootcamp.Application
@@ -45,7 +46,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.checklist -> {
-                    showFragment(ChecklistFragment.newInstance(), ChecklistFragment.TAG)
+                    // 0으로 접근하면 작성
+                    showFragment(ChecklistFragment.newInstance().apply {
+                        arguments = bundleOf(Pair("flag", 0))
+                    }, ChecklistFragment.TAG)
                     true
                 }
                 R.id.writing -> {

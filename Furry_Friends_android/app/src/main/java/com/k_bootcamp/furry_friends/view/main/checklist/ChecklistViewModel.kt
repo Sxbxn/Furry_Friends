@@ -9,13 +9,9 @@ import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
-import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.animal.CheckList
-import com.k_bootcamp.furry_friends.model.animal.ChecklistRoutine
-import com.k_bootcamp.furry_friends.model.animal.Routine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -100,5 +96,19 @@ class ChecklistViewModel @Inject constructor(
                 _routineLiveData.postValue(CheckListState.Done)
             }
         }
+    }
+
+    fun getDatas(date: String): CheckList? {
+        var response: CheckList? = null
+        _routineLiveData.postValue(CheckListState.Loading)
+        viewModelScope.launch(Dispatchers.IO) {
+            response = animalRepository.getChecklistDatas(date)
+            if(response == null) {
+                _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
+            } else {
+                _routineLiveData.postValue(CheckListState.Done)
+            }
+        }
+        return response
     }
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fc.baeminclone.screen.base.BaseFragment
+import com.google.gson.Gson
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
@@ -77,6 +78,7 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                     binding.infoTextView.toGone()
                     binding.recyclerView.toVisible()
                     initRecyclerView(it.routines)
+//                    Log.e("json",Gson().toJson(it.routines.first()))
                 }
             }
         }

@@ -22,6 +22,5 @@ data class Routine(
     val fri: Boolean = false,
     val sat: Boolean = false,
     val sun: Boolean = false,
-    val time: String = "00:00",
-    val isChecklistChecked: Boolean = false
+    val time: String = "00:00"
 ) :Parcelable

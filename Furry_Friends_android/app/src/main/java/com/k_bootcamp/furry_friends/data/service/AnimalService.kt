@@ -6,9 +6,7 @@ import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineSubmit
 import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.Session
-import com.k_bootcamp.furry_friends.model.animal.Animal
 import com.k_bootcamp.furry_friends.model.animal.CheckList
-import com.k_bootcamp.furry_friends.model.animal.ChecklistRoutine
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -64,4 +62,9 @@ interface AnimalService {
         @Body checkList: CheckList
     ): Response<JsonObject>
 
+    @GET("/datas")
+    suspend fun getChecklistDatas(
+        // 추후 회의 후 추가
+        @Header("currdate") date: String
+    ): Response<CheckList>
 }
