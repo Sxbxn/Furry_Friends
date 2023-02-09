@@ -1,4 +1,4 @@
-package com.fc.baeminclone.screen.base
+package com.k_bootcamp.furry_friends.view.base
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
