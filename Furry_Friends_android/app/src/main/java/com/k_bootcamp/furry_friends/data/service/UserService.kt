@@ -13,7 +13,8 @@ interface UserService {
     @POST("/login")
     suspend fun loginUser(
         @Body user: LoginUser
-    ): Response<SessionResponse>
+    ): Response<Session>
+//    ): Response<SessionResponse>
 
     // 정보가져오기
     @GET("/{sessionId}")  //// session 객체로 교환 필요
@@ -25,7 +26,8 @@ interface UserService {
     @POST("/register")
     suspend fun signInUser(
         @Body user: SignInUser
-    ): Response<SignInResponse>
+    ): Response<String>
+//    ): Response<SignInResponse>
 
     @GET("/logout")
     suspend fun logoutUser(): Response<Void>

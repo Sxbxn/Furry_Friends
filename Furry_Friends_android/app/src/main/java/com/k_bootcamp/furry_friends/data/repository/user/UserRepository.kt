@@ -10,7 +10,7 @@ import com.k_bootcamp.furry_friends.util.network.APIResponse
 interface UserRepository {
     suspend fun loginUser(user: LoginUser): Session?
     suspend fun getInfo(sessionId: String): String?
-    suspend fun signInUser(user: SignInUser): SignInResponse?
+    suspend fun signInUser(user: SignInUser): String?
 //    suspend fun loginUser(user: LoginUser): APIResponse<SessionResponse>
 //    suspend fun getInfo(sessionId: String): APIResponse<String?>
 }

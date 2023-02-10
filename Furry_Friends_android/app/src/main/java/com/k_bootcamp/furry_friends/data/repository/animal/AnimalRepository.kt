@@ -20,17 +20,21 @@ import okhttp3.RequestBody
 interface AnimalRepository {
     // remote service
     // 동물 등록
-    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): SubmitAnimalResponse?
+    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): String?
+//    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): SubmitAnimalResponse?
     // 정보 가져오기
     suspend fun getAnimalInfo(session: Session?): AnimalResponse?
     // 서버에 저장된 루틴 목록 가져오기
     suspend fun getRoutinesFromIdByServer(animalId: Int): List<RoutineResponse>?
     // 루틴 요일 체크박스 활성화시 데이터 보내기
-    suspend fun submitDateRoutine(routine: RoutineResponse): RoutineSubmit?
+    suspend fun submitDateRoutine(routine: RoutineResponse): String?
+//    suspend fun submitDateRoutine(routine: RoutineResponse): RoutineSubmit?
     // 루틴 요일체크박스 비활성화시 데이터 보내기
-    suspend fun deleteDateRoutine(routine: RoutineResponse): RoutineSubmit?
+    suspend fun deleteDateRoutine(routine: RoutineResponse): String?
+//    suspend fun deleteDateRoutine(routine: RoutineResponse): RoutineSubmit?
     // 서버에 있는 특정 루틴 지우기
-    suspend fun deleteRoutineByServer(routineName: Routine): RoutineSubmit?
+    suspend fun deleteRoutineByServer(routineName: Routine): String?
+//    suspend fun deleteRoutineByServer(routineName: Routine): RoutineSubmit?
     // 현재요일에 기록된 루틴 가져오기
     suspend fun getRoutinesFromDate(session:String, animalId: Int): List<RoutineResponse>?
     // 금일 체크리스트 등록(저장)하기

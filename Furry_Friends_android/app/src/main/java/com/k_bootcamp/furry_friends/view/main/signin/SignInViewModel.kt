@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fc.baeminclone.screen.base.BaseViewModel
+import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
 import com.k_bootcamp.furry_friends.model.user.SignInUser
@@ -57,7 +57,7 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO)  {
             val response = userRepository.signInUser(user)
             response?.let{
-                _state.postValue(SignInState.Success(it.isOk))
+                _state.postValue(SignInState.Success(it))
             } ?: kotlin.run {
                 _state.postValue(SignInState.Error(context.getString(R.string.failed_sign_in)))
             }

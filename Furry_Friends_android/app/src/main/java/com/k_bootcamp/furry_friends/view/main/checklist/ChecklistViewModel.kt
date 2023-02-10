@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fc.baeminclone.screen.base.BaseViewModel
+import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
@@ -25,6 +25,7 @@ class ChecklistViewModel @Inject constructor(
 ) : BaseViewModel() {
     private val calendar = Calendar.getInstance()
     private val session = Application.prefs.session
+//    private var animalId = Application.prefs.animalId   나중에 쓸거
     var animalId: Int? = null
     private val _routineLiveData = MutableLiveData<CheckListState>()
     val routineLiveData: LiveData<CheckListState>

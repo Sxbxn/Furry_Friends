@@ -4,7 +4,7 @@ sealed class SignInState{
     object Loading: SignInState()
 
     data class Success(
-        val isSuccess: Boolean
+        val isSuccess: String
     ): SignInState()
 
     data class Error(

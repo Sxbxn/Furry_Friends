@@ -90,7 +90,7 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
                     // success code
                     Application.prefs.apply {
                         session = response.session
-//                        userId = response.data?.get("userId")
+                        animalId = response.animalId
                     }
 //                    Application.prefs.session?.let { Application.prefs.userId?.let { it1 -> getInfo(it, it1) } }
 

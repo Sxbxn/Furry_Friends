@@ -15,7 +15,7 @@ class UserRepositoryImpl(
     override suspend fun loginUser(user: LoginUser): Session? = withContext(ioDispatcher){
         val response = userService.loginUser(user)
         if(response.isSuccessful) {
-            response.body()?.session
+            response.body()
         } else {
             null
         }
@@ -30,7 +30,7 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun signInUser(user: SignInUser): SignInResponse? = withContext(ioDispatcher) {
+    override suspend fun signInUser(user: SignInUser): String? = withContext(ioDispatcher) {
         val response = userService.signInUser(user)
         if(response.isSuccessful) {
             response.body()

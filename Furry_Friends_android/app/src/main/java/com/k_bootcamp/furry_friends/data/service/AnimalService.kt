@@ -20,7 +20,8 @@ interface AnimalService {
     suspend fun submitAnimal(
         @Part animalImg: MultipartBody.Part,
         @Part("animalJson") animal: RequestBody
-    ): Response<SubmitAnimalResponse>
+    ): Response<String>
+//    Response<SubmitAnimalResponse>
 
 
     // 동물 정보 가져오기
@@ -39,17 +40,20 @@ interface AnimalService {
     @POST("/routine")
     suspend fun submitDateRoutine(
         @Body routine: RoutineResponse
-    ): Response<RoutineSubmit>
+    ): Response<String>
+//    ): Response<RoutineSubmit>
 
     @POST("/weekdayRoutine")
     suspend fun deleteDateRoutine(
         @Body routine: RoutineResponse
-    ): Response<RoutineSubmit>
+    ): Response<String>
+//    ): Response<RoutineSubmit>
 
     @POST("/routinedelete")
     suspend fun deleteRoutineByServer(
         @Body routine: Routine
-    ): Response<RoutineSubmit>
+    ): Response<String>
+//    ): Response<RoutineSubmit>
 
     @GET("/checklist")  ////
     suspend fun getRoutinesFromDate(
@@ -61,6 +65,7 @@ interface AnimalService {
     suspend fun submitDailyChecklist(
         @Body checkList: CheckList
     ): Response<JsonObject>
+//    ): Response<String>  // 추후 실험 해야함  서버코드 보니까 얘는 json 반환하게 되어있었음
 
     @GET("/datas")
     suspend fun getChecklistDatas(

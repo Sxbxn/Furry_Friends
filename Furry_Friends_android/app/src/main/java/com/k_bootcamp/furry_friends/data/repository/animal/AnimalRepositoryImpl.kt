@@ -20,7 +20,7 @@ class AnimalRepositoryImpl(
     private val routineDao: RoutineDao,
     private val ioDispatcher: CoroutineDispatcher
 ): AnimalRepository {
-    override suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): SubmitAnimalResponse?= withContext(ioDispatcher){
+    override suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): String?= withContext(ioDispatcher){
         val response = animalService.submitAnimal(body, json)
         if(response.isSuccessful) {
             response.body()
@@ -49,7 +49,7 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun submitDateRoutine(routine: RoutineResponse): RoutineSubmit? = withContext(ioDispatcher) {
+    override suspend fun submitDateRoutine(routine: RoutineResponse): String? = withContext(ioDispatcher) {
         val response = animalService.submitDateRoutine(routine)
         if(response.isSuccessful) {
             response.body()
@@ -58,7 +58,7 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun deleteDateRoutine(routine: RoutineResponse): RoutineSubmit? = withContext(ioDispatcher) {
+    override suspend fun deleteDateRoutine(routine: RoutineResponse): String? = withContext(ioDispatcher) {
         val response = animalService.deleteDateRoutine(routine)
         if(response.isSuccessful) {
             response.body()
@@ -67,7 +67,7 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun deleteRoutineByServer(routine: Routine): RoutineSubmit? = withContext(ioDispatcher) {
+    override suspend fun deleteRoutineByServer(routine: Routine): String? = withContext(ioDispatcher) {
         val response = animalService.deleteRoutineByServer(routine)
         if(response.isSuccessful) {
             response.body()

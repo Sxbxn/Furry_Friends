@@ -4,7 +4,7 @@ sealed class SubmitAnimalState{
     object Loading: SubmitAnimalState()
 
     data class Success(
-        val isSuccess: Boolean
+        val isSuccess: String
     ): SubmitAnimalState()
 
     data class Error(

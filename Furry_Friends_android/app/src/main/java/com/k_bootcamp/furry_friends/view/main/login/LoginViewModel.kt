@@ -5,15 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fc.baeminclone.screen.base.BaseViewModel
+import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
-import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,7 +53,8 @@ class LoginViewModel @Inject constructor(
             session?.let {
                 _isLogin.postValue(
                     LoginState.Success(
-                        it.sesionId
+                        it.sesionId,
+                        it.animalId
                     )
                 )
             } ?: kotlin.run {
