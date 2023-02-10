@@ -132,7 +132,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
     private fun submitAnimal(body: MultipartBody.Part, json: RequestBody) {
         Log.e("animal", animal.toString())
         viewModel.submitAnimal(body, json)
-        viewModel.isSuccess.observe(this) { response ->
+        viewModel.isSuccess.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is SubmitAnimalState.Success -> {
                     loading.dismiss()
@@ -208,7 +208,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
             if (checkValidation()) {
                 animal = Animal(name, birthDay, weight.toFloat(), sex, isNeutered)
                 if (!::sendFile.isInitialized) {
-                    Toast.makeText(requireContext(), "이미지를 불러와 주십시오", Toast.LENGTH_SHORT).show()
+                    requireContext().toast("이미지를 불러와 주십시오")
                 } else {
                     val fileName = sendFile.name
                     val requestFile = sendFile.asRequestBody("image/*".toMediaTypeOrNull())

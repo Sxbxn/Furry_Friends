@@ -77,16 +77,17 @@
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp">
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_place_image"
+                        <ImageButton
+                            android:id="@+id/imageButtonImageSelect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/dash_line"
+                            android:contentDescription="uploadFile"
                             android:src="@drawable/add_screen_image_placeholder"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/tv_select_another_location" />
-
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
@@ -127,7 +128,8 @@
                             android:id="@+id/dateTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2023.2.3 금요일" />
+                            android:textColor="@color/black"
+                            tools:text="2023.2.3 금요일" />
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -140,12 +142,13 @@
                         android:theme="@style/EditTextAppStyle">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/description"
+                            android:id="@+id/editTextDescription"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="top|start"
                             android:hint="@string/description"
                             android:inputType="textMultiLine"
+                            android:textColor="@color/black"
                             android:lines="5"
                             android:maxWidth="5.0dp"
                             android:minWidth="10.0dp"

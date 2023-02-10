@@ -3,11 +3,10 @@ package com.k_bootcamp.furry_friends.data.repository.animal.writing
 import com.k_bootcamp.furry_friends.data.response.writing.DailyResponse
 import com.k_bootcamp.furry_friends.data.response.writing.DiagnosisResponse
 import com.k_bootcamp.furry_friends.data.service.WritingService
-import com.k_bootcamp.furry_friends.model.Model
-import com.k_bootcamp.furry_friends.model.writing.Daily
-import com.k_bootcamp.furry_friends.model.writing.Diagnosis
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class WritingRepositoryImpl(
     private val writingService: WritingService,
@@ -48,4 +47,30 @@ class WritingRepositoryImpl(
             null
         }
     }
+
+    override suspend fun submitDailyWriting(
+        body: MultipartBody.Part,
+        jsonDailyWriting: RequestBody
+    ): String? = withContext(ioDispatcher) {
+        val response = writingService.submitDailyWriting(body, jsonDailyWriting)
+        if(response.isSuccessful){
+            response.body()
+        } else {
+            null
+        }
+    }
+
+    override suspend fun submitDiagnosisWriting(
+        body: MultipartBody.Part,
+        jsonDiagnosisWriting: RequestBody
+    ): String? = withContext(ioDispatcher) {
+        val response = writingService.submitDiagnosisWriting(body, jsonDiagnosisWriting)
+        if(response.isSuccessful){
+            response.body()
+        } else {
+            null
+        }
+    }
+
+
 }

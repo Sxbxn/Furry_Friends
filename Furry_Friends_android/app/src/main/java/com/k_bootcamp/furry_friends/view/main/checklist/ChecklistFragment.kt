@@ -111,7 +111,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         loading.setVisible()
                     }
                     is CheckListState.Error -> {
-                        /////////////////////  test용 ---  삭제 예정
+                        /////////////////////  test용 ---  삭제 예정  --> Success로 가야함
                         val date = args?.get("date") as GregorianCalendar
                         Log.e("date",args?.get("date").toString())
                         val d = Date(date.timeInMillis)

@@ -81,6 +81,7 @@ dependencies {
     // Fragment ktx
     implementation "androidx.fragment:fragment-ktx:1.5.5"
 
+    // open sources
 
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
     // loading shimmer
@@ -90,4 +91,5 @@ dependencies {
     implementation 'com.github.angads25:toggle:1.1.0'
     // custom calendar view
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
+    implementation 'com.github.Shashank02051997:FancyAlertDialog-Android:0.3'
 }

@@ -2,6 +2,7 @@ package com.k_bootcamp.furry_friends.view.main.writing
 
 import android.content.Context
 import android.util.Log
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentTabWritingBinding
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
+import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.CellType
 import com.k_bootcamp.furry_friends.model.Model
 import com.k_bootcamp.furry_friends.model.writing.DailyModel
@@ -35,6 +37,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
     private var pos: Int? = 0
     private lateinit var loading: LoadingDialog
     private val session = Application.prefs.session
+    private val animalId = Application.prefs.animalId
     private val dailyAdapter by lazy {
         ModelRecyclerAdapter<DailyModel, TabWritingViewModel>(
             mutableListOf(),
@@ -42,6 +45,16 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
             adapterListener = object : DailyListListener {
                 override fun onClickItem(model: DailyModel) {
                     // 클릭하면 일상 기록 화면으로 넘어가고 서버에서 해당 글의 정보를 가져와 바인딩
+                    mainActivity.showFragment(DailyWritingFragment.newInstance().apply{
+                        // flag == 0 -> read only    모델을 함께 넘겨주어 보여주기
+                        arguments = bundleOf(
+                            Pair("flag", 0),
+                            Pair("url", model.imageUrl),
+                            Pair("title", model.title),
+                            Pair("date", model.currdate),
+                            Pair("content", model.content)
+                        )
+                    }, "")
                 }
             }
         )
@@ -53,6 +66,16 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
             adapterListener = object : DiagnosisListListener {
                 override fun onClickItem(model: DiagnosisModel) {
                     // 클릭하면 일상 기록 화면으로 넘어가고 서버에서 해당 글의 정보를 가져와 바인딩
+                    mainActivity.showFragment(DiagnosisWritingFragment.newInstance().apply {
+                        // flag == 0 -> read only
+                        arguments = bundleOf(
+                            Pair("flag", 0),
+                            Pair("url", model.imageUrl),
+//                            Pair("comment", model.comment),
+                            Pair("date", model.currdate),
+                            Pair("content", model.content)
+                        )
+                    }, "")
                 }
             }
         )
@@ -91,6 +114,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                 when (it) {
                     is TabWritingStatus.Loading -> {
                         loading.setVisible()
+                        binding.infoTextView.toGone()
                         binding.dailyRecyclerView.toVisible()
                         binding.dailyRecyclerView.showShimmer()
                     }

@@ -5,6 +5,7 @@ import com.k_bootcamp.furry_friends.data.response.writing.DailyResponse
 import com.k_bootcamp.furry_friends.model.CellType
 import com.k_bootcamp.furry_friends.model.Model
 
+// 응답 모델
 data class DailyModel(
     @SerializedName("id")
     override val id: Int,

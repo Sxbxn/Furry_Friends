@@ -2,9 +2,8 @@ package com.k_bootcamp.furry_friends.data.service
 
 import com.k_bootcamp.furry_friends.data.response.writing.DailyResponse
 import com.k_bootcamp.furry_friends.data.response.writing.DiagnosisResponse
-import com.k_bootcamp.furry_friends.model.Model
-import com.k_bootcamp.furry_friends.model.writing.Daily
-import com.k_bootcamp.furry_friends.model.writing.Diagnosis
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -41,4 +40,21 @@ interface WritingService {
     suspend fun deleteDiagnosisModel(
         @Header("index") id: Int,
     ): Response<String>
+
+    @Multipart
+    @POST("journal/factory")
+    suspend fun submitDailyWriting(
+        @Part body: MultipartBody.Part,
+        @Part("dailyWritingJson")jsonDailyWriting: RequestBody
+    ): Response<String>
+
+    @Multipart
+    @POST("health/factory")
+    suspend fun submitDiagnosisWriting(
+        @Part body: MultipartBody.Part,
+        @Part("diagnosisWritingJson")jsonDailyWriting: RequestBody
+    ): Response<String>
+
+
+
 }

@@ -13,7 +13,7 @@ class PreferenceUtils(context: Context) {
             prefs.edit().putString("session", value).apply()
         }
     var animalId:Int
-        get() = prefs.getInt("animalId", -1)
+        get() = prefs.getInt("animalId", -999)
         set(value) {
             prefs.edit().putInt("animalId", value).apply()
         }
