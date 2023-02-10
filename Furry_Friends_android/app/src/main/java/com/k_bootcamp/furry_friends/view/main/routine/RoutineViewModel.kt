@@ -104,7 +104,7 @@ class RoutineViewModel @Inject constructor(
     private fun getRoutinesFromId() {
         _routineLiveData.postValue(RoutineState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            val routines = animalRepository.getRoutinesFromIdByServer(animalId)
+            val routines = animalRepository.getRoutinesFromIdByServer()
             routines?.forEach {
                 animalRepository.insertRoutine(
                     Routine(

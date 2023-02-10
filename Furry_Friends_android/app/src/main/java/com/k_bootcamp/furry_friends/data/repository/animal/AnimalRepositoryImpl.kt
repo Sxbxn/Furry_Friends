@@ -29,19 +29,17 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun getAnimalInfo(session: Session?): AnimalResponse? = withContext(ioDispatcher) {
-        session?.let{
-            val response = animalService.getAnimalInfo(session)
-            if(response.isSuccessful){
-                response.body()
-            } else {
-                null
-            }
+    override suspend fun getAnimalInfo(): AnimalResponse? = withContext(ioDispatcher) {
+        val response = animalService.getAnimalInfo()
+        if(response.isSuccessful){
+            response.body()
+        } else {
+            null
         }
     }
 
-    override suspend fun getRoutinesFromIdByServer(animalId: Int): List<RoutineResponse>? = withContext(ioDispatcher) {
-        val response = animalService.getRoutinesFromId(animalId)
+    override suspend fun getRoutinesFromIdByServer(): List<RoutineResponse>? = withContext(ioDispatcher) {
+        val response = animalService.getRoutinesFromId()
         if(response.isSuccessful) {
             response.body()
         } else {
@@ -76,8 +74,8 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun getRoutinesFromDate(session:String, animalId: Int): List<RoutineResponse>? = withContext(ioDispatcher) {
-        val response = animalService.getRoutinesFromDate(session, animalId)
+    override suspend fun getRoutinesFromDate(): List<RoutineResponse>? = withContext(ioDispatcher) {
+        val response = animalService.getRoutinesFromDate()
         if(response.isSuccessful) {
             response.body()
         } else {

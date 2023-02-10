@@ -13,13 +13,13 @@ interface WritingService {
     // 일상 기록 정보 가져오기
     @GET("/")
     suspend fun getDailyList(
-        // 헤더 직접 추가 or 인터셉터에 헤더 추가
+        // 인터셉터에 헤더 추가
     ): Response<List<DailyResponse>>
 
     // 진단 기록 정보 가져오기
     @GET("/")
     suspend fun getDiagnosisList(
-        // 헤더 직접 추가 or 인터셉터에 헤더 추가
+        // 인터셉터에 헤더 추가
     ): Response<List<DiagnosisResponse>>
 
     // 일상 정보 삭제하기

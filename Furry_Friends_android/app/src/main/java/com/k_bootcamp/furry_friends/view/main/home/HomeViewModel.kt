@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
         // 해당 유저의 등록된 반려동물 정보를 가져와서 반환함
         _animalInfoLiveData.value = HomeState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            val info = animalRepository.getAnimalInfo(Session(session ?: "", animalId))
+            val info = animalRepository.getAnimalInfo()
             info?.let {
                 _animalInfoLiveData.postValue(HomeState.Success(
                     it.animalId,

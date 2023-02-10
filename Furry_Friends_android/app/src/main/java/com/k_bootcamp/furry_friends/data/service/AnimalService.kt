@@ -26,16 +26,12 @@ interface AnimalService {
 
     // 동물 정보 가져오기
     @GET("/{session}")  ////
-    suspend fun getAnimalInfo(
-        @Path("session") session: Session?
-    ): Response<AnimalResponse>
+    suspend fun getAnimalInfo(): Response<AnimalResponse>
 
 
     // 루틴 정보 가져오기
     @GET("/{animalId}")  ////
-    suspend fun getRoutinesFromId(
-        @Path("animalId") animalId: Int?
-    ): Response<List<RoutineResponse>>
+    suspend fun getRoutinesFromId(): Response<List<RoutineResponse>>
 
     @POST("/routine")
     suspend fun submitDateRoutine(
@@ -56,10 +52,7 @@ interface AnimalService {
 //    ): Response<RoutineSubmit>
 
     @GET("/checklist")  ////
-    suspend fun getRoutinesFromDate(
-        @Header("login") session: String,
-        @Header("curr_animal") animalId: Int
-    ): Response<List<RoutineResponse>>
+    suspend fun getRoutinesFromDate(): Response<List<RoutineResponse>>
 
     @POST("/checklist")
     suspend fun submitDailyChecklist(

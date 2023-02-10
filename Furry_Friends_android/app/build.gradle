@@ -90,5 +90,4 @@ dependencies {
     implementation 'com.github.angads25:toggle:1.1.0'
     // custom calendar view
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
-
 }

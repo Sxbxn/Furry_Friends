@@ -43,7 +43,7 @@ class ChecklistViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 animalId = 1   ////////////////////////////////// 임시
                 // 현재 요일의 루틴을 가져옴
-                val routines = animalRepository.getRoutinesFromDate(session, animalId ?: -1)
+                val routines = animalRepository.getRoutinesFromDate()
                 if (routines == null) {
                     _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error)))
                 } else {
