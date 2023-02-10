@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fc.baeminclone.screen.base.BaseViewModel
+import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
@@ -37,11 +37,11 @@ class RoutineViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : BaseViewModel() {
     private val session = Application.prefs.session
-    private var animalId: Int? = null
+    private var animalId = Application.prefs.animalId
     private val _routineLiveData = MutableLiveData<RoutineState>()
     val routineLiveData: LiveData<RoutineState>
         get() = _routineLiveData
-    private var defaultRoutines = listOf("양치", "빗질", "산책")
+    private var defaultRoutines = listOf("양치", "빗질")
     val animalRepo = animalRepository
 
     // notification setting
@@ -58,17 +58,17 @@ class RoutineViewModel @Inject constructor(
         } else {
             // 기본적으로 양치, 빗질, 산책 루틴을 로컬 db에 삽입하여 유지함  - 세션과 동물이 있을때만
             viewModelScope.launch(Dispatchers.IO) {
-                val info = animalRepository.getAnimalInfo(Session(session))
-                animalId = info?.animalId
-                animalId = 1   //////////////////////////////////
-                if (animalId == null) {
+//                val info = animalRepository.getAnimalInfo(Session(session, animalId))
+//                animalId = info?.animalId
+                animalId = 1   ////////////////////////////////// 임시
+                if (animalId == -999) {
                     // 등록이 안되어 있음 -> 안되어있으므로 루틴에 아무것도 없어야함
                     _routineLiveData.postValue(
                         RoutineState.Error(context.getString(R.string.not_register_animal))
                     )
                 } else {
                     _routineLiveData.postValue(RoutineState.Loading)
-                    val existRoutines = animalRepository.getRoutinesFromId(animalId!!)
+                    val existRoutines = animalRepository.getRoutinesFromId(animalId)
                     // 해당 동물의 기본 루틴이 설정 되어있는 경우 기본을 없앰
                     if (existRoutines.isNotEmpty()) {
                         defaultRoutines = listOf()
@@ -77,7 +77,7 @@ class RoutineViewModel @Inject constructor(
                         try {
                             animalRepository.insertRoutine(
                                 Routine(
-                                    animalId = animalId!!,
+                                    animalId = animalId,
                                     session = session,
                                     routineName = it,
                                     isOn = false
@@ -86,7 +86,7 @@ class RoutineViewModel @Inject constructor(
                         } catch (e: Exception) {
                             _routineLiveData.postValue(RoutineState.Error(context.getString(R.string.error_response)))
                         }
-                        val routines = animalRepository.getRoutinesFromId(animalId!!)
+                        val routines = animalRepository.getRoutinesFromId(animalId)
                         _routineLiveData.postValue(
                             RoutineState.Success(
                                 animalId!!,
@@ -104,7 +104,7 @@ class RoutineViewModel @Inject constructor(
     private fun getRoutinesFromId() {
         _routineLiveData.postValue(RoutineState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            val routines = animalRepository.getRoutinesFromIdByServer(animalId!!)
+            val routines = animalRepository.getRoutinesFromIdByServer(animalId)
             routines?.forEach {
                 animalRepository.insertRoutine(
                     Routine(
@@ -115,8 +115,8 @@ class RoutineViewModel @Inject constructor(
                     )
                 )
             }
-            val updatedRoutines = animalRepository.getRoutinesFromId(animalId!!)
-            _routineLiveData.postValue(RoutineState.Success(animalId!!, session!!, updatedRoutines))
+            val updatedRoutines = animalRepository.getRoutinesFromId(animalId)
+            _routineLiveData.postValue(RoutineState.Success(animalId, session!!, updatedRoutines))
         }
     }
 
@@ -128,7 +128,7 @@ class RoutineViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 var flag = true
                 // 추가 할 때 루틴이 존재하는 지 확인하고 없으면 넣음  to-do
-                val routines = routineDao.getRoutineFromId(animalId!!)
+                val routines = routineDao.getRoutineFromId(animalId)
                 for(i in routines.indices) {
                     if(routines[i].routineName == routineName) {
                         flag = false
@@ -138,16 +138,16 @@ class RoutineViewModel @Inject constructor(
                 if(flag) {
                     animalRepository.insertRoutine(
                         Routine(
-                            animalId = animalId!!,
+                            animalId = animalId,
                             session = session,
                             routineName = routineName,
                             isOn = false
                         )
                     )
-                    val updatedRoutines = animalRepository.getRoutinesFromId(animalId!!)
+                    val updatedRoutines = animalRepository.getRoutinesFromId(animalId)
                     _routineLiveData.postValue(
                         RoutineState.Success(
-                            animalId!!,
+                            animalId,
                             session,
                             updatedRoutines
                         )

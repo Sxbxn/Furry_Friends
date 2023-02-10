@@ -48,9 +48,9 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
             when (it) {
                 is RoutineState.Loading -> {
                     Log.e("loading", "loading")
+                    binding.infoTextView.toGone()
                     binding.recyclerView.toVisible()
                     binding.recyclerView.showShimmer()
-                    binding.infoTextView.toGone()
                 }
                 is RoutineState.Error -> {
                     binding.recyclerView.hideShimmer()
@@ -64,7 +64,8 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                             binding.infoTextView.text = "반려동물 등록이 되지 않았어요!"
                         }
                         getString(R.string.exist_routine) -> {
-                            requireContext().toast(it.message)
+                            requireContext().toast(it.message+"입니다.")
+                            observeData()
                         }
                         else -> {
                             binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
@@ -78,7 +79,6 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                     binding.infoTextView.toGone()
                     binding.recyclerView.toVisible()
                     initRecyclerView(it.routines)
-//                    Log.e("json",Gson().toJson(it.routines.first()))
                 }
             }
         }
