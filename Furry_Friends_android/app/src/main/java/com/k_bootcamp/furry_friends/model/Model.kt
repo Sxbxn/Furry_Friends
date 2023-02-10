@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 
 abstract class Model (
-    open val id: String,
+    open val id: Int,
     open val type: CellType
 ) {
     companion object{
