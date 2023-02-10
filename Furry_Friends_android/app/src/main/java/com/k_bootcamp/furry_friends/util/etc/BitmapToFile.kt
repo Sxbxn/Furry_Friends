@@ -12,11 +12,11 @@ fun bitmapToFile(bitmap: Bitmap, path: String): File{
     val fileCacheStream = File(path + System.currentTimeMillis() + ".jpg")
     var out: OutputStream? = null
     try{
-        fileCacheStream .createNewFile()
+        fileCacheStream.createNewFile()
         out = FileOutputStream(fileCacheStream)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out)
     }finally{
         out?.close()
     }
-    return file
+    return fileCacheStream
 }

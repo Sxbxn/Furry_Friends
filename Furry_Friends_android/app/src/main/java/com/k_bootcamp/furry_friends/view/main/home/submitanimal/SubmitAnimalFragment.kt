@@ -95,7 +95,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = File(absoluteUri!!)
-                Log.e("gallery", sendFile.absolutePath)
+                Log.e("gallery", sendFile.name)
             }
         }
     private val getCameraImageLauncher =
@@ -110,7 +110,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = file
-                Log.e("camera", sendFile.absolutePath)
+                Log.e("camera", sendFile.path)
             }
         }
 
@@ -278,6 +278,11 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         mainActivity = context as MainActivity
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if(loading.isShowing)
+            loading.dismiss()
+    }
     companion object {
         fun newInstance() = SubmitAnimalFragment().apply {
 
