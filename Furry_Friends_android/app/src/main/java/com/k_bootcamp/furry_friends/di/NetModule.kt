@@ -2,6 +2,7 @@ package com.k_bootcamp.furry_friends.di
 
 import com.k_bootcamp.furry_friends.data.service.AnimalService
 import com.k_bootcamp.furry_friends.data.service.UserService
+import com.k_bootcamp.furry_friends.data.service.WritingService
 import com.k_bootcamp.furry_friends.data.url.Url
 import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import com.k_bootcamp.furry_friends.util.etc.MainDispatcher
@@ -39,7 +40,21 @@ class NetModule {
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(Url.BASE_URL)
-            .client(okHttpClient)
+            .client(okHttpClient.also{
+
+            })
             .build().create(AnimalService::class.java)
+    }
+    @Singleton
+    @Provides
+    fun providesWritingService(okHttpClient: OkHttpClient): WritingService {
+        return Retrofit.Builder()
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(Url.BASE_URL)
+            .client(okHttpClient.also{
+
+            })
+            .build().create(WritingService::class.java)
     }
 }

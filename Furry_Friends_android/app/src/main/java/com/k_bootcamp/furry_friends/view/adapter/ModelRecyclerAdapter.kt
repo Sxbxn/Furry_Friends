@@ -1,6 +1,7 @@
 package com.k_bootcamp.furry_friends.view.adapter
 
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.k_bootcamp.furry_friends.model.CellType
@@ -15,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 // 리사이클러뷰 어댑터 추상화
-class ModelRecyclerAdapter<M : Model, VM: BaseViewModel>(
+class ModelRecyclerAdapter<M : Model, VM : BaseViewModel>(
     // 바인딩 될 데이터 리스트
     private var modelList: MutableList<Model>,
     // 뷰모델
@@ -26,6 +27,7 @@ class ModelRecyclerAdapter<M : Model, VM: BaseViewModel>(
 ) : ListAdapter<Model, ModelViewHolder<M>>(Model.DIFF_CALLBACK) {
     // 데이터의 사이즈
     override fun getItemCount(): Int = modelList.size
+
     // 위치의 데이터의 타입
     override fun getItemViewType(position: Int) = modelList[position].type.ordinal
 
@@ -54,19 +56,17 @@ class ModelRecyclerAdapter<M : Model, VM: BaseViewModel>(
     }
 
     fun removeAt(position: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            // 서버에서 글을 삭제함  2/10 할거
-//            val response = (viewModel as TabWritingViewModel).deleteWriting(modelList[position])
-//            response?.let {
-//                // 반환 확인
-//            }
-//
-            CoroutineScope(Dispatchers.Main).launch {
-                // 로컬에서도 삭제하고
-                modelList.removeAt(position)
-                // 새로고침한다. 여기에서 없어도 되는지 확인 필요
-                notifyItemRemoved(position)
-            }
+
+        // 서버에서 글을 삭제함  2/10 할거
+        Log.e("model", modelList[position].toString())
+        val response = (viewModel as TabWritingViewModel).deleteWriting(modelList[position])
+        response.let {
+            // 반환 확인
         }
+        // 로컬에서도 삭제하고
+        modelList.removeAt(position)
+        // 새로고침한다. 여기에서 없어도 되는지 확인 필요
+        notifyItemRemoved(position)
     }
 }
+

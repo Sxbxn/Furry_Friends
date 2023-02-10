@@ -1,36 +1,233 @@
 package com.k_bootcamp.furry_friends.view.main.writing
 
 import android.content.Context
+import android.util.Log
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.fc.baeminclone.screen.base.BaseFragment
 import com.google.android.material.tabs.TabLayout
+import com.k_bootcamp.Application
+import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentTabWritingBinding
+import com.k_bootcamp.furry_friends.extension.toGone
+import com.k_bootcamp.furry_friends.extension.toVisible
+import com.k_bootcamp.furry_friends.model.CellType
+import com.k_bootcamp.furry_friends.model.Model
+import com.k_bootcamp.furry_friends.model.writing.DailyModel
+import com.k_bootcamp.furry_friends.model.writing.DiagnosisModel
+import com.k_bootcamp.furry_friends.util.etc.LoadingDialog
+import com.k_bootcamp.furry_friends.util.recyclerview.SwipeToDeleteCallback
 import com.k_bootcamp.furry_friends.view.MainActivity
+import com.k_bootcamp.furry_friends.view.adapter.ModelRecyclerAdapter
+import com.k_bootcamp.furry_friends.view.adapter.RoutineAdapter
+import com.k_bootcamp.furry_friends.view.adapter.viewholder.listener.DailyListListener
+import com.k_bootcamp.furry_friends.view.adapter.viewholder.listener.DiagnosisListListener
 import com.k_bootcamp.furry_friends.view.main.writing.daily.DailyWritingFragment
 import com.k_bootcamp.furry_friends.view.main.writing.diagnosis.DiagnosisWritingFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TabWritingFragment: BaseFragment<TabWritingViewModel, FragmentTabWritingBinding>() {
+class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingBinding>() {
     override val viewModel: TabWritingViewModel by viewModels()
     private lateinit var mainActivity: MainActivity
-    override fun getViewBinding(): FragmentTabWritingBinding = FragmentTabWritingBinding.inflate(layoutInflater)
+    private var pos: Int? = 0
+    private lateinit var loading: LoadingDialog
+    private val session = Application.prefs.session
+    private val dailyAdapter by lazy {
+        ModelRecyclerAdapter<DailyModel, TabWritingViewModel>(
+            mutableListOf(),
+            viewModel,
+            adapterListener = object : DailyListListener {
+                override fun onClickItem(model: DailyModel) {
+                    // 클릭하면 일상 기록 화면으로 넘어가고 서버에서 해당 글의 정보를 가져와 바인딩
+                }
+            }
+        )
+    }
+    private val diagnosisAdapter by lazy {
+        ModelRecyclerAdapter<DiagnosisModel, TabWritingViewModel>(
+            mutableListOf(),
+            viewModel,
+            adapterListener = object : DiagnosisListListener {
+                override fun onClickItem(model: DiagnosisModel) {
+                    // 클릭하면 일상 기록 화면으로 넘어가고 서버에서 해당 글의 정보를 가져와 바인딩
+                }
+            }
+        )
+    }
+    //// 임시 데이터
+    val list = mutableListOf<Model>(
+        DailyModel(1, CellType.DAILY_CELL, "제목1", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-11"),
+        DailyModel(2, CellType.DAILY_CELL, "제목2", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-12"),
+        DailyModel(3, CellType.DAILY_CELL, "제목3", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-13"),
+        DailyModel(4, CellType.DAILY_CELL, "제목4", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-14"),
+        DailyModel(5, CellType.DAILY_CELL, "제목5", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-15"),
+        DailyModel(6, CellType.DAILY_CELL, "제목6", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-16"),
+        DailyModel(7, CellType.DAILY_CELL, "제목7", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-17"),
+    )
+    val list2 = mutableListOf<Model>(
+        DiagnosisModel(1, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠1", "2023-2-11","코멘트1"),
+        DiagnosisModel(2, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠2", "2023-2-12","코멘트2"),
+        DiagnosisModel(3, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠3", "2023-2-13","코멘트13"),
+        DiagnosisModel(4, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠4", "2023-2-14","코멘트14"),
+        DiagnosisModel(5, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠5", "2023-2-15","코멘트15"),
+        DiagnosisModel(6, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠6", "2023-2-16","코멘트16"),
+        DiagnosisModel(7, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠7", "2023-2-17","코멘트17"),
+        DiagnosisModel(8, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠8", "2023-2-18","코멘트18"),
+
+    )
+
+    override fun getViewBinding(): FragmentTabWritingBinding =
+        FragmentTabWritingBinding.inflate(layoutInflater)
+
     override fun observeData() {
         // 현재 탭에 해당되는 데이터를 가져와서 보여주기
+        if (pos == 0) {
+            Log.e("일상", "일상")
+            viewModel.getDailyList()
+            viewModel.tabLiveData.observe(viewLifecycleOwner) {
+                when (it) {
+                    is TabWritingStatus.Loading -> {
+                        loading.setVisible()
+                        binding.dailyRecyclerView.toVisible()
+                        binding.dailyRecyclerView.showShimmer()
+                    }
+                    is TabWritingStatus.Error -> {
+                        loading.setError()
+                        binding.dailyRecyclerView.toGone()
+                        binding.infoTextView.toVisible()
+                        showErrorMessage(it.message, binding)
+                        // 테스트 코드-----임시 데이터 *************************************** success에 들어갈것
+                        binding.diagnosisRecyclerView.toGone()
+                        binding.infoTextView.toGone()
+                        binding.dailyRecyclerView.toVisible()
+                        binding.dailyRecyclerView.hideShimmer()
+                        initRecyclerView(0)
+                        dailyAdapter.submitList(list)
+                        // ********************************************
+                    }
+                    is TabWritingStatus.SuccessDiagnosis -> {
+                        loading.setError()
+                        binding.dailyRecyclerView.hideShimmer()
+                    }
+                    is TabWritingStatus.SuccessDaily -> {
+                        loading.dismiss()
+                        binding.diagnosisRecyclerView.toGone()
+                        binding.infoTextView.toGone()
+                        binding.dailyRecyclerView.toVisible()
+                        binding.dailyRecyclerView.hideShimmer()
+                        initRecyclerView(0)
+                        dailyAdapter.submitList(it.response.map { res -> res.toModel() }.toMutableList())
+                    }
+
+                    // 삭제 수정 등록 성공
+                    is TabWritingStatus.Done -> {
+                        when(it.flag) {
+                            // daily
+                            0 -> {
+                                changeView(0)
+                            }
+                            // diagnosis
+                            1 -> {
+                                changeView(1)
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (pos == 1) {
+            Log.e("진단", "진단")
+            viewModel.getDiagnosisList()
+            viewModel.tabLiveData.observe(viewLifecycleOwner) {
+                when (it) {
+                    is TabWritingStatus.Loading -> {
+                        loading.setVisible()
+                        binding.diagnosisRecyclerView.showShimmer()
+                    }
+                    is TabWritingStatus.Error -> {
+                        loading.setError()
+                        binding.diagnosisRecyclerView.toGone()
+                        binding.infoTextView.toVisible()
+                        showErrorMessage(it.message, binding)
+                        // 테스트 코드-----임시 데이터 ***************************************
+                        binding.dailyRecyclerView.toGone()
+                        binding.diagnosisRecyclerView.toVisible()
+                        binding.infoTextView.toGone()
+                        binding.diagnosisRecyclerView.hideShimmer()
+                        initRecyclerView(1)
+                        diagnosisAdapter.submitList(list2)
+                        // ********************************************
+                    }
+                    is TabWritingStatus.SuccessDaily -> {
+                        loading.setError()
+                        binding.diagnosisRecyclerView.hideShimmer()
+                    }
+                    is TabWritingStatus.SuccessDiagnosis -> {
+                        loading.dismiss()
+                        binding.dailyRecyclerView.toGone()
+                        binding.diagnosisRecyclerView.toVisible()
+                        binding.infoTextView.toGone()
+                        binding.diagnosisRecyclerView.hideShimmer()
+                        initRecyclerView(1)
+                        diagnosisAdapter.submitList(it.response.map { res -> res.toModel() }.toMutableList())
+                    }
+                    // 삭제 수정 등록 성공
+                    is TabWritingStatus.Done -> {
+                        when(it.flag) {
+                            // daily
+                            0 -> {
+                                changeView(0)
+                            }
+                            // diagnosis
+                            1 -> {
+                                changeView(1)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-
     override fun initViews() {
+        loading = LoadingDialog(requireContext())
+        initDialog()
         changeView(0)
         tabSelected()
     }
+
+    private fun initRecyclerView(position: Int) {
+        if (position == 0) {
+            binding.dailyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            binding.dailyRecyclerView.adapter = dailyAdapter
+            val deleteSwipeHandler = object : SwipeToDeleteCallback(requireContext()) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val dailyAdapter = dailyAdapter
+                    dailyAdapter.removeAt(viewHolder.adapterPosition)
+                }
+            }
+            val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+            deleteItemTouchHelper.attachToRecyclerView(binding.dailyRecyclerView)
+        } else if(position == 1) {
+            binding.diagnosisRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            binding.diagnosisRecyclerView.adapter = diagnosisAdapter
+            val deleteSwipeHandler = object : SwipeToDeleteCallback(requireContext()) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val diagnosisAdapter = diagnosisAdapter
+                    diagnosisAdapter.removeAt(viewHolder.adapterPosition)
+                }
+            }
+            val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+            deleteItemTouchHelper.attachToRecyclerView(binding.diagnosisRecyclerView)
+        }
+    }
+
     private fun tabSelected() = with(binding) {
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val pos = tab?.position
+                pos = tab?.position
                 changeView(pos!!)
             }
 
@@ -46,36 +243,61 @@ class TabWritingFragment: BaseFragment<TabWritingViewModel, FragmentTabWritingBi
         when (position) {
             0 -> {
                 initFloatingButton(position)
-                getDailyList()
+                observeData()
             }
             1 -> {
                 initFloatingButton(position)
-                getDiagnosisList()
+                observeData()
             }
         }
     }
+
     private fun initFloatingButton(position: Int) = with(binding) {
+        addRoutineButton.isEnabled = session != null
         when (position) {
             0 -> {
                 addRoutineButton.setOnClickListener {
-                    mainActivity.showFragment(DailyWritingFragment.newInstance(), DailyWritingFragment.TAG)
+                    mainActivity.showFragment(
+                        DailyWritingFragment.newInstance(),
+                        DailyWritingFragment.TAG
+                    )
                 }
             }
             1 -> {
                 addRoutineButton.setOnClickListener {
-                    mainActivity.showFragment(DiagnosisWritingFragment.newInstance(), DiagnosisWritingFragment.TAG)
+                    mainActivity.showFragment(
+                        DiagnosisWritingFragment.newInstance(),
+                        DiagnosisWritingFragment.TAG
+                    )
                 }
             }
         }
     }
 
-    private fun getDailyList() = CoroutineScope(Dispatchers.IO).launch {
-
+    private fun showErrorMessage(msg: String, binding: FragmentTabWritingBinding) {
+        when (msg) {
+            getString(R.string.not_loged_in) -> {
+                binding.infoTextView.text = "로그인 되지 않았어요!"
+            }
+            getString(R.string.not_register_animal) -> {
+                binding.infoTextView.text = getString(R.string.notice)
+            }
+            else -> {
+                binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
+            }
+        }
     }
-    private fun getDiagnosisList() = CoroutineScope(Dispatchers.IO).launch {
-
+    private fun initDialog() {
+        // 요청 취소
+        loading.cancelButton().setOnClickListener {
+            loading.setInvisible()
+        }
+        // 요청 다시시도
+        loading.retryButton().setOnClickListener {
+            loading.setInvisible()
+            observeData()
+        }
     }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -85,6 +307,9 @@ class TabWritingFragment: BaseFragment<TabWritingViewModel, FragmentTabWritingBi
         fun newInstance() = TabWritingFragment().apply {
 
         }
+
+        const val DAILY_FLAG = 0
+        const val DIAGNOSIS_FLAG = 1
         const val TAG = "TAB_WRITING_FRAGMENT"
     }
 }
