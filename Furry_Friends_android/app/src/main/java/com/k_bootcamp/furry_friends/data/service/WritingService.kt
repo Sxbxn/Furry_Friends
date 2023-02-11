@@ -45,14 +45,14 @@ interface WritingService {
     @POST("journal/factory")
     suspend fun submitDailyWriting(
         @Part body: MultipartBody.Part,
-        @Part("dailyWritingJson")jsonDailyWriting: RequestBody
+        @Part("dailyWritingJson") jsonDailyWriting: RequestBody
     ): Response<String>
 
     @Multipart
     @POST("health/factory")
     suspend fun submitDiagnosisWriting(
         @Part body: MultipartBody.Part,
-        @Part("diagnosisWritingJson")jsonDailyWriting: RequestBody
+        @Part("diagnosisWritingJson") jsonDailyWriting: RequestBody
     ): Response<String>
 
 

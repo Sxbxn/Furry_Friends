@@ -5,6 +5,7 @@ import com.k_bootcamp.furry_friends.model.CellType
 import com.k_bootcamp.furry_friends.model.writing.DiagnosisModel
 import java.util.*
 
+// 응답 모델
 data class DiagnosisResponse(
     @SerializedName("index")
     val id: Int,
@@ -20,8 +21,13 @@ data class DiagnosisResponse(
     val currdate:String,
     @SerializedName("comment")
     val comment: String,
+    @SerializedName("kind")
+    val kind: String,
+    @SerializedName("affected_area")
+    val affectedArea: String
 ){
+    // 리사이클러뷰를 위한 매핑 함수
     fun toModel() = DiagnosisModel(
-        id, CellType.DIAGNOSIS_CELL, imageUrl, content, currdate, comment
+        id, CellType.DIAGNOSIS_CELL, imageUrl, content, currdate, comment, kind, affectedArea
     )
 }

@@ -38,7 +38,7 @@ class TabWritingViewModel @Inject constructor(
         if (session == null) {
             _tabLiveData.value = TabWritingStatus.Error(context.getString(R.string.not_loged_in))
         } else {
-            if (animalId == -1) {
+            if (animalId == -999) {
                 // 동물이 없음 --> 등록해야함
                 _tabLiveData.value =
                     TabWritingStatus.Error(context.getString(R.string.not_register_animal))

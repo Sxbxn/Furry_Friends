@@ -73,7 +73,9 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                             Pair("url", model.imageUrl),
 //                            Pair("comment", model.comment),
                             Pair("date", model.currdate),
-                            Pair("content", model.content)
+                            Pair("content", model.content),
+                            Pair("kind", model.kind),
+                            Pair("affectedArea", model.affectedArea)
                         )
                     }, "")
                 }
@@ -91,14 +93,14 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
         DailyModel(7, CellType.DAILY_CELL, "제목7", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-17"),
     )
     val list2 = mutableListOf<Model>(
-        DiagnosisModel(1, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠1", "2023-2-11","코멘트1"),
-        DiagnosisModel(2, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠2", "2023-2-12","코멘트2"),
-        DiagnosisModel(3, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠3", "2023-2-13","코멘트13"),
-        DiagnosisModel(4, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠4", "2023-2-14","코멘트14"),
-        DiagnosisModel(5, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠5", "2023-2-15","코멘트15"),
-        DiagnosisModel(6, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠6", "2023-2-16","코멘트16"),
-        DiagnosisModel(7, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠7", "2023-2-17","코멘트17"),
-        DiagnosisModel(8, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠8", "2023-2-18","코멘트18"),
+        DiagnosisModel(1, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠1", "2023-2-11","코멘트1","강아지","안구"),
+        DiagnosisModel(2, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠2", "2023-2-12","코멘트2","강아지","안구"),
+        DiagnosisModel(3, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠3", "2023-2-13","코멘트13","강아지","안구"),
+        DiagnosisModel(4, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠4", "2023-2-14","코멘트14","강아지","안구"),
+        DiagnosisModel(5, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠5", "2023-2-15","코멘트15","강아지","안구"),
+        DiagnosisModel(6, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠6", "2023-2-16","코멘트16","강아지","안구"),
+        DiagnosisModel(7, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠7", "2023-2-17","코멘트17","강아지","안구"),
+        DiagnosisModel(8, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠8", "2023-2-18","코멘트18","강아지","안구"),
 
     )
 

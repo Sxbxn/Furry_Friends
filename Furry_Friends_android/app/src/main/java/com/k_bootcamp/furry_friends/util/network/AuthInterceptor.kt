@@ -14,6 +14,7 @@ class AuthInterceptor: Interceptor {
                 .addHeader("curr_animal", Application.prefs.animalId.toString())
                 .build()
         Log.e("headers",request.headers.toString())
+        Log.e("bodies", request.body?.contentType().toString())
         return chain.proceed(request)
     }
 }

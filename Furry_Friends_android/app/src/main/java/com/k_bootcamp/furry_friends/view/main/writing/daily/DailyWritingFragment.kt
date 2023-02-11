@@ -151,12 +151,13 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
     private fun initWritableView() = with(binding) {
         loading = LoadingDialog(requireContext())
         dialog = CustomAlertDialog(requireContext())
+        getToday()
         initDialog()
         initTextState()
         initButton()
-        getToday()
     }
     private fun initTextState() = with(binding) {
+        dateTextView.text = date.toString()
         editTextTitle.doOnTextChanged{ text, _, _, _ ->
             initValidate(titleInputLayout)
 //            viewModel.titleLiveData = text.toString()
@@ -190,6 +191,7 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
 
     private fun submitDailyWriting(body: MultipartBody.Part, jsonDailyWriting: RequestBody) {
         Log.e("daily", dailyWriting.toString())
+        Log.e("daily", jsonDailyWriting.toString())
         viewModel.submitDailyWriting(body, jsonDailyWriting)
         viewModel.isSuccess.observe(viewLifecycleOwner) { response ->
             when (response) {

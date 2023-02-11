@@ -5,6 +5,7 @@ import com.k_bootcamp.furry_friends.model.CellType
 import com.k_bootcamp.furry_friends.model.writing.DailyModel
 import java.util.*
 
+// 응답 모델
 data class DailyResponse(
     @SerializedName("index")
     val id: Int,
@@ -21,6 +22,7 @@ data class DailyResponse(
     @SerializedName("currdate")
     val currdate:String
 ) {
+    // 리사이클러뷰를 위한 매핑 함수
     fun toModel() = DailyModel(
         id, CellType.DAILY_CELL, title, imageUrl, content, currdate
     )

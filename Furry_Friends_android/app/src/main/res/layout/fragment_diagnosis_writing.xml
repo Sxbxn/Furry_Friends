@@ -28,6 +28,8 @@
             style="?attr/selectableItemBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_gravity="start"
             android:layout_margin="20dp"
             android:layout_marginTop="10dp"
@@ -75,12 +77,14 @@
                         android:layout_margin="16dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_place_image"
+                        <ImageButton
+                            android:id="@+id/imageButtonImageSelect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:contentDescription="uploadFile"
+                            android:background="@drawable/dash_line"
                             android:src="@drawable/add_screen_image_placeholder"
+                            android:scaleType="fitXY"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
@@ -107,13 +111,66 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_weight="1"/>
-                        <Spinner
-                            android:id="@+id/animalKind"
+                        <TextView
+                            android:id="@+id/readOnlyTint"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:spinnerMode="dropdown"/>
+                            android:textColor="@color/black"
+                            android:text="종 및 부위"
+                            android:layout_margin="3dp"
+                            android:textSize="16sp"
+                            android:layout_gravity="top"
+                            android:visibility="gone"
+                            />
+                        <TextView
+                            android:id="@+id/animalKindTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_margin="3dp"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            />
+                        <TextView
+                            android:id="@+id/animalAffectedAreaTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_margin="3dp"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            />
                     </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/writeOnlyTint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:text="종 및 부위"
+                            android:layout_margin="3dp"
+                            android:textSize="12sp"
+                            android:layout_gravity="top"
+                            />
+                        <Spinner
+                            android:id="@+id/animalKind"
+                            android:entries="@array/kind"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
 
+                            android:spinnerMode="dropdown"/>
+                        <Spinner
+                            android:id="@+id/animalAffectedArea"
+                            android:entries="@array/affected_area"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbarSize="10dp"
+                            android:spinnerMode="dropdown"/>
+
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/descriptionInputLayout"
@@ -125,12 +182,13 @@
                         android:theme="@style/EditTextAppStyle">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/description"
+                            android:id="@+id/editTextDescription"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="top|start"
                             android:hint="@string/description"
                             android:inputType="textMultiLine"
+                            android:textColor="@color/black"
                             android:lines="5"
                             android:maxWidth="5.0dp"
                             android:minWidth="10.0dp"
@@ -160,7 +218,7 @@
                     android:id="@+id/feedback"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="피드백"
+                    android:text="진단명"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"

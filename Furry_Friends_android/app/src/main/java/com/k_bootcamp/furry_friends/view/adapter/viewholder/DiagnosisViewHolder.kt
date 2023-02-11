@@ -32,7 +32,7 @@ class DiagnosisViewHolder(
         // AdapterListener를 받는 클릭리스너를 만들어서 지정함
         if(adapterListener is DiagnosisListListener) {
             binding.root.setOnClickListener {
-
+                adapterListener.onClickItem(model)
             }
         }
     }
