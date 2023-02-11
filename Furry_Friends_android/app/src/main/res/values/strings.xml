@@ -69,4 +69,6 @@
     <string name="saturday">토요일</string>
     <string name="error">오류</string>
     <string name="add_animal">추가</string>
+    <string name="failed_update_animal">수정에 실패했습니다</string>
+    <string name="failed_submit_daily">일상 기록 등록에 실패했습니다.</string>
 </resources>

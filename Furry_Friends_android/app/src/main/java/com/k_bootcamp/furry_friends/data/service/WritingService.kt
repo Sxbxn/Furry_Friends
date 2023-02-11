@@ -10,13 +10,13 @@ import retrofit2.http.*
 interface WritingService {
 
     // 일상 기록 정보 가져오기
-    @GET("/")
+    @GET("/journals")
     suspend fun getDailyList(
         // 인터셉터에 헤더 추가
     ): Response<List<DailyResponse>>
 
     // 진단 기록 정보 가져오기
-    @GET("/")
+    @GET("/healths")
     suspend fun getDiagnosisList(
         // 인터셉터에 헤더 추가
     ): Response<List<DiagnosisResponse>>
@@ -41,6 +41,8 @@ interface WritingService {
         @Header("index") id: Int,
     ): Response<String>
 
+
+    // 일상기록 등록하기
     @Multipart
     @POST("journal/factory")
     suspend fun submitDailyWriting(
@@ -48,6 +50,8 @@ interface WritingService {
         @Part("dailyWritingJson") jsonDailyWriting: RequestBody
     ): Response<String>
 
+
+    // 진단기록 등록하기
     @Multipart
     @POST("health/factory")
     suspend fun submitDiagnosisWriting(
@@ -55,6 +59,15 @@ interface WritingService {
         @Part("diagnosisWritingJson") jsonDailyWriting: RequestBody
     ): Response<String>
 
+
+    // 일상기록 수정하기
+    @Multipart
+    @PUT("journal/update")
+    suspend fun updateDailyWriting(
+        @Header("index") id: Int,
+        @Part body: MultipartBody.Part,
+        @Part("dailyUpdateWritingJson") updatedJsonDailyWriting: RequestBody
+    ): Response<String>
 
 
 }

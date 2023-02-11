@@ -21,6 +21,7 @@ import com.k_bootcamp.furry_friends.model.writing.DailyModel
 import com.k_bootcamp.furry_friends.model.writing.DiagnosisModel
 import com.k_bootcamp.furry_friends.util.etc.LoadingDialog
 import com.k_bootcamp.furry_friends.util.recyclerview.SwipeToDeleteCallback
+import com.k_bootcamp.furry_friends.util.recyclerview.SwipeToEditCallback
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.adapter.ModelRecyclerAdapter
 import com.k_bootcamp.furry_friends.view.adapter.RoutineAdapter
@@ -56,7 +57,8 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         )
                     }, "")
                 }
-            }
+            },
+            requireContext()
         )
     }
     private val diagnosisAdapter by lazy {
@@ -79,7 +81,8 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         )
                     }, "")
                 }
-            }
+            },
+            requireContext()
         )
     }
     //// 임시 데이터
@@ -108,6 +111,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
         FragmentTabWritingBinding.inflate(layoutInflater)
 
     override fun observeData() {
+        Log.e("pos",pos.toString())
         // 현재 탭에 해당되는 데이터를 가져와서 보여주기
         if (pos == 0) {
             Log.e("일상", "일상")
@@ -228,6 +232,17 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
         if (position == 0) {
             binding.dailyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
             binding.dailyRecyclerView.adapter = dailyAdapter
+            val editSwipeHandler = object : SwipeToEditCallback(requireContext()){
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val adapter = dailyAdapter
+                    // 업데이트 flag == 2
+                    adapter.notifyEditItem(mainActivity, viewHolder.adapterPosition)
+                }
+            }
+
+            val editItemTouchHelper= ItemTouchHelper(editSwipeHandler)
+            editItemTouchHelper.attachToRecyclerView(binding.dailyRecyclerView)
+
             val deleteSwipeHandler = object : SwipeToDeleteCallback(requireContext()) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val dailyAdapter = dailyAdapter
@@ -269,6 +284,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
         when (position) {
             0 -> {
                 initFloatingButton(position)
+                // 첫 진입시 강제 갱신
                 observeData()
             }
             1 -> {
@@ -284,8 +300,9 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
             0 -> {
                 addRoutineButton.setOnClickListener {
                     mainActivity.showFragment(
-                        DailyWritingFragment.newInstance(),
+                        DailyWritingFragment.newInstance().apply { arguments = bundleOf(Pair("flag", 1))},
                         DailyWritingFragment.TAG
+                    // write mode
                     )
                 }
             }

@@ -19,4 +19,5 @@
     <color name="tab_unselected_color">#747474</color>
     <color name="dialog_button_clicked">#5a6f7a</color>
     <color name="delete_background">#f44336</color>
+    <color name="edit_background">#24ae05</color>
 </resources>

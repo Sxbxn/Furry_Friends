@@ -72,5 +72,18 @@ class WritingRepositoryImpl(
         }
     }
 
+    override suspend fun updateDailyWriting(
+        body: MultipartBody.Part,
+        jsonDailyWriting: RequestBody,
+        writingId: Int
+    ): String? = withContext(ioDispatcher) {
+        val response = writingService.updateDailyWriting(writingId, body, jsonDailyWriting)
+        if(response.isSuccessful){
+            response.body()
+        } else {
+            null
+        }
+    }
+
 
 }

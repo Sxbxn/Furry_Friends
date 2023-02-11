@@ -60,7 +60,7 @@ class RoutineViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
 //                val info = animalRepository.getAnimalInfo(Session(session, animalId))
 //                animalId = info?.animalId
-                animalId = 1   ////////////////////////////////// 임시
+//                animalId = 1   ////////////////////////////////// 임시
                 if (animalId == -999) {
                     // 등록이 안되어 있음 -> 안되어있으므로 루틴에 아무것도 없어야함
                     _routineLiveData.postValue(

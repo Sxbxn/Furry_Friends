@@ -125,7 +125,7 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
     private fun initReadOnlyView() = with(binding) {
         val content = args?.get("content")
         val date = args?.get("date")
-        val imageUrl = args?.get("imageUrl")
+        val imageUrl = args?.get("url")
         val kind = args?.get("kind")
         val affectedArea = args?.get("affectedArea")
         saveWriting.toGone()

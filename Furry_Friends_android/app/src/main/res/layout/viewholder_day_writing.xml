@@ -25,8 +25,8 @@
             <ImageView
                 android:id="@+id/thumbnail_day_writing"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:layout_height="150dp"
+                android:scaleType="fitXY"
                 tools:srcCompat="@tools:sample/avatars" />
 
         </androidx.cardview.widget.CardView>

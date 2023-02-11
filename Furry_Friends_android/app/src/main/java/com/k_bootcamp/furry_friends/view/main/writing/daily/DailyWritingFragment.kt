@@ -34,6 +34,10 @@ import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFrag
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalState
 import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -89,7 +93,8 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val bitmap = result.data?.extras?.get("data") as Bitmap
-                val file = bitmapToFile(bitmap, mainActivity.applicationContext.filesDir.path.toString())
+                val file =
+                    bitmapToFile(bitmap, mainActivity.applicationContext.filesDir.path.toString())
 
                 Glide.with(requireContext())
                     .load(bitmap)
@@ -116,13 +121,16 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         args = arguments
         return super.onCreateView(inflater, container, savedInstanceState)
     }
+
     override fun initViews() {
         initShimmer()
         Log.e("flag", args.toString())
         if (args?.get("flag") == 0) {
             initReadOnlyView()
-        } else {
+        } else if (args?.get("flag") == 1) {
             initWritableView()
+        } else {
+            initUpdateWriteView()
         }
     }
 
@@ -130,7 +138,8 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         val title = args?.get("title")
         val date = args?.get("date")
         val content = args?.get("content")
-        val imageUrl = args?.get("imageUrl")
+        val imageUrl = args?.get("url")
+        Log.e("url", imageUrl.toString())
         saveWriting.toGone()
         editTextTitle.apply {
             isEnabled = false
@@ -152,53 +161,90 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         loading = LoadingDialog(requireContext())
         dialog = CustomAlertDialog(requireContext())
         getToday()
-        initDialog()
+        // 0 - 쓰기
+        initDialog(0)
         initTextState()
-        initButton()
+        initButton(0)
     }
+
+    private fun initUpdateWriteView() = with(binding) {
+        loading = LoadingDialog(requireContext())
+        dialog = CustomAlertDialog(requireContext())
+        // 가져온 데이터를 뷰에보여주고
+        saveWriting.text = "수정"
+        editTextTitle.setText(args?.get("title").toString())
+        editTextDescription.setText(args?.get("content").toString())
+        dateTextView.text = args?.get("currdate").toString()
+        imageButtonImageSelect.load(args?.get("imageUrl").toString())
+        // 그 데이터를 다시 보낼 데이터에 대입 (수정 안하고  전송 시 대비)
+        title = args?.get("title").toString()
+        description = args?.get("content").toString()
+        date = args?.get("currdate").toString()
+        // 기존 url을 파일로 다시만들어 기존 이미지를 준다(수정 안하고 전송 시 대비)
+        CoroutineScope(Dispatchers.Main).launch {
+            sendFile = viewModel.getFile(args?.get("imageUrl").toString())!!
+        }
+        // 1- 수정
+        initDialog(1)
+        initTextState()
+        initButton(1)
+    }
+
     private fun initTextState() = with(binding) {
         dateTextView.text = date.toString()
-        editTextTitle.doOnTextChanged{ text, _, _, _ ->
+        editTextTitle.doOnTextChanged { text, _, _, _ ->
             initValidate(titleInputLayout)
-//            viewModel.titleLiveData = text.toString()
             title = text.toString()
         }
-        editTextDescription.doOnTextChanged{ text, _, _, _ ->
+        editTextDescription.doOnTextChanged { text, _, _, _ ->
             initValidate(descriptionInputLayout)
-//            viewModel.descLiveData = text.toString()
             description = text.toString()
         }
     }
-    private fun initButton() = with(binding) {
+
+    private fun initButton(flag: Int) = with(binding) {
         imageButtonImageSelect.setOnClickListener {
             setOnImageButtonClickListener()
         }
         saveWriting.setOnClickListener {
-            if(checkValidation()) {
+            if (checkValidation()) {
                 dailyWriting = Daily(title, description, date)
-                if(!::sendFile.isInitialized) {
+                if (!::sendFile.isInitialized) {
                     requireContext().toast("이미지를 불러와 주십시오")
                 } else {
                     val fileName = sendFile.name
                     val requestFile = sendFile.asRequestBody("image/*".toMediaTypeOrNull())
-                    jsonDailyWriting = Gson().toJson(dailyWriting).toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                    jsonDailyWriting = Gson().toJson(dailyWriting).toString()
+                        .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
                     body = MultipartBody.Part.createFormData("file", fileName, requestFile)
-                    submitDailyWriting(body, jsonDailyWriting)
+                    submitDailyWriting(body, jsonDailyWriting, flag)
                 }
             }
         }
     }
 
-    private fun submitDailyWriting(body: MultipartBody.Part, jsonDailyWriting: RequestBody) {
+    private fun submitDailyWriting(body: MultipartBody.Part, jsonDailyWriting: RequestBody, flag:Int) {
         Log.e("daily", dailyWriting.toString())
         Log.e("daily", jsonDailyWriting.toString())
-        viewModel.submitDailyWriting(body, jsonDailyWriting)
+        if(flag == 0)  {
+            Log.e("등록", "등록")
+            viewModel.submitDailyWriting(body, jsonDailyWriting)
+        } else {
+            Log.e("수정", "수정")
+            viewModel.updateDailyWriting(body, jsonDailyWriting, args?.get("index").toString())
+        }
         viewModel.isSuccess.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is DailyState.Success -> {
                     loading.dismiss()
-                    requireContext().toast("등록이 완료되었습니다.")
-                    mainActivity.showFragment(TabWritingFragment.newInstance(), TabWritingFragment.TAG)
+                    if(flag == 0)
+                        requireContext().toast("등록이 완료되었습니다.")
+                    else if (flag == 1)
+                        requireContext().toast("수정이 완료되었습니다.")
+                    mainActivity.showFragment(
+                        TabWritingFragment.newInstance(),
+                        TabWritingFragment.TAG
+                    )
                 }
                 is DailyState.Error -> {
                     // error code
@@ -225,6 +271,7 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         }
 
     }
+
     private fun checkValidation(): Boolean {
         var check = true
         with(binding) {
@@ -239,7 +286,8 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
             return check
         }
     }
-    private fun initDialog() {
+
+    private fun initDialog(flag: Int) {
         // 요청 취소
         loading.cancelButton().setOnClickListener {
             loading.setInvisible()
@@ -247,26 +295,31 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         // 요청 다시시도
         loading.retryButton().setOnClickListener {
             loading.setInvisible()
-            submitDailyWriting(body, jsonDailyWriting)
+            submitDailyWriting(body, jsonDailyWriting, flag)
         }
     }
+
     private fun initShimmer() = with(binding) {
         shimmerLayout.hideShimmer()
     }
+
     @SuppressLint("SimpleDateFormat")
     private fun getToday() {
         val sdf = SimpleDateFormat("yyyy-MM-dd E요일")
         val cal = Calendar.getInstance().time
         date = sdf.format(cal).toString()
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
+
     companion object {
         fun newInstance() = DailyWritingFragment().apply {
 
         }
+
         const val TAG = "DAILY_WRITING_FRAGMENT"
     }
 

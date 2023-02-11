@@ -21,4 +21,7 @@ interface WritingRepository {
     // 진단기록 등록하기
     suspend fun submitDiagnosisWriting(body: MultipartBody.Part, jsonDailyWriting: RequestBody): String?
 
+    //일상기록 수정하기
+    suspend fun updateDailyWriting(body: MultipartBody.Part, jsonDailyWriting: RequestBody, writingId: Int): String?
+
 }

@@ -1,6 +1,6 @@
 package com.k_bootcamp.furry_friends.view.adapter.viewholder
 
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import android.util.Log
 import com.k_bootcamp.furry_friends.databinding.ViewholderDayWritingBinding
 import com.k_bootcamp.furry_friends.extension.clear
 import com.k_bootcamp.furry_friends.extension.load
@@ -20,7 +20,8 @@ class DailyViewHolder(
     override fun bindData(model: DailyModel) {
         super.bindData(model)
         with(binding) {
-            thumbnailDayWriting.load(model.imageUrl,0f, CenterCrop())
+            Log.e("dailyviewholder",model.imageUrl)
+            thumbnailDayWriting.load(model.imageUrl)
             writingTextView.text = model.title
             dateTextView.text = model.currdate
         }
