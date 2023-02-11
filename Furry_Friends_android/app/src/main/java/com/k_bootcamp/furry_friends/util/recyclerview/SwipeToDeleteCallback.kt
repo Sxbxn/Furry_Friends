@@ -24,8 +24,6 @@ abstract class SwipeToDeleteCallback(val context: Context) : ItemTouchHelper.Sim
     private val deleteIcon = ContextCompat.getDrawable(context, R.drawable.ic_delete_24)
     private val intrinsicWidth = deleteIcon!!.intrinsicWidth
     private val intrinsicHeight = deleteIcon!!.intrinsicHeight
-//    @SuppressLint("ResourceType")
-//    private val background = ResourcesProviderImpl(context).getDrawable(R.drawable.delete_drawable)
     private val background = GradientDrawable()
     private val backgroundColor = Color.parseColor("#f44336")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
