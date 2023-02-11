@@ -41,7 +41,11 @@ def query_to_dict(objs):
             lst.append(obj)
         return lst
     except TypeError:
-        return None
+        lst = []
+        objs = objs.__dict__
+        del objs['_sa_instance_state']
+        lst.append(objs)
+        return lst
 
 
 s3 = s3_connection()
