@@ -15,7 +15,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object CoroutineDispatcherModule {
-    // 타입이 같은 주입은 duplicate error를 일으키키에 어노테이션 quailifier 한정자로 분리
+    // 아래 Dispatcher들은 다 같은 CoroutineDispatcher 타입임
+    // 타입이 같은 주입은 duplicate error를 일으키키에 어노테이션 qualifier 한정자로 분리
+    // qualifier annotation을 만들먼 hilt에서 매번 사용할 수 있는 각자의 바인딩을 만들 수 있음
+
     @IoDispatcher
     @Provides
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
