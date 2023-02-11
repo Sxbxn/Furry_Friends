@@ -35,6 +35,7 @@ class ChecklistViewModel @Inject constructor(
     val animalRepo = animalRepository
     val rDao = routineDao
 
+    // 체크리스트에서 해당 요일의 루틴을 가져오는 함수
     fun initRoutines() {
         _routineLiveData.value = CheckListState.Loading
         if (session == null) {
@@ -87,6 +88,7 @@ class ChecklistViewModel @Inject constructor(
         }
     }
 
+    // 체크리스트 저장하는 함수
     fun submitCheckList(checkList: CheckList) {
         _routineLiveData.postValue(CheckListState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
@@ -99,6 +101,7 @@ class ChecklistViewModel @Inject constructor(
         }
     }
 
+    // 해당 요일의 체크리스트를 가져오는 함수 - 캘린더뷰에서 접근
     fun getDatas(date: String): CheckList? {
         var response: CheckList? = null
         _routineLiveData.postValue(CheckListState.Loading)
