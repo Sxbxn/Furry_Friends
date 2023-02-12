@@ -99,6 +99,24 @@ class AnimalRepositoryImpl(
         }
     }
 
+    override suspend fun deleteAnimalInfo(): String? =  withContext(ioDispatcher) {
+        val response = animalService.deleteAnimalInfo()
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+
+    override suspend fun updateAnimalProfile(body: MultipartBody.Part, jsonUpdateProfile: RequestBody): String? =  withContext(ioDispatcher) {
+        val response = animalService.updateAnimalInfo(body, jsonUpdateProfile)
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+
 
     override suspend fun insertRoutine(routine: Routine) = routineDao.insertRoutine(routine)
 

@@ -16,7 +16,7 @@ import retrofit2.http.*
 interface AnimalService {
     // 동물 정보 보내기
     @Multipart
-    @POST("/")
+    @POST("/auth/registerAnimal")
     suspend fun submitAnimal(
         @Part animalImg: MultipartBody.Part,
         @Part("animalJson") animal: RequestBody
@@ -25,7 +25,7 @@ interface AnimalService {
 
 
     // 동물 정보 가져오기
-    @GET("/{session}")  ////
+    @GET("/pet/profile")  ////
     suspend fun getAnimalInfo(): Response<AnimalResponse>
 
 
@@ -65,4 +65,15 @@ interface AnimalService {
         // 추후 회의 후 추가
         @Header("currdate") date: String
     ): Response<CheckList>
+
+    @DELETE("/pet/delete")
+    suspend fun deleteAnimalInfo(): Response<String>
+
+    @Multipart
+    @PUT("/pet/update")
+    suspend fun updateAnimalInfo(
+        @Part body: MultipartBody.Part,
+        @Part("updateAnimal") jsonUpdateProfile: RequestBody
+    ): Response<String>
+
 }

@@ -11,6 +11,7 @@ import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentDayDetailBinding
 import com.k_bootcamp.furry_friends.databinding.FragmentHomeBinding
+import com.k_bootcamp.furry_friends.extension.load
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
 import com.k_bootcamp.furry_friends.util.holidayColor
@@ -41,6 +42,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                     binding.animalInfo.animalName.text = it.name
                     binding.animalInfo.animalAge.text = (month - animalMonth).toString()
                     binding.animalInfo.animalSex.text = it.sex
+                    binding.animalInfo.ivMember.load(it.imageUrl)
                     // TO-DO 이미지, 할 일은 나중에 더 얘기해보고 넣기
                 }
                 is HomeState.Error -> {

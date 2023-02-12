@@ -47,7 +47,7 @@
     <string name="withdraw_user">회원탈퇴</string>
     <string name="retry">재시도</string>
     <string name="cancel">취소</string>
-    <string name="loading">로딩중...</string>
+    <string name="loading">로딩중…</string>
     <string name="weights">몸무게:</string>
     <string name="require_login">로그인 후, 서비스 이용이 가능합니다.</string>
     <string name="failed_login">로그인에 실패하였습니다.</string>
@@ -71,4 +71,10 @@
     <string name="add_animal">추가</string>
     <string name="failed_update_animal">수정에 실패했습니다</string>
     <string name="failed_submit_daily">일상 기록 등록에 실패했습니다.</string>
+    <string name="deleteProfile">프로필 삭제</string>
+    <string name="kg">kg</string>
+    <string name="update_animal">정보 수정</string>
+    <string name="update">수정</string>
+    <string name="kindAndArea">종 및 부위</string>
+    <string name="diagnosis_name">진단명</string>
 </resources>

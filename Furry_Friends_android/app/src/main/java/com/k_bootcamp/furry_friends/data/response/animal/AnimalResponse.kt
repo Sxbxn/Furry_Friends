@@ -16,5 +16,7 @@ data class AnimalResponse(
     @SerializedName("sex")
     val sex: String,
     @SerializedName("neutered")
-    val isNeutered: Boolean
+    val isNeutered: Boolean,
+    @SerializedName("image")
+    val imageUrl: String
 )

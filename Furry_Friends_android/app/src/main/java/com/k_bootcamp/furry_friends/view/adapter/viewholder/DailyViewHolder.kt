@@ -20,7 +20,6 @@ class DailyViewHolder(
     override fun bindData(model: DailyModel) {
         super.bindData(model)
         with(binding) {
-            Log.e("dailyviewholder",model.imageUrl)
             thumbnailDayWriting.load(model.imageUrl)
             writingTextView.text = model.title
             dateTextView.text = model.currdate

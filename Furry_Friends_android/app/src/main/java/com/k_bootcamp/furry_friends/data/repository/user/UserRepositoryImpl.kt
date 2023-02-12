@@ -24,7 +24,7 @@ class UserRepositoryImpl(
     override suspend fun getInfo(sessionId: String): String?  = withContext(ioDispatcher){
         val response = userService.getInfo(sessionId)
         if(response.isSuccessful) {
-            response.body()?.toString()
+            response.body()
         } else {
             null
         }
@@ -32,6 +32,15 @@ class UserRepositoryImpl(
 
     override suspend fun signInUser(user: SignInUser): String? = withContext(ioDispatcher) {
         val response = userService.signInUser(user)
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+
+    override suspend fun logout(): Void? = withContext(ioDispatcher) {
+        val response = userService.logoutUser()
         if(response.isSuccessful) {
             response.body()
         } else {

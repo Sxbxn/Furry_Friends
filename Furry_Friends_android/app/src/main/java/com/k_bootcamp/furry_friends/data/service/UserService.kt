@@ -9,8 +9,8 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface UserService {
-    // 로그인
-    @POST("/login")
+    // 로그인  -- 추후 반환값 확인
+    @POST("/auth/login")
     suspend fun loginUser(
         @Body user: LoginUser
     ): Response<Session>
@@ -23,12 +23,12 @@ interface UserService {
     ): Response<String>
 
     // 회원가입
-    @POST("/register")
+    @POST("/auth/register")
     suspend fun signInUser(
         @Body user: SignInUser
     ): Response<String>
 //    ): Response<SignInResponse>
 
-    @GET("/logout")
+    @GET("/auth/logout")
     suspend fun logoutUser(): Response<Void>
 }

@@ -102,6 +102,9 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
                 is LoginState.Error -> {
                     // error code
                     loading.setError()
+//                    when(response.message) {
+//
+//                    }
                 }
                 is LoginState.Loading -> {
                     // loading code

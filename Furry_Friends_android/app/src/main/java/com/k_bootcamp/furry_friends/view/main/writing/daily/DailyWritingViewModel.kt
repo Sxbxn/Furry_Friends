@@ -3,23 +3,13 @@ package com.k_bootcamp.furry_friends.view.main.writing.daily
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.SingleRequest
-import com.bumptech.glide.request.target.Target
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.animal.writing.WritingRepository
 import com.k_bootcamp.furry_friends.util.etc.bitmapToFile
-import com.k_bootcamp.furry_friends.util.etc.getImageFromURL
 import com.k_bootcamp.furry_friends.view.base.BaseViewModel
-import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
@@ -79,31 +69,6 @@ class DailyWritingViewModel @Inject constructor(
         }.await()
         return bitmapToFile(deffered, context.applicationContext.filesDir.path.toString())
     }
-
-//        Glide.with(context)
-//            .asBitmap().load(url).listener(object: RequestListener<Bitmap>{
-//                override fun onLoadFailed(
-//                    e: GlideException?,
-//                    model: Any?,
-//                    target: Target<Bitmap>?,
-//                    isFirstResource: Boolean
-//                ): Boolean = false
-//                override fun onResourceReady(
-//                    resource: Bitmap?,
-//                    model: Any?,
-//                    target: Target<Bitmap>?,
-//                    dataSource: DataSource?,
-//                    isFirstResource: Boolean
-//                ): Boolean {
-//                    Log.e("ffffff",resource.toString())
-//                    file = bitmapToFile(resource!!, context.applicationContext.filesDir.path.toString())
-//                    Log.e("ffffff123",file.toString())
-//
-//                    return true
-//                }
-//            }).submit()
-//        Log.e("ffffff1234",file.toString())
-
 
     private fun getOriginalBitmap(url: String): Bitmap =
         URL(url).openStream().use {

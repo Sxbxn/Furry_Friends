@@ -41,7 +41,10 @@ interface AnimalRepository {
     suspend fun submitDailyChecklist(checkList: CheckList): JsonObject?
     // 캘린더에서 접근하여 해당일자 데이터 가져오기
     suspend fun getChecklistDatas(date: String): CheckList?
-
+    // 동물 프로필 삭제
+    suspend fun deleteAnimalInfo(): String?
+    // 동물 프로필 수정
+    suspend fun updateAnimalProfile(body: MultipartBody.Part, jsonUpdateProfile: RequestBody): String?
 
 
 
@@ -76,6 +79,7 @@ interface AnimalRepository {
     suspend fun getAllStatus(): List<RoutineStatus>
 
     suspend fun deleteAllStatus()
+
 
 
 }

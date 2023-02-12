@@ -40,7 +40,8 @@ class HomeViewModel @Inject constructor(
                     it.birthDay,
                     it.weight,
                     it.sex,
-                    it.isNeutered
+                    it.isNeutered,
+                    it.imageUrl
                 ))
             } ?: kotlin.run {
                 _animalInfoLiveData.postValue(HomeState.Error(context.getString(R.string.error_response)))

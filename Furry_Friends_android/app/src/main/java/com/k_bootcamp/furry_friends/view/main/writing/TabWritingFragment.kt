@@ -224,7 +224,8 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
     override fun initViews() {
         loading = LoadingDialog(requireContext())
         initDialog()
-        changeView(0)
+//        changeView(0)  -- 두 번 통신 호출되어 제거
+        initFloatingButton(0) // changeview를 없애어 첫 화면에서 플로팅버튼 초기화가 안되므로 초기화
         tabSelected()
     }
 

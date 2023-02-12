@@ -118,7 +118,11 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                 .setView(editText)
                 .setIcon(R.drawable.ic_routine)
                 .setPositiveButton(getString(R.string.submit)) { _, _ ->
-                    viewModel.addRoutine(editText.text.toString(), session)
+                    if(editText.text.isEmpty()) {
+                        requireContext().toast("루틴이름을 입력해주세요!")
+                    } else {
+                        viewModel.addRoutine(editText.text.toString(), session)
+                    }
                 }.show()
         }
     }
