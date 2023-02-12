@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,18 +22,22 @@ import com.bumptech.glide.load.resource.bitmap.Rotate
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.fc.baeminclone.screen.base.BaseFragment
 import com.google.gson.Gson
+import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentDayWritingBinding
 import com.k_bootcamp.furry_friends.extension.load
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.writing.Daily
 import com.k_bootcamp.furry_friends.util.dialog.CustomAlertDialog
+import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.main.home.HomeFragment
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalState
 import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
+import com.shashank.sony.fancydialoglib.Animation
+import com.shashank.sony.fancydialoglib.FancyAlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +59,6 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
     override val viewModel: DailyWritingViewModel by viewModels()
     private var args: Bundle? = null
     private lateinit var loading: LoadingDialog
-    private lateinit var dialog: CustomAlertDialog
     private lateinit var mainActivity: MainActivity
     private lateinit var sendFile: File
     private lateinit var body: MultipartBody.Part
@@ -159,7 +163,6 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
 
     private fun initWritableView() = with(binding) {
         loading = LoadingDialog(requireContext())
-        dialog = CustomAlertDialog(requireContext())
         getToday()
         // 0 - 쓰기
         initDialog(0)
@@ -169,7 +172,6 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
 
     private fun initUpdateWriteView() = with(binding) {
         loading = LoadingDialog(requireContext())
-        dialog = CustomAlertDialog(requireContext())
         // 가져온 데이터를 뷰에보여주고
         saveWriting.text = "수정"
         editTextTitle.setText(args?.get("title").toString())
@@ -259,18 +261,9 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
     }
 
 
-    private fun setOnImageButtonClickListener() {
-        dialog.init("사진 가져올 곳을 선택해주세요", "카메라", "갤러리")
-        dialog.getPositive().setOnClickListener {
-            dialog.exit()
-            getCameraImage(mainActivity, permissionLauncher, getCameraImageLauncher)
-        }
-        dialog.getNegative().setOnClickListener {
-            dialog.exit()
-            getGalleryImage(mainActivity, permissionLauncher, getGalleryImageLauncher)
-        }
+    private fun setOnImageButtonClickListener() =
+        setFancyDialog(requireContext(), mainActivity, permissionLauncher, getCameraImageLauncher, getGalleryImageLauncher).show()
 
-    }
 
     private fun checkValidation(): Boolean {
         var check = true
