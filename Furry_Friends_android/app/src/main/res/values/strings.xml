@@ -77,4 +77,5 @@
     <string name="update">수정</string>
     <string name="kindAndArea">종 및 부위</string>
     <string name="diagnosis_name">진단명</string>
+    <string name="select_animal">반려 동물 변경</string>
 </resources>
