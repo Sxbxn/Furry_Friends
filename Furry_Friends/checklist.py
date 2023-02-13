@@ -53,6 +53,8 @@ def checklist():
         
         else: # POST
 
+            routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
+                                            Routine.weekday == current_weekday_num)).all()
             checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
                                                                 ChecklistDefault.currdate == currdate)).first()
             checklists_routine = ChecklistRoutine.query.filter(and_(ChecklistRoutine.animal_id == session['curr_animal'], 
@@ -77,6 +79,7 @@ def checklist():
             db.session.add(new_cd)
 
             try:
+
                 # 전달받은 루틴이 있을 때
                 json_routines = param['routines']
 
@@ -85,16 +88,21 @@ def checklist():
                     j += 1
 
                 for i in range(j):
+
                     json_routine = json_routines[f'routine{i+1}']
 
-                    routine = Routine.query.filter_by(routine_id = json_routine['routine_id']).first()
+                    routine = Routine.query.filter_by(index = json_routine['index']).first()
 
+                    routine_id = json_routine['routine_id']
                     routine_name = json_routine['routine_name']
                     status = json_routine['status']
 
-                    new_cr = ChecklistRoutine(currdate, animal, routine, routine_name, status)
+                    new_cr = ChecklistRoutine(currdate, animal, routine, routine_id, routine_name, status)
+
                     db.session.add(new_cr)      
-            
+
+                db.session.commit()
+
             except:
                 # 전달받은 루틴이 없음
                 db.session.commit()
