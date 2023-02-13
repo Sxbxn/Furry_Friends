@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 from connect_db import db
-from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import declarative_base, relationship
 
 
@@ -102,10 +101,11 @@ class ChecklistRoutine(db.Model):
     routine_name = db.Column(db.String(20))
     status = db.Column(db.Integer, default=0)
 
-    def __init__(self, currdate, animal, routine, routine_name, status):
+    def __init__(self, currdate, animal, routine, routine_id, routine_name, status):
         self.currdate = currdate
         self.animal = animal
         self.routine = routine
+        self.routine_id = routine_id
         self.routine_name = routine_name
         self.status = status
 
