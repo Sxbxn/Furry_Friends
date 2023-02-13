@@ -181,3 +181,23 @@
 	$('.appointment_time').timepicker();
 
 })(jQuery);
+
+// try {
+const sessionId = localStorage.getItem('test');
+
+if (sessionId !== null) {
+	const login_li = document.getElementById('l6');
+	login_li.style.display='none';
+} else {
+	const mypage_li = document.getElementById('l7');
+	mypage_li.style.display='none';
+
+	const logout_li = document.getElementById('l8');
+	logout_li.style.display='none';
+}
+
+// 로그아웃
+const logout_li = document.getElementById('l8');
+logout_li.addEventListener("click", event => {
+	localStorage.clear();
+});

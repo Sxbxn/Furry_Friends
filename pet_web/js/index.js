@@ -1,31 +1,40 @@
-function nav() {
+// function nav() {
 
-    const nav = document.getElementById('ftco-navbar');
+//     const nav = document.getElementById('ftco-navbar');
 
-    fetch('./header.html')
-        .then(res => res.text())
-        .then(data => nav.innerHTML = data)
-        .then(selected());
-}
+//     console.log(nav);
 
-function selected() {
-    let n = document.getElementsByClassName('nav-item');
-    console.log(n);
-    // console.log(c);
-    // console.log(c.childNodes);
-    // const navArray = c.childNodes;
-    // console.log(typeof c);
-    // console.log(c.length);
+//     fetch('./header.html')
+//         .then(res => res.text())
+//         // .then(data => nav.innerHTML = data)
+//         .then(data => nav.insertAdjacentHTML("afterbegin", data))
+//         .then(selected());                
+// }
 
-    // // const navArray = Array.from(c);
-    // console.log(typeof c);
-    // console.log(navArray);
-    // let l1 = n.getElementById('l1');
-    
-    console.log(n[0]);
-    // console.log(l1);
+// function selected() {
+//     const n = document.getElementById("ftco-nav");
 
-    // c.item[0].setAttribute('class', 'active');
-}
+//     console.log(n);
 
-nav();
+//     // const n = document.getElementByClassName('nav-item');
+//     // console.log(n);
+//     // console.log(c);
+//     // console.log(c.childNodes);
+//     // const navArray = c.childNodes;
+//     // console.log(typeof c);
+//     // console.log(c.length);
+
+//     // // const navArray = Array.from(c);
+//     // console.log(typeof c);
+//     // console.log(navArray);
+//     // let l1 = n.getElementById('l1');
+//     // console.log(n.item);
+
+
+//     // console.log(n[0]);
+//     // console.log(l1);
+
+//     // c.item[0].setAttribute('class', 'active');
+// }
+
+// nav();
