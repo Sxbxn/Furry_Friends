@@ -99,30 +99,32 @@ def login():
             session.clear()
             session['login'] = user_id
 
-            animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
+            return f"{session['login']} logged in"
 
-            # 등록된 동물이 없음 --> 동물 등록 페이지 이동
-            if animal_list == []:
-                return "no animal registered"
+            # animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
 
-            # 등록된 동물이 있음
-            else:
-                animal_list = query_to_dict(animal_list)
+            # # 등록된 동물이 없음
+            # if animal_list == []:
+            #     return "no animal registered"
 
-                # 등록된 동물이 1마리 --> 바로 세션에 저장, json 반환
-                if len(animal_list) == 1:
-                    session['curr_animal'] = animal_list['animal_id']
-                    return jsonify(animal_list)
+            # # 등록된 동물이 있음
+            # else:
+            #     animal_list = query_to_dict(animal_list)
 
-                # 등록된 동물이 여러 마리 --> 선택 화면으로 이동
-                else:
-                    return jsonify(animal_list)
+            #     # 등록된 동물이 1마리 --> 바로 세션에 저장, json 반환
+            #     if len(animal_list) == 1:
+            #         session['curr_animal'] = animal_list['animal_id']
+            #         return jsonify(animal_list)
+
+            #     # 등록된 동물이 여러 마리 --> 선택 화면으로 이동
+            #     else:
+            #         return jsonify(animal_list)
             
-            # return f"{session['login']} logged in"
+            
     
     else: # GET
         if 'login' in session:
-            return redirect(url_for("pet.profile"))
+            return f"{session['login']}"
         else:
             return "login form"
 
