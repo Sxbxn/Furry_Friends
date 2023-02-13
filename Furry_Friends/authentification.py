@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, Blueprint, url_for, redirect
+from flask import request, jsonify, session, Blueprint, url_for, redirect
 from models import User, Animal
 from connect_db import db
 from sqlalchemy import and_
@@ -30,10 +30,23 @@ def s3_connection():
         print('ERROR_S3_CONNECTION_FAILED') 
 
 
+def query_to_dict(objs):
+    try:
+        lst = [obj.__dict__ for obj in objs]
+        for obj in lst:
+            del obj['_sa_instance_state']
+        return lst
+    except TypeError: # non-iterable
+        objs = objs.__dict__
+        del objs['_sa_instance_state']
+        lst = [objs]
+        return lst
+        
+
 s3 = s3_connection()
 
 
-@bp.route('/register', methods=['GET','POST']) #GET(정보보기), POST(정보수정) 메서드 허용
+@bp.route('/register', methods=['GET','POST']) 
 def register():
 
     if request.method=="POST":
@@ -50,18 +63,15 @@ def register():
         check_userid = User.query.filter(User.user_id==user_id).first()
         
         if check_userid:
-            # flash("사용 중인 아이디입니다.", category='error')
-
-            return redirect(url_for('authentification.register'))
+            return "user id taken"
 
         if check_email:
-            # flash("이미 가입된 이메일입니다.", category='error')
-            return redirect(url_for('authentification.register'))
+            return "email already exists"
 
         db.session.add(user)  # id, pw(hash), email 변수에 넣은 회원정보 DB에 저장
         db.session.commit()  #커밋
 
-        return redirect(url_for('authentification.login'))
+        return "successfully registered"
 
     else: # GET
         return "registration form"
@@ -87,82 +97,103 @@ def login():
 
         else:
             session.clear()
-            session['user_id'] = user_id #form에서 가져온 user_id를 session에 저장
+            session['login'] = user_id
+
+            animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
+
+            # 등록된 동물이 없음 --> 동물 등록 페이지 이동
+            if animal_list == []:
+                return "no animal registered"
+
+            # 등록된 동물이 있음
+            else:
+                animal_list = query_to_dict(animal_list)
+
+                # 등록된 동물이 1마리 --> 바로 세션에 저장, json 반환
+                if len(animal_list) == 1:
+                    session['curr_animal'] = animal_list['animal_id']
+                    return jsonify(animal_list)
+
+                # 등록된 동물이 여러 마리 --> 선택 화면으로 이동
+                else:
+                    return jsonify(animal_list)
             
-            return f"{session['user_id']} logged in"
-        
-        # return  #로그인에 성공하면 홈화면으로 redirect
+            # return f"{session['login']} logged in"
     
     else: # GET
-        return "login form"
+        if 'login' in session:
+            return redirect(url_for("pet.profile"))
+        else:
+            return "login form"
 
 
 @bp.route('/logout',methods=['GET'])
 def logout():
-    session.pop('user_id', None)
-    return redirect(url_for('authentification.main'))
+    session.clear()
+    return "logged out"
 
 
-@bp.route('/', methods=["GET"])
-def main():
-    if 'user_id' in session:  # session안에 user_id가 있으면 로그인
-        return f"{session['user_id']} is logged in"
+# app.py로 이동 ----- session['login'] 유무에 따라 라우팅
+# @bp.route('/', methods=["GET"])
+# def main():
+#     if 'user_id' in session:  # session안에 user_id가 있으면 로그인
+#         animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
+#         animal_list = query_to_dict(animal_list)
+#         return f"{session['user_id']} is logged in"
 
-    return redirect(url_for('authentification.login')) # 로그인이 안된 경우
+
+    # return redirect(url_for('authentification.login')) 
 
 
-@bp.route('/register_animal', methods=['GET','POST'])
+@bp.route('/registerAnimal', methods=['GET','POST'])
 def register_animal():
-    try:
-        session['login'] = request.headers['user_id']
+    
+    # 로그인 x
+    if 'login' not in session:
+        return "not logged in"
 
-    # 로그인 x시 로그인 창으로 리다이렉트
-    except:
-        if 'user_id' not in session:
-            return redirect('authentification.main')
+    # 로그인 o
+    else:
 
-    if request.method=="GET":
-        print(session['login'])
-        return "animal registration form"
-               
-               
-    else: # POST
-        param = request.form
-        param = json.loads(param['data'])
+        if request.method=="GET":
+            return "animal registration form"
+                
+        else: # POST
+            param = request.form
+            param = json.loads(param['data'])
 
-        user = User.query.filter_by(user_id = session['login']).first()
-        
-        animal_name = param['animal_name']
-        bday = param['bday']
-        sex = param['sex']
-        neutered = param['neutered']
-        weight = param['weight']
+            user = User.query.filter_by(user_id = session['login']).first()
+            
+            animal_name = param['animal_name']
+            bday = param['bday']
+            sex = param['sex']
+            neutered = param['neutered']
+            weight = param['weight']
 
-        f = request.files['file']
-        if f:
-            newname = session['login'] + '_' + animal_name + ".png"
+            f = request.files['file']
+            if f:
+                newname = session['login'] + '_' + animal_name + ".png"
 
-            imgpath = f"./static/{secure_filename(newname)}"
-            f.save(imgpath) # 로컬에 저장
+                imgpath = f"./static/{secure_filename(newname)}"
+                f.save(imgpath) # 로컬에 저장
 
-            s3.upload_file(imgpath, AWS_S3_BUCKET_NAME, newname) # s3에 업로드
-            img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
-            os.remove(imgpath) # 로컬에 저장된 파일 삭제
+                s3.upload_file(imgpath, AWS_S3_BUCKET_NAME, newname) # s3에 업로드
+                img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+                os.remove(imgpath) # 로컬에 저장된 파일 삭제
 
-            image = img_url
-        else:
-            image = ""
+                image = img_url
+            else:
+                image = ""
 
-        animal = Animal(user, animal_name, bday, sex, neutered, weight, image)
+            animal = Animal(user, animal_name, bday, sex, neutered, weight, image)
 
-        db.session.add(animal)
-        db.session.commit()
+            db.session.add(animal)
+            db.session.commit()
 
-        curr_animal = Animal.query.filter(and_(Animal.user_id == session['login'],
-                                            Animal.animal_name == animal_name)).first()
+            curr_animal = Animal.query.filter(and_(Animal.user_id == session['login'],
+                                                Animal.animal_name == animal_name)).first()
 
-        curr_animal = curr_animal.__dict__
-        del curr_animal['_sa_instance_state']
+            curr_animal = jsonify(query_to_dict(curr_animal))
 
-        return jsonify(curr_animal)
-        # 등록된 동물 정보 json 반환, 이 뒤로 header에 animal_id 주고받기
+            return jsonify(curr_animal)
+            # 등록된 동물 정보 json 반환, 이 뒤로 header에 animal_id 주고받기

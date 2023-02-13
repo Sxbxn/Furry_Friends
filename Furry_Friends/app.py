@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, session
+from flask import Flask, jsonify, session
 from connect_db import db
 from flask_migrate import Migrate
 
@@ -35,26 +35,31 @@ db.init_app(app)
 Migrate(app,db)
 
 
+def query_to_dict(objs):
+    try:
+        lst = [obj.__dict__ for obj in objs]
+        for obj in lst:
+            del obj['_sa_instance_state']
+        return lst
+    except TypeError: # non-iterable
+        objs = objs.__dict__
+        del objs['_sa_instance_state']
+        lst = [objs]
+        return lst
+
+
 # 메인 화면
 @app.route('/', methods=["GET"])
 def main():
 
     # 세션에 로그인한 기록이 있음
     if 'login' in session: 
-        # 관리할 동물 선택 o --> 동물 프로필로 이동
-        if 'curr_animal' in session:
-            return redirect(url_for('pet.profile'))
-
-        # 관리할 동물 선택 x --> 동물 관리로 이동
-        else:
-            return redirect(url_for('pet.management'))
-
-        # return f"{session['user_id']} is logged in"
-
+        animal = query_to_dict(Animal.query.filter_by(user_id = session['login']).all())
+        return jsonify(animal)
+        
     # 세션에 로그인한 기록이 없음
     else:
-        # 로그인 페이지 리다이렉트
-        return redirect(url_for('authentification.login'))
+        return "not logged in"
 
 
 if __name__ == "__main__":

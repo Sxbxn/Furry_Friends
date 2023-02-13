@@ -53,16 +53,16 @@ def management():
 
     # 등록한 동물이 없음
     if animal_list == []:
-        return redirect(url_for("authentification.register_animal"))
+        return "no animal registered"
     
     # 등록한 동물이 있음
     else:
         # 동물이 1마리 --> 자동 선택
         if len(animal_list) == 1:
             session['curr_animal'] = animal_list['animal_id']
-            return redirect(url_for("pet.profile"))
+            return jsonify(animal_list)
         
-        # 동물 리스트 반환 - 선택 시 해당 동물 정보 json으로 전송 (프론트에선 선택된 동물 id 헤더로 보내기?)
+        # 동물 여러 마리 --> 리스트 반환
         else:
             return jsonify(animal_list)
 
@@ -91,11 +91,14 @@ def profile():
         try:
         # header로 animal_id 받으면 프로필
             session['curr_animal'] = request.headers['animal_id']
-            return redirect(url_for('pet.profile'))
+            animal = query_to_dict(Animal.query.filter_by(animal_id = session['curr_animal']).first())
+            return jsonify(animal)
 
         except:   
             # header로 온 게 없으면 동물 관리 화면
-            return redirect(url_for('pet.management'))
+            animal_list = query_to_dict(Animal.query.filter_by(user_id = session['login']).all())
+
+            return jsonify(animal_list)
 
 
 @bp.route('/update', methods=["GET","PUT"])
