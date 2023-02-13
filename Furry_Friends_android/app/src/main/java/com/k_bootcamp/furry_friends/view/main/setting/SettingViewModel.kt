@@ -1,17 +1,22 @@
 package com.k_bootcamp.furry_friends.view.main.setting
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
+import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.util.etc.bitmapToFile
 import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.furry_friends.view.main.home.HomeState
+import com.k_bootcamp.furry_friends.view.main.login.LoginActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +47,13 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             // 추후 반환값 수정해야할듯
             val response = userRepository.logout()
+            if(response != null) {
+                context.toast("로그아웃 되었습니다. 로그인 화면으로 돌아갑니다.")
+                Application.prefs.clear()
+                _isSuccess.postValue(SettingState.Success(response))
+            } else {
+                _isSuccess.postValue(SettingState.Error("오류"))
+            }
         }
     }
 

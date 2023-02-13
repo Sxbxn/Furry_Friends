@@ -9,14 +9,14 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface UserService {
-    // 로그인  -- 추후 반환값 확인
+    // 로그인  -- 추후 반환값 확인 *****
     @POST("/auth/login")
     suspend fun loginUser(
         @Body user: LoginUser
     ): Response<Session>
 //    ): Response<SessionResponse>
 
-    // 정보가져오기
+    // 정보가져오기---- 안 쓸 듯
     @GET("/{sessionId}")  //// session 객체로 교환 필요
     suspend fun getInfo(
         @Path("sessionId") sessionId: String?
@@ -27,8 +27,7 @@ interface UserService {
     suspend fun signInUser(
         @Body user: SignInUser
     ): Response<String>
-//    ): Response<SignInResponse>
 
     @GET("/auth/logout")
-    suspend fun logoutUser(): Response<Void>
+    suspend fun logoutUser(): Response<String>
 }

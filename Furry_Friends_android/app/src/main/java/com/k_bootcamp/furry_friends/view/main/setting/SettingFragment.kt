@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Handler
 import android.util.Log
@@ -37,6 +38,7 @@ import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
+import com.k_bootcamp.furry_friends.view.main.login.LoginActivity
 import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -150,7 +152,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 }
                 is SettingState.Error -> {
                     loading.setError()
-//                    binding.update.toGone()    중요!!!!!!! 테스트시 주석해제
+                    binding.update.toGone()   //   중요!!!!!!! 테스트시 주석해제
                     // 정보가져오지 못했을 때  1. 로그인 x
                     if (session == null) {
                         binding.textView2.text = "로그인 필요"
@@ -165,7 +167,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 }
                 is SettingState.SuccessGetInfo -> {
                     loading.dismiss()
-//                    binding.update.toVisible()    중요!!!!!!! 테스트시 주석해제
+                    binding.update.toVisible()    //중요!!!!!!! 테스트시 주석해제
                     binding.ivMember.load(it.imageUrl)
                     binding.textView2.text = it.userId
                     binding.animalName.text = it.name
@@ -211,12 +213,48 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     private fun initSettings() = with(binding) {
         logout.setOnClickListener {
             viewModel.logout()
+            viewModel.isSuccess.observe(viewLifecycleOwner) {
+                when(it) {
+                    is SettingState.Error -> {
+                        loading.setError()
+                        requireContext().toast("로그아웃 실패")
+                    }
+                    is SettingState.Loading -> {
+                        loading.setVisible()
+                    }
+                    is SettingState.Success -> {
+                        loading.dismiss()
+                        requireContext().toast("로그인 창으로 돌아갑니다.")
+                        mainActivity.startActivity(LoginActivity.newIntent(requireContext()).apply{
+                            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        })
+                    }
+                    is SettingState.SuccessGetInfo -> {}
+                }
+            }
         }
         withdrawUser.setOnClickListener {
             viewModel.withdrawUser()
         }
         deleteProfile.setOnClickListener {
             viewModel.deleteProfile()
+            viewModel.isSuccess.observe(viewLifecycleOwner) {
+                when(it) {
+                    is SettingState.Error -> {
+                        loading.setError()
+                        requireContext().toast("프로필 삭제 실패")
+                    }
+                    is SettingState.Loading -> {
+                        loading.setVisible()
+                    }
+                    is SettingState.Success -> {
+                        loading.dismiss()
+                        requireContext().toast("프로필 삭제에 성공하였습니다.")
+                    }
+                    is SettingState.SuccessGetInfo -> {}
+                }
+            }
         }
         openSourceLicense.setOnClickListener {
             onLicenseDialog()

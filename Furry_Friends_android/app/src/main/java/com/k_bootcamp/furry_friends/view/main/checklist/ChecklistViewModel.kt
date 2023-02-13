@@ -10,9 +10,12 @@ import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
 import com.k_bootcamp.furry_friends.model.animal.CheckList
+import com.k_bootcamp.furry_friends.model.animal.RoutineStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -25,7 +28,8 @@ class ChecklistViewModel @Inject constructor(
 ) : BaseViewModel() {
     private val calendar = Calendar.getInstance()
     private val session = Application.prefs.session
-//    private var animalId = Application.prefs.animalId   나중에 쓸거
+
+    //    private var animalId = Application.prefs.animalId   나중에 쓸거
     var animalId: Int? = null
     private val _routineLiveData = MutableLiveData<CheckListState>()
     val routineLiveData: LiveData<CheckListState>
@@ -93,7 +97,7 @@ class ChecklistViewModel @Inject constructor(
         _routineLiveData.postValue(CheckListState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             val response = animalRepository.submitDailyChecklist(checkList)
-            if(response == null) {
+            if (response == null) {
                 _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
             } else {
                 _routineLiveData.postValue(CheckListState.Done)
@@ -107,7 +111,7 @@ class ChecklistViewModel @Inject constructor(
         _routineLiveData.postValue(CheckListState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             response = animalRepository.getChecklistDatas(date)
-            if(response == null) {
+            if (response == null) {
                 _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
             } else {
                 _routineLiveData.postValue(CheckListState.Done)
@@ -115,4 +119,14 @@ class ChecklistViewModel @Inject constructor(
         }
         return response
     }
+
+    suspend fun getAllStatus(): List<RoutineStatus> {
+        val deffered = CoroutineScope(Dispatchers.IO).async {
+            routineDao.getAllStatus()
+        }.await()
+        return deffered
+    }
+
+    suspend fun deleteAllStatus() =
+        viewModelScope.launch(Dispatchers.IO) { routineDao.deleteAllStatus() }
 }

@@ -11,6 +11,7 @@ import com.k_bootcamp.furry_friends.databinding.ActivityMainBinding
 import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
 import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistFragment
 import com.k_bootcamp.furry_friends.view.main.home.HomeFragment
+import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.routine.RoutineFragment
 import com.k_bootcamp.furry_friends.view.main.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +27,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
-        Application.prefs.session = "123"  ///////////////////
+        Application.prefs.session = "456"  /////////////////// 임시
+        Application.prefs.animalId = 1  /////////////////// 임시
     }
 
     private fun initViews() = with(binding) {
@@ -65,18 +67,9 @@ class MainActivity : AppCompatActivity() {
     fun showFragment(fragment: Fragment, tag: String) {
         // 기존의 프래그먼트 아이디를 찾아서
         val findFragment = supportFragmentManager.findFragmentByTag(tag)
-        supportFragmentManager.fragments.forEach {
-            supportFragmentManager.beginTransaction()
-                .hide(it).commit()
-        }
-        // 있으면 기존거 그대로 처리
-        findFragment?.let {
-            supportFragmentManager.beginTransaction()
-                .show(it).commit()
-        } ?: kotlin.run { // 없으면 새로 만듦 손실허용하면서
-            supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainerView, fragment, tag).commitAllowingStateLoss()
-        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainerView, fragment).commit()
+
     }
 
     override fun onBackPressed() {

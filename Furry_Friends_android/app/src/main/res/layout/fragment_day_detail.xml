@@ -92,7 +92,7 @@
                 android:text="Today's CheckList"
                 />
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/change"
+                android:id="@+id/submitButton"
                 android:layout_width="30dp"
                 android:layout_height="20dp"
                 android:layout_gravity="end"

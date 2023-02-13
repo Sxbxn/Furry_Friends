@@ -21,17 +21,6 @@ interface AnimalService {
         @Part animalImg: MultipartBody.Part,
         @Part("animalJson") animal: RequestBody
     ): Response<AnimalResponse>
-//    Response<SubmitAnimalResponse>
-
-
-    // 동물 정보 가져오기
-    @GET("/pet/profile")  ////
-    suspend fun getAnimalInfo(): Response<AnimalResponse>
-
-
-    // 루틴 정보 가져오기
-    @GET("/check/checklist")  ////
-    suspend fun getRoutinesFromId(): Response<List<RoutineResponse>>
 
     @POST("/routine")
     suspend fun submitDateRoutine(
@@ -51,20 +40,41 @@ interface AnimalService {
     ): Response<String>
 //    ): Response<RoutineSubmit>
 
-    @GET("/checklist")  ////
+
+
+
+    @GET("/check/checklist")  ////
     suspend fun getRoutinesFromDate(): Response<List<RoutineResponse>>
 
-    @POST("/checklist")
+    @POST("/check/checklist")
     suspend fun submitDailyChecklist(
         @Body checkList: CheckList
     ): Response<JsonObject>
-//    ): Response<String>  // 추후 실험 해야함  서버코드 보니까 얘는 json 반환하게 되어있었음
+    //    ): Response<String>  // 추후 실험 해야함  서버코드 보니까 얘는 json 반환하게 되어있었음
+
+    // 루틴 정보 가져오기
+    @GET("/check/checklist")  ////
+    suspend fun getRoutinesFromId(): Response<List<RoutineResponse>>
+
 
     @GET("/datas")
     suspend fun getChecklistDatas(
         // 추후 회의 후 추가
         @Header("currdate") date: String
     ): Response<CheckList>
+
+
+
+
+
+
+    // 한 user의 모든 동물정보 가져오기
+    @GET("/pet/management")
+    suspend fun getAllAnimalInfo(): Response<List<AnimalResponse>>
+
+    // 동물 정보 가져오기
+    @GET("/pet/profile")  ////
+    suspend fun getAnimalInfo(): Response<AnimalResponse>
 
     @DELETE("/pet/delete")
     suspend fun deleteAnimalInfo(): Response<String>
@@ -75,7 +85,4 @@ interface AnimalService {
         @Part body: MultipartBody.Part,
         @Part("updateAnimal") jsonUpdateProfile: RequestBody
     ): Response<String>
-
-    @GET("/pet/management")
-    suspend fun getAllAnimalInfo(): Response<List<AnimalResponse>>
 }

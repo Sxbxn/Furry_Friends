@@ -7,9 +7,9 @@ import com.k_bootcamp.furry_friends.model.Model
 
 // 응답 모델 (리사이클러뷰용)
 data class DailyModel(
-    @SerializedName("id")
+//    @SerializedName("id")
     override val id: Int,
-    @SerializedName("type")
+//    @SerializedName("type")
     override val type: CellType = CellType.DAILY_CELL,
     @SerializedName("title")
     val title: String,

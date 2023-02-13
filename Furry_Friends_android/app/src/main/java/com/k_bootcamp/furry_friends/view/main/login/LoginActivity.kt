@@ -92,7 +92,6 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
                         session = response.session
                         animalId = response.animalId
                     }
-//                    Application.prefs.session?.let { Application.prefs.userId?.let { it1 -> getInfo(it, it1) } }
 
                     startActivity(Intent(this, MainActivity::class.java).apply {
                         this.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)

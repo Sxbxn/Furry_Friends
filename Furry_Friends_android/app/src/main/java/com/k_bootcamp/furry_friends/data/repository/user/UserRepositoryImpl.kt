@@ -39,7 +39,7 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun logout(): Void? = withContext(ioDispatcher) {
+    override suspend fun logout(): String? = withContext(ioDispatcher) {
         val response = userService.logoutUser()
         if(response.isSuccessful) {
             response.body()

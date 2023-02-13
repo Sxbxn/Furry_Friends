@@ -3,10 +3,11 @@ package com.k_bootcamp.furry_friends.view.main.checklist
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,7 +53,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
     private lateinit var routineStatusList: List<RoutineStatus>
     private lateinit var mainActivity: MainActivity
     private var args: Bundle? = null
-
+    private var flag = 0
 
     override fun getViewBinding(): FragmentDayDetailBinding =
         FragmentDayDetailBinding.inflate(layoutInflater)
@@ -121,7 +122,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         binding.monthTextView.text = dates[1] + ". "
                         binding.dayOfMonthTextView.text = dates[2]
                         binding.dayofWeekTextView.text = dates[3]+"요일"
-                        binding.change.toGone()
+                        binding.submitButton.toGone()
                         binding.eatInputLayout.isEnabled = false
                         binding.otherInputLayout.isEnabled = false
                         binding.poobStatus.isEnabled = false
@@ -184,7 +185,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
         monthTextView.text = dates[1] + ". "
         dayOfMonthTextView.text = dates[2]
         dayofWeekTextView.text = dates[3] +"요일"
-        change.toGone()
+        submitButton.toGone()
         eatInputLayout.isEnabled = false
         otherInputLayout.isEnabled = false
         poobStatus.isEnabled = false
@@ -218,18 +219,22 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
     }
 
     private fun initButton() = with(binding) {
-        change.isEnabled = session != null
-        change.setOnClickListener {
+        submitButton.isEnabled = session != null
+        submitButton.setOnClickListener {
             loading.setVisible()
-            CoroutineScope(Dispatchers.IO).launch {
-                routineStatusList = viewModel.animalRepo.getAllStatus()
-                viewModel.animalRepo.deleteAllStatus()
+            CoroutineScope(Dispatchers.Main).launch {
+                routineStatusList = viewModel.getAllStatus()
+                viewModel.deleteAllStatus()
             }
             loading.setInvisible()
             if (checkValidation()) {
-                checkList = CheckList(date, eatQuantityStr, poobStatusStr, other, routineStatusList)
-//                checkListRoutine = ChecklistRoutine(routineStatusList)
-                submitCheckList(checkList)
+                flag = 1
+                // routineStatusList가 백그라운드에서 돌아 여기가 먼저 실행되기에 강제로 딜레이시켜서 초기화된 상태를 받아오게함
+                Handler(Looper.getMainLooper()).postDelayed({
+                    Log.e("routineStatusList", routineStatusList.toString())
+                    checkList = CheckList(date, eatQuantityStr, poobStatusStr, other, routineStatusList)
+                    submitCheckList(checkList)
+                }, 100)
             }
         }
     }
@@ -243,10 +248,15 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
         // 요청 취소
         loading.cancelButton().setOnClickListener {
             loading.setInvisible()
+            flag = 0
         }
         // 요청 다시시도
         loading.retryButton().setOnClickListener {
-            observeData()
+            if(flag == 1) {
+                submitCheckList(checkList)
+            } else {
+                observeData()
+            }
         }
     }
 

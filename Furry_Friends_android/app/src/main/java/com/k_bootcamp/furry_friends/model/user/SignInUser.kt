@@ -8,5 +8,7 @@ data class SignInUser(
     @SerializedName("pw")
     val pwd: String,
     @SerializedName("email")
-    val email: String
+    val email: String,
+    @SerializedName("type")
+    val userType: Int = 0
 )

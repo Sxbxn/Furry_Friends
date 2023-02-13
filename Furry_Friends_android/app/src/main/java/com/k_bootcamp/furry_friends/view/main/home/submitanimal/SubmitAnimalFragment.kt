@@ -136,6 +136,8 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                 is SubmitAnimalState.Success -> {
                     loading.dismiss()
                     requireContext().toast("등록이 완료되었습니다.")
+                    // 등록 후 animal_id 교체
+//                    Application.prefs.animalId = response.isSuccess.animalId
                     mainActivity.showFragment(HomeFragment.newInstance().apply {
                         arguments = bundleOf("session" to session)
                     }, HomeFragment.TAG)

@@ -10,37 +10,10 @@ import retrofit2.http.*
 interface WritingService {
 
     // 일상 기록 정보 가져오기
-    @GET("/journals")
+    @GET("/journal/journals")
     suspend fun getDailyList(
         // 인터셉터에 헤더 추가
     ): Response<List<DailyResponse>>
-
-    // 진단 기록 정보 가져오기
-    @GET("/healths")
-    suspend fun getDiagnosisList(
-        // 인터셉터에 헤더 추가
-    ): Response<List<DiagnosisResponse>>
-
-    // 일상 정보 삭제하기
-//    @DELETE("/journal/delete")
-//    suspend fun deleteDailyModel(
-//        @Header("dailyModel") model: String
-//    ): Response<String>
-    @DELETE("/journal/delete")
-    suspend fun deleteDailyModel(
-        @Header("index") id: Int,
-    ): Response<String>
-
-    // 진단 기록 삭제하기
-//    @DELETE("/health/delete")
-//    suspend fun deleteDiagnosisModel(
-//        @Header("diagnosisModel") model: String
-//    ): Response<String>
-    @DELETE("/health/delete")
-    suspend fun deleteDiagnosisModel(
-        @Header("index") id: Int,
-    ): Response<String>
-
 
     // 일상기록 등록하기
     @Multipart
@@ -50,16 +23,6 @@ interface WritingService {
         @Part("dailyWritingJson") jsonDailyWriting: RequestBody
     ): Response<String>
 
-
-    // 진단기록 등록하기
-    @Multipart
-    @POST("health/factory")
-    suspend fun submitDiagnosisWriting(
-        @Part body: MultipartBody.Part,
-        @Part("diagnosisWritingJson") jsonDailyWriting: RequestBody
-    ): Response<String>
-
-
     // 일상기록 수정하기
     @Multipart
     @PUT("journal/update")
@@ -68,6 +31,38 @@ interface WritingService {
         @Part body: MultipartBody.Part,
         @Part("dailyUpdateWritingJson") updatedJsonDailyWriting: RequestBody
     ): Response<String>
+
+    // 일상 정보 삭제하기
+    @DELETE("/journal/delete")
+    suspend fun deleteDailyModel(
+        @Header("index") id: Int,
+    ): Response<String>
+
+
+    // 진단 기록 정보 가져오기
+    @GET("/health/records")
+    suspend fun getDiagnosisList(
+        // 인터셉터에 헤더 추가
+    ): Response<List<DiagnosisResponse>>
+
+    // 진단기록 등록하기
+    @Multipart
+    @POST("/health/factory")
+    suspend fun submitDiagnosisWriting(
+        @Part body: MultipartBody.Part,
+        @Part("diagnosisWritingJson") jsonDailyWriting: RequestBody
+    ): Response<String>
+
+    // 진단 기록 삭제하기
+    @DELETE("/health/delete")
+    suspend fun deleteDiagnosisModel(
+        @Header("index") id: Int,
+    ): Response<String>
+
+
+
+
+
 
 
 }
