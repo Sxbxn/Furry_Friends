@@ -1,11 +1,7 @@
 from flask import session, request, jsonify, redirect, Blueprint, url_for
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_
 
-
-# for checklist
 from models import Animal, Routine, ChecklistDefault, ChecklistRoutine
-import datetime
 from connect_db import db
 
 
@@ -14,70 +10,63 @@ bp = Blueprint('checklist', __name__, url_prefix='/check')
 
 def query_to_dict(objs):
     try:
-        lst = []
-        for obj in objs:
-            obj = obj.__dict__
+        lst = [obj.__dict__ for obj in objs]
+        for obj in lst:
             del obj['_sa_instance_state']
-            lst.append(obj)
         return lst
     except TypeError: # non-iterable
+        if objs == None:
+            return []
         objs = objs.__dict__
         del objs['_sa_instance_state']
-        return objs
+        lst = [objs]
+        return lst
 
 
 @bp.route('/checklist', methods=["GET", "POST"])
 def checklist():
-
-    # 유저아이디, 동물아이디, 날짜, 요일
-    session['login'] = request.headers['user_id']
-    session['curr_animal'] = request.headers['animal_id']
-
-    currdate = request.headers['currdate']
-    current_weekday_num = request.headers['weekday']
-
-    if request.method=="GET":
-        checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
-                                                                ChecklistDefault.currdate == currdate)).first()
-        routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
-                                            Routine.weekday == current_weekday_num)).all()
-
-        # routine이 없음
-        if routines == []:
-            # checklist_default 기록이 있음 --> 수정으로 넘어감
-            if checklist_default != None:
-                return redirect(url_for('checklist.checklist_update'))
-
-            # checklist_default 기록이 없음 --> 입력 폼만 반환
-            else: 
-                return "checklist_default form"
-
-
-        # routine이 있음
-        else: 
-            # checklist_default 기록이 있음 --> 수정으로 넘어감
-            if checklist_default != None:
-                return redirect(url_for('checklist.checklist_update'))
-
-            # checklist_default, checklist_routine 기록이 없음 --> routine json, 입력 폼 반환
-            else:
-                today_routines = query_to_dict(routines)
-                return jsonify(today_routines)
-   
-
-    else: # POST
-
+    # 로그인 x시
+    if 'login' not in session:
+        return "not logged in"
+    
+    # 로그인 O --> curr_animal도 세션에 O
+    else:
         currdate = request.headers['currdate']
         current_weekday_num = request.headers['weekday']
 
-        routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
+        if request.method=="GET":
+
+            routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
                                             Routine.weekday == current_weekday_num)).all()
+            checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
+                                                                ChecklistDefault.currdate == currdate)).first()
+            checklists_routine = ChecklistRoutine.query.filter(and_(ChecklistRoutine.animal_id == session['curr_animal'], 
+                                                                ChecklistRoutine.currdate == currdate)).all()
 
-        param = request.get_json() 
+            routines = query_to_dict(routines)
+            checklist_default = query_to_dict(checklist_default)
+            checklists_routine = query_to_dict(checklists_routine)
 
-        # routine이 없음
-        if routines == []:
-            # checklist_default
+            # 루틴, 기본 체크리스트, 루틴 체크리스트 검색해서 불러옴
+            # 없으면 json 안에 빈 리스트
+            return jsonify(routines, checklist_default, checklists_routine)
+        
+        else: # POST
+
+            checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
+                                                                ChecklistDefault.currdate == currdate)).first()
+            checklists_routine = ChecklistRoutine.query.filter(and_(ChecklistRoutine.animal_id == session['curr_animal'], 
+                                                                ChecklistRoutine.currdate == currdate)).all()
+
+            # 이미 기록이 있는 경우, 기존 기록 삭제
+            try:
+                db.session.delete(checklist_default)
+                db.session.delete(checklists_routine)
+            except:
+                pass
+
+            param = request.get_json() 
+
             animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
 
             food = param['food']
@@ -87,111 +76,27 @@ def checklist():
             new_cd = ChecklistDefault(currdate, animal, food, bowels, note)
             db.session.add(new_cd)
 
-        # routine이 있음
-        else:
-            # checklist_default
-            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+            try:
+                # 전달받은 루틴이 있을 때
+                json_routines = param['routines']
 
-            json_routines = param['routines']
-            food = param['food']
-            bowels = param['bowels']
-            note = param['note']
+                j = 0
+                for r in routines:
+                    j += 1
 
-            new_cd = ChecklistDefault(currdate, animal, food, bowels, note)
-            db.session.add(new_cd)
+                for i in range(j):
+                    json_routine = json_routines[f'routine{i+1}']
 
-            # checklist_routine
-            j = 0
-            for r in routines:
-                j += 1
+                    routine = Routine.query.filter_by(routine_id = json_routine['routine_id']).first()
 
-            for i in range(j):
-                json_routine = json_routines[f'routine{i+1}']
+                    routine_name = json_routine['routine_name']
+                    status = json_routine['status']
 
-                routine = Routine.query.filter_by(routine_id = json_routine['routine_id']).first()
-
-                # animal_id = session['curr_animal']
-                routine_name = json_routine['routine_name']
-                status = json_routine['status']
-
-                new_cr = ChecklistRoutine(currdate, animal, routine, routine_name, status)
-                db.session.add(new_cr)      
-        
-        db.session.commit()
-
-    return "checklist succefully created"
-
-
-@bp.route('/update', methods=["GET", "POST"])
-def checklist_update():
-
-    # 유저아이디, 동물아이디, 날짜, 요일
-    session['login'] = request.headers['user_id']
-    session['curr_animal'] = request.headers['animal_id']
-
-    currdate = request.headers['currdate']
-    current_weekday_num = request.headers['weekday']
-
-
-    if request.method=="GET": # GET
-        currdate = request.headers['currdate']
-        checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
-                                                                ChecklistDefault.currdate == currdate)).first()
-        checklists_routine = ChecklistRoutine.query.filter(and_(ChecklistRoutine.animal_id == session['curr_animal'], 
-                                                                ChecklistRoutine.currdate == currdate)).all()
-        
-        # checklist_default만 있음
-        if checklists_routine == []:
-            checklist_d = query_to_dict(checklist_default)
-            return jsonify(checklist_d)
-
-        # 둘 다 있음
-        else: 
-            checklist_d = query_to_dict(checklist_default)
-            checklist_r = query_to_dict(checklists_routine)
-            return jsonify(checklist_d, checklist_r)
-
-    else: # POST
-
-        currdate = request.headers['currdate']
-        param = request.get_json() 
-        checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
-                                                                ChecklistDefault.currdate == currdate)).first()
-        checklists_routine = ChecklistRoutine.query.filter(and_(ChecklistRoutine.animal_id == session['curr_animal'], 
-                                                                ChecklistRoutine.currdate == currdate)).all()
-
-        # checklist_default만 수정
-        if checklists_routine == []:
-            food = param['food']
-            bowels = param['bowels']
-            note = param['note']
-
-            checklist_default.food = food
-            checklist_default.bowels = bowels
-            checklist_default.note = note
-
-            db.session.commit()      
-        
-        # 둘 다 수정
-        else:
-            food, bowels, note = param['food'], param['bowels'], param['note']
-
-            checklist_default.food = food
-            checklist_default.bowels = bowels
-            checklist_default.note = note
-            db.session.commit()  
-
-            json_routines = param['routines']
-
-            j = 0
-            for r in checklists_routine:
-                j += 1
-
-            for i in range(j):
-                routine = json_routines[f'routine{i+1}']
-
-                checklists_routine[i].status = routine['status']
-
+                    new_cr = ChecklistRoutine(currdate, animal, routine, routine_name, status)
+                    db.session.add(new_cr)      
+            
+            except:
+                # 전달받은 루틴이 없음
                 db.session.commit()
-    
-    return jsonify(param)
+
+            return "checklist created"
