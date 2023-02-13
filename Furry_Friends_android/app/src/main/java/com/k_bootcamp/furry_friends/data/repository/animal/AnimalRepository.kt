@@ -20,7 +20,7 @@ import okhttp3.RequestBody
 interface AnimalRepository {
     // remote service
     // 동물 등록
-    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): String?
+    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): AnimalResponse?
 //    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): SubmitAnimalResponse?
     // 정보 가져오기
     suspend fun getAnimalInfo(): AnimalResponse?
@@ -45,7 +45,8 @@ interface AnimalRepository {
     suspend fun deleteAnimalInfo(): String?
     // 동물 프로필 수정
     suspend fun updateAnimalProfile(body: MultipartBody.Part, jsonUpdateProfile: RequestBody): String?
-
+    // 동물 프로필 선택을 위한 모든 동물 리스트 가져오기
+    suspend fun getAllAnimalInfo(): List<AnimalResponse>?
 
 
 
@@ -79,7 +80,6 @@ interface AnimalRepository {
     suspend fun getAllStatus(): List<RoutineStatus>
 
     suspend fun deleteAllStatus()
-
 
 
 }

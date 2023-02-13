@@ -20,7 +20,7 @@ class AnimalRepositoryImpl(
     private val routineDao: RoutineDao,
     private val ioDispatcher: CoroutineDispatcher
 ): AnimalRepository {
-    override suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): String?= withContext(ioDispatcher){
+    override suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): AnimalResponse?= withContext(ioDispatcher){
         val response = animalService.submitAnimal(body, json)
         if(response.isSuccessful) {
             response.body()
@@ -110,6 +110,15 @@ class AnimalRepositoryImpl(
 
     override suspend fun updateAnimalProfile(body: MultipartBody.Part, jsonUpdateProfile: RequestBody): String? =  withContext(ioDispatcher) {
         val response = animalService.updateAnimalInfo(body, jsonUpdateProfile)
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+
+    override suspend fun getAllAnimalInfo(): List<AnimalResponse>? = withContext(ioDispatcher) {
+        val response = animalService.getAllAnimalInfo()
         if(response.isSuccessful) {
             response.body()
         } else {

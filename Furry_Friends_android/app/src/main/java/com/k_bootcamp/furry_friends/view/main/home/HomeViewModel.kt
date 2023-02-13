@@ -25,26 +25,47 @@ class HomeViewModel @Inject constructor(
     private val _animalInfoLiveData = MutableLiveData<HomeState>()
     val animalInfoLiveData: LiveData<HomeState>
         get() = _animalInfoLiveData
+    private val _animalInfoListLiveData = MutableLiveData<HomeState>()
+    val animalInfoListLiveData: LiveData<HomeState>
+        get() = _animalInfoListLiveData
 
 
-    fun getAnimalInfo() {
-        // 해당 유저의 등록된 반려동물 정보를 가져와서 반환함
-        _animalInfoLiveData.value = HomeState.Loading
+//    fun getAnimalInfo() {
+//        // 해당 유저의 등록된 반려동물 정보를 가져와서 반환함
+//        _animalInfoLiveData.value = HomeState.Loading
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val info = animalRepository.getAnimalInfo()
+//            info?.let {
+//                _animalInfoLiveData.postValue(HomeState.Success(
+//                    it.animalId,
+//                    it.userId,
+//                    it.name,
+//                    it.birthDay,
+//                    it.weight,
+//                    it.sex,
+//                    it.isNeutered,
+//                    it.imageUrl
+//                ))
+//            } ?: kotlin.run {
+//                _animalInfoLiveData.postValue(HomeState.Error(context.getString(R.string.error_response)))
+//            }
+//        }
+//    }
+
+    fun getAllAnimalInfo() {
+        // 해당 유저의 등록된 모든 반려동물 정보를 가져와서 반환함
+        // 헤더로 사용자id와 동물id를 같이 보내지만 사용자id로만 필터링해서 보여주어야함 (서버 동작)
+        _animalInfoListLiveData.value = HomeState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            val info = animalRepository.getAnimalInfo()
-            info?.let {
-                _animalInfoLiveData.postValue(HomeState.Success(
-                    it.animalId,
-                    it.userId,
-                    it.name,
-                    it.birthDay,
-                    it.weight,
-                    it.sex,
-                    it.isNeutered,
-                    it.imageUrl
-                ))
+            val infoList = animalRepository.getAllAnimalInfo()
+            infoList?.let{
+                if(infoList.isNullOrEmpty()) {
+                    _animalInfoListLiveData.postValue(HomeState.Error(context.getString(R.string.not_register_animal)))
+                } else {
+                    _animalInfoListLiveData.postValue(HomeState.SuccessList(infoList))
+                }
             } ?: kotlin.run {
-                _animalInfoLiveData.postValue(HomeState.Error(context.getString(R.string.error_response)))
+                _animalInfoListLiveData.postValue(HomeState.Error(context.getString(R.string.error_response)))
             }
         }
     }

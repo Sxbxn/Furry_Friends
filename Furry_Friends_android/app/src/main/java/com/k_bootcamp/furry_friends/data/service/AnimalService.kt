@@ -20,7 +20,7 @@ interface AnimalService {
     suspend fun submitAnimal(
         @Part animalImg: MultipartBody.Part,
         @Part("animalJson") animal: RequestBody
-    ): Response<String>
+    ): Response<AnimalResponse>
 //    Response<SubmitAnimalResponse>
 
 
@@ -30,7 +30,7 @@ interface AnimalService {
 
 
     // 루틴 정보 가져오기
-    @GET("/{animalId}")  ////
+    @GET("/check/checklist")  ////
     suspend fun getRoutinesFromId(): Response<List<RoutineResponse>>
 
     @POST("/routine")
@@ -76,4 +76,6 @@ interface AnimalService {
         @Part("updateAnimal") jsonUpdateProfile: RequestBody
     ): Response<String>
 
+    @GET("/pet/management")
+    suspend fun getAllAnimalInfo(): Response<List<AnimalResponse>>
 }
