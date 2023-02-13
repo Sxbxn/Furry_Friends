@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, Blueprint, url_for, redirect
+from flask import request, jsonify, session, Blueprint, url_for, redirect
 from models import User, Animal
 from connect_db import db
 from sqlalchemy import and_
@@ -30,16 +30,15 @@ def s3_connection():
 
 def query_to_dict(objs):
     try:
-        lst = []
-        for obj in objs:
-            obj = obj.__dict__
+        lst = [obj.__dict__ for obj in objs]
+        for obj in lst:
             del obj['_sa_instance_state']
-            lst.append(obj)
         return lst
     except TypeError: # non-iterable
         objs = objs.__dict__
         del objs['_sa_instance_state']
-        return objs
+        lst = [objs]
+        return lst
 
 
 s3 = s3_connection()
@@ -47,8 +46,6 @@ s3 = s3_connection()
 
 @bp.route('/management', methods=['GET'])
 def management():
-    # 유저아이디
-    # session['login'] = request.headers['user_id']
 
     # 해당 아이디로 등록한 동물 전부
     animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
@@ -60,27 +57,49 @@ def management():
     
     # 등록한 동물이 있음
     else:
-        # 동물 리스트 반환 - 선택 시 header로 animal_id 보내기?
-        return jsonify(animal_list)
+        # 동물이 1마리 --> 자동 선택
+        if len(animal_list) == 1:
+            session['curr_animal'] = animal_list['animal_id']
+            return redirect(url_for("pet.profile"))
+        
+        # 동물 리스트 반환 - 선택 시 해당 동물 정보 json으로 전송 (프론트에선 선택된 동물 id 헤더로 보내기?)
+        else:
+            return jsonify(animal_list)
 
 
 @bp.route('/profile', methods=["GET"])
 def profile():
     # 동물 정보 조회
-    session['login'] = request.headers['user_id']
-    session['curr_animal'] = request.headers['animal_id']
+    # 세션에 관리할 동물 o
+    if 'curr_animal' in session:
 
-    animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+        # 관리할 동물 header와 일치 시
+        if session['curr_animal'] == request.headers['animal_id']:
+            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+            animal = query_to_dict(animal)
+            return jsonify(animal)
+        
+        # 관리할 동물 교체 시
+        else:
+            session['curr_animal'] = request.headers['animal_id']
+            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+            animal = query_to_dict(animal)
+            return jsonify(animal)
 
-    animal = query_to_dict(animal)
-    return jsonify(animal)  
+    # 세션에 관리할 동물 x
+    else:
+        try:
+        # header로 animal_id 받으면 프로필
+            session['curr_animal'] = request.headers['animal_id']
+            return redirect(url_for('pet.profile'))
+
+        except:   
+            # header로 온 게 없으면 동물 관리 화면
+            return redirect(url_for('pet.management'))
 
 
 @bp.route('/update', methods=["GET","PUT"])
 def info_update():
-    # session['login'] = request.headers['user_id']
-    session['curr_animal'] = request.headers['animal_id']
-
     # 동물 정보 수정 페이지 접근
     if request.method == "GET":
         animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
@@ -89,8 +108,7 @@ def info_update():
         return jsonify(animal)  
 
     # 수정 정보 전달 시
-    # 수정사항 하나씩 전송? or 수정사항 한번에 전송?
-
+    # 수정사항 한번에 전송받음
     else: # PUT
         animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
 
@@ -148,7 +166,8 @@ def info_update():
 
 @bp.route('/delete', methods=["DELETE"])
 def pet_delete():
-    session['login'] = request.headers['user_id']
+    
+    # 삭제할 동물 id header로 받음
     session['curr_animal'] = request.headers['animal_id']
 
     try:
