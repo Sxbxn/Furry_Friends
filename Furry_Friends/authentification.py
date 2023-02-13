@@ -198,7 +198,7 @@ def register_animal():
             curr_animal = Animal.query.filter(and_(Animal.user_id == session['login'],
                                                 Animal.animal_name == animal_name)).first()
 
-            curr_animal = jsonify(query_to_dict(curr_animal))
+            curr_animal = query_to_dict(curr_animal)
 
             return jsonify(curr_animal)
             # 등록된 동물 정보 json 반환, 이 뒤로 header에 animal_id 주고받기
