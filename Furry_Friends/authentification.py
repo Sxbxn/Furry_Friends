@@ -99,7 +99,10 @@ def login():
             session.clear()
             session['login'] = user_id
 
-            return f"{session['login']} logged in"
+            animal = query_to_dict(Animal.query.filter_by(user_id = user_id).first())
+            session['curr_animal'] = animal[0]['animal_id']
+
+            return jsonify(animal)
 
             # animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
 
