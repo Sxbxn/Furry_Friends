@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-    <title>Check Pet - Sign</title>
+    <title>Furry Friend - Sign</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
+
     <link rel="stylesheet" href="../css/sign.css">
 
 </head>
@@ -17,26 +17,52 @@
             <!-- SIGN UP -->
             <div class="col align-items-center flex-col sign-up">
                 <div class="form-wrapper align-items-center">
-                    <div class="form sign-up">
-                        <div class="input-group">
-                            <i class='bx bx-mail-send'></i>
-                            <input type="email" placeholder="Email">
-                        </div>
-
+                    <form class="form sign-up" id="sign-up-form">
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Username">
+                            <input type="text" name="user_id" placeholder="ID">
                         </div>
 
-                        <div class="input-group">
-                            <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="ID">
-                        </div>
-                        
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Password">
+                            <input type="password" name="pw" placeholder="Password">
                         </div>
+
+                        <div class="input-group">
+                            <i class='bx bx-mail-send'></i>
+                            <input type="email" name="email" placeholder="Email">
+                        </div>
+
+
+                        <div class="input-group">
+                            <div class="tabs">
+                                <input type="radio" id="radio-1" name="user_type" checked value=0>
+                                <label class="tab" for="radio-1">일반 사용자</label>
+                                <input type="radio" id="radio-2" name="user_type" value=1>
+                                <label class="tab" for="radio-2">의료 관계자</label>
+                                <span class="glider"></span>
+                            </div>
+                        </div>
+
+
+
+
+                        <!-- <div class="select input-group">
+                        	<div class="form_toggle row-vh d-flex flex-row justify-content-between" >
+
+                                <div class="form_radio_btn">
+                                    <input type="radio" name="user_type" checked="checked"/><label for="type1">일반 사용자</label>
+
+                                </div>
+                                                            
+                                <div class="form_radio_btn">
+                                    <input type="radio" name="user_type"/><label for="type2">의료 관계자</label>
+                                </div>
+                            </div> -->
+                            <!-- <input type="radio" name="user_type" checked="checked"/><label for="type1">일반 사용자</label>
+                            <input type="radio" name="user_type"/><label for="type2">의료 관계자</label> -->
+                        <!-- </div> -->
+
                         <button>
                             Sign up
                         </button>
@@ -48,7 +74,7 @@
                                 Sign in here
                             </b>
                         </p>
-                    </div>
+                    </form>
                 </div>
 
             </div>
@@ -56,16 +82,19 @@
             <!-- SIGN IN -->
             <div class="col align-items-center flex-col sign-in">
                 <div class="form-wrapper align-items-center">
-                    <div class="form sign-in">
+                    <form class="form sign-in" id="sign-in-form">
+                        <!-- <input type="text" id="user_id" placeholder="ID">
+                        <input type="password" id="pw" placeholder="Password">
+                        <button type="submit">Submit</button> -->
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="ID">
+                            <input type="text" name="user_id" placeholder="ID">
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Password">
+                            <input type="password" name="pw" placeholder="Password">
                         </div>
-                        <button>
+                        <button type="submit">
                             Sign in
                         </button>
                         <!-- <p>
@@ -81,11 +110,11 @@
                                 Sign up here
                             </b>
                         </p>
-                    </div>
+                    </form>
                 </div>
-                <div class="form-wrapper">
+                <!-- <div class="form-wrapper">
 
-                </div>
+                </div> -->
             </div>
             <!-- END SIGN IN -->
         </div>
