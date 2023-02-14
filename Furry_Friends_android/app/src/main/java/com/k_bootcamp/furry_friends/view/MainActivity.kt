@@ -66,8 +66,10 @@ class MainActivity : AppCompatActivity() {
 
     fun showFragment(fragment: Fragment, tag: String) {
         // 기존의 프래그먼트 아이디를 찾아서
-        val findFragment = supportFragmentManager.findFragmentByTag(tag)
+//        val findFragment = supportFragmentManager.findFragmentByTag(tag)
         supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.enter_from_right_animation, R.anim.exit_from_right_animation,R.anim.enter_from_right_animation, R.anim.exit_from_right_animation)
+            .addToBackStack(null)
             .replace(R.id.fragmentContainerView, fragment).commit()
 
     }

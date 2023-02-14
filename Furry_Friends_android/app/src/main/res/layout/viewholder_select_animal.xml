@@ -19,7 +19,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp">
             <ImageView
@@ -39,7 +39,6 @@
                 android:id="@+id/selectAnimalName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
                 tools:text="멍멍이"
                 android:textAlignment="center"
                 android:textStyle="bold"
