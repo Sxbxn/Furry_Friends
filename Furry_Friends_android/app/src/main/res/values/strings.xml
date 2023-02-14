@@ -6,7 +6,7 @@
     <string name="setting">setting</string>
     <string name="add_checklist">checklist</string>
     <string name="writing">writing</string>
-    <string name="hello">안녕하세요!</string>
+    <string name="hello">안녕하세요!&#160;%s님</string>
     <string name="topic">Calendar</string>
     <string name="forget_pwd_text">Forget password?</string>
     <string name="sign_in_text">가입하기</string>

@@ -102,6 +102,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                         // 진짜 데이터
                         when(it.message) {
                             getString(R.string.not_register_animal) -> {
+                                binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
                                 cardViewText(binding, R.string.submit_animal, R.string.submit)
                                 binding.submit.submitButton.setOnClickListener {
                                     // 등록 페이지로 넘어가기
@@ -117,6 +118,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                                 binding.submit.topicTextView.text =
                                     getString(R.string.load_fail_animal_info)
                                 binding.submit.submitButton.text = getString(R.string.retry)
+                                binding.userTextView.text = String.format(resources.getString(R.string.hello), "GUEST")
                                 binding.submit.submitButton.setOnClickListener {
                                     observeData()
                                 }
@@ -164,6 +166,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                         }
                     }
                     binding.progressbar.toGone()
+                    binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
                     binding.animalInfo.root.toVisible()
                     binding.animalInfo.animalName.text = mainAnimal.name
                     binding.animalInfo.animalAge.text = (month - animalMonth).toString() + "살"

@@ -1,6 +1,7 @@
 package com.k_bootcamp.furry_friends.view.main.home
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -58,6 +59,7 @@ class HomeViewModel @Inject constructor(
         _animalInfoListLiveData.value = HomeState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             val infoList = animalRepository.getAllAnimalInfo()
+            Log.e("infoList",infoList.toString())
             infoList?.let{
                 if(infoList.isNullOrEmpty()) {
                     _animalInfoListLiveData.postValue(HomeState.Error(context.getString(R.string.not_register_animal)))
