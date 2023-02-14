@@ -14,12 +14,14 @@ class User(db.Model):
     user_id = db.Column(db.String(10), primary_key=True, nullable=False, unique=True)
     pw = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(40), nullable=False, unique=True)
+    vet = db.Column(db.Integer, nullable=False, default=0)
 
 
-    def __init__(self, user_id, pw, email):
+    def __init__(self, user_id, pw, emai, vet):
         self.user_id = user_id
         self.pw = pw
         self.email = email
+        self.vet = vet
 
 
 class Animal(db.Model):
