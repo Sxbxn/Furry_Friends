@@ -55,9 +55,9 @@ def register():
         user_id = forms['user_id']
         pw = generate_password_hash(forms['pw'])
         email = forms['email']
+        vet = forms['vet']
 
-        user = User(user_id = user_id, pw=pw, email=email)
-
+        user = User(user_id = user_id, pw=pw, email=email, vet=vet)
         # 중복 검사
         check_email = User.query.filter(User.email==email).first()
         check_userid = User.query.filter(User.user_id==user_id).first()
