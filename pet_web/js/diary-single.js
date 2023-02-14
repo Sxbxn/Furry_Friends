@@ -1,78 +1,76 @@
-"index": "1",
-"img_url": "~~~~",
-"title": "제목1",
-"content": "내용1",
-"date": "날짜"
+// "animal_id": int,
+// "content": str,
+// "currdate": str,
+// "image": str,
+// "index": int,
+// "title": str,
+// "user_id": str
 
-function createDiarySingle(data) {
-	// img_url = data[i].img_url;
-	// title = data[i].title;
-	// content = data[i].content;
-	// date = data[i].date;
-
-	img_url = data.thumbnailUrl;
-	title = data.title;
-	content = data.title;
-	date = data.id;
-
-	console.log(img_url, title, content, date)
-
-	let col_div = document.createElement("div");
-	col_div.setAttribute('class', 'col-md-4 d-flex ftco-animate');
-	col_div.setAttribute('id', 'col_div' + date);
-	document.getElementById('diary').append(col_div);
-
-	let blog_div = document.createElement("div");
-	blog_div.setAttribute('class', 'blog-entry align-self-stretch');
-	blog_div.setAttribute('id', 'blog_div' + date);
-	document.getElementById('col_div' + date).append(blog_div);
-
-	let img_div = document.createElement("div");
-	img_div.setAttribute('class', 'block-20 rounded');
-	img_div.setAttribute('id', 'img_div' + date);
-	img_div.setAttribute('style', 'background-image: url(' + img_url + ');');
-	document.getElementById('blog_div' + date).append(img_div);
-
-	let text_div = document.createElement("div");
-	text_div.setAttribute('class', 'text p-4');
-	text_div.setAttribute('id', 'text_div' + date);
-	document.getElementById('blog_div' + date).append(text_div);
-
-	let meta_div = document.createElement("div");
-	meta_div.setAttribute('class', 'meta mb-2');
-	meta_div.setAttribute('id', 'meta_div' + date);
-	document.getElementById('text_div' + date).append(meta_div);
-
-	let date_div = document.createElement("div");
-	date_div.setAttribute('id', 'date' + date);
-	date_div.textContent = date;
-	document.getElementById('meta_div' + date).append(date_div);
-
-	let title_div = document.createElement("div");
-	title_div.textContent = title;
-	// title_div.setAttribute();
-	document.getElementById('meta_div' + date).append(title_div);
-
-	let content_h3 = document.createElement("h3");
-	content_h3.setAttribute('class', 'heading');
-	content_h3.textContent = content;
-	document.getElementById('text_div' + date).append(content_h3);
+if (sessionId == null) {
+	alert('로그인이 필요합니다!');
+	history.back()
 }
 
-function showDiarySingle() {
-	fetch('https://jsonplaceholder.typicode.com/photos/')
-		.then((response) => response.json())
-		.then((data) => callCreateDiarySingle(data));
-}
+const idx = localStorage.getItem("content_idx");
 
-function callCreateDiarySingle(data) {
-	for(let i = 0; i < 5; i++) {
-		console.log(data[i]);
-		createDiarySingle(data[i]);
+let obj = {
+	"index": idx
+};
+
+// fetch('/journal/content', {
+	fetch('https://jsonplaceholder.typicode.com/photos/', {
+	method: 'GET',
+	// headers: { 'Content-Type': 'application/json' },
+	// body: JSON.stringify(obj),
+})
+	// .then(console.log(JSON.stringify(obj)))
+	.then(response => response.json())
+	.then((data) => callCreateDiary(data))
+	// .then((data) => createDiaryDetail(data))
+
+	function callCreateDiary(data) {
+		for (let i = 0; i < 1; i++) {
+			// console.log(data[i]);
+			createDiaryDetail(data[i]);
+	
+		}
 	}
-}
 
-showDiarySingle();
+function createDiaryDetail(data) {
+	// const image = data.image;
+	// const date = data.currdate;
+	// const title = data.title;
+	// const content = data.content;
+
+	const image = data.thumbnailUrl;
+	const title = data.title;
+	const content = data.title;
+	// content = data.content;
+	const date = data.id;
+
+	let img_p = document.createElement("p");
+	img_p.setAttribute('id', 'img_p');
+	document.getElementById('col-lg-div').append(img_p);
+
+	let img = document.createElement("img");
+	img.setAttribute('class', 'img-fluid')
+	img.setAttribute('src', image);
+	document.getElementById('img_p').append(img);
+
+	let date_p = document.createElement("p");
+	// date_p.textContent(date);
+	date_p.textContent = date;
+	document.getElementById('col-lg-div').append(date_p);
+
+	let title_h2 = document.createElement("h2");
+	title_h2.setAttribute('class', 'mb-3');
+	title_h2.textContent = title;
+	document.getElementById('col-lg-div').append(title_h2);
+
+	let content_p = document.createElement("p");
+	content_p.textContent = content;
+	document.getElementById('col-lg-div').append(content_p);
+}
 
 // https://jsonplaceholder.typicode.com/photos
 // https://www.objgen.com/json/local/T3trUbCRX
