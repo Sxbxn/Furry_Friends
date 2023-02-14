@@ -128,6 +128,7 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         val imageUrl = args?.get("url")
         val kind = args?.get("kind")
         val affectedArea = args?.get("affectedArea")
+        val comment = args?.get("comment") as String
         saveWriting.toGone()
         // read only에선 스피너 없애고 텍스트만 보여주기
         animalKind.toGone()
@@ -148,6 +149,11 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         animalKindTextView.text = kind.toString()+", "
         animalAffectedAreaTextView.text = affectedArea.toString()
         imageButtonImageSelect.load(imageUrl.toString())
+        if(comment.isNotEmpty()) {
+            shimmerLayout2.toVisible()
+            shimmerLayout2.hideShimmer()
+            feedbackTextView.text = comment
+        }
 
     }
 
