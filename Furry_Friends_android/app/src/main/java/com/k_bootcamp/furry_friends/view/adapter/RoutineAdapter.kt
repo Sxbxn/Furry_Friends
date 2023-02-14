@@ -1,6 +1,5 @@
 package com.k_bootcamp.furry_friends.view.adapter
 
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Handler
@@ -9,7 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
+import com.k_bootcamp.furry_friends.model.animal.SendRoutine
 import com.k_bootcamp.furry_friends.databinding.ViewholderRoutineBinding
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.animal.Routine
@@ -108,7 +107,7 @@ class RoutineAdapter(
         }
     }
 
-    private fun deleteDateRoutine(routine: RoutineResponse) {
+    private fun deleteDateRoutine(routine: SendRoutine) {
         CoroutineScope(Dispatchers.IO).launch {
 //            val response = animalRepository.deleteDateRoutine(routine)
             val response = viewModel.animalRepo.deleteDateRoutine(routine)
@@ -118,7 +117,7 @@ class RoutineAdapter(
         }
     }
 
-    private fun submitDateRoutine(routine: RoutineResponse) {
+    private fun submitDateRoutine(routine: SendRoutine) {
         CoroutineScope(Dispatchers.IO).launch {
 //            val response = animalRepository.submitDateRoutine(routine)
             val response = viewModel.animalRepo.submitDateRoutine(routine)
@@ -131,7 +130,7 @@ class RoutineAdapter(
     private fun initCheckBox(binding: ViewholderRoutineBinding, routine: Routine, position: Int) {
         // true이면 저장 정보 보내기, false이면 삭제 정보 보내기
         binding.chkMon.setOnCheckedChangeListener { _, isChecked ->
-            val sendRoutine = RoutineResponse(
+            val sendRoutine = SendRoutine(
                 routine.routineId,
                 routine.animalId,
                 routine.routineName,
@@ -156,7 +155,7 @@ class RoutineAdapter(
             }
         }
         binding.chkTue.setOnCheckedChangeListener { _, isChecked ->
-            val sendRoutine = RoutineResponse(
+            val sendRoutine = SendRoutine(
                 routine.routineId,
                 routine.animalId,
                 routine.routineName,
@@ -178,7 +177,7 @@ class RoutineAdapter(
             }
         }
         binding.chkWed.setOnCheckedChangeListener { _, isChecked ->
-            val sendRoutine = RoutineResponse(
+            val sendRoutine = SendRoutine(
                 routine.routineId,
                 routine.animalId,
                 routine.routineName,
@@ -200,7 +199,7 @@ class RoutineAdapter(
             }
         }
         binding.chkThu.setOnCheckedChangeListener { _, isChecked ->
-            val sendRoutine = RoutineResponse(
+            val sendRoutine = SendRoutine(
                 routine.routineId,
                 routine.animalId,
                 routine.routineName,
@@ -222,7 +221,7 @@ class RoutineAdapter(
             }
         }
         binding.chkFri.setOnCheckedChangeListener { _, isChecked ->
-            val sendRoutine = RoutineResponse(
+            val sendRoutine = SendRoutine(
                 routine.routineId,
                 routine.animalId,
                 routine.routineName,
@@ -244,7 +243,7 @@ class RoutineAdapter(
             }
         }
         binding.chkSat.setOnCheckedChangeListener { _, isChecked ->
-            val sendRoutine = RoutineResponse(
+            val sendRoutine = SendRoutine(
                 routine.routineId,
                 routine.animalId,
                 routine.routineName,
@@ -266,7 +265,7 @@ class RoutineAdapter(
             }
         }
         binding.chkSun.setOnCheckedChangeListener { _, isChecked ->
-            val sendRoutine = RoutineResponse(
+            val sendRoutine = SendRoutine(
                 routine.routineId,
                 routine.animalId,
                 routine.routineName,
@@ -289,7 +288,7 @@ class RoutineAdapter(
         }
     }
 
-    private fun updateMonday(isChecked: Boolean, routine: RoutineResponse) =
+    private fun updateMonday(isChecked: Boolean, routine: SendRoutine) =
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.animalRepo.updateMonday(
                 isChecked,
@@ -298,7 +297,7 @@ class RoutineAdapter(
             )
         }
 
-    private fun updateTuesday(isChecked: Boolean, routine: RoutineResponse) =
+    private fun updateTuesday(isChecked: Boolean, routine: SendRoutine) =
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.animalRepo.updateTuesday(
                 isChecked,
@@ -307,7 +306,7 @@ class RoutineAdapter(
             )
         }
 
-    private fun updateWednesday(isChecked: Boolean, routine: RoutineResponse) =
+    private fun updateWednesday(isChecked: Boolean, routine: SendRoutine) =
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.animalRepo.updateWednesday(
                 isChecked,
@@ -316,7 +315,7 @@ class RoutineAdapter(
             )
         }
 
-    private fun updateThursday(isChecked: Boolean, routine: RoutineResponse) =
+    private fun updateThursday(isChecked: Boolean, routine: SendRoutine) =
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.animalRepo.updateThursday(
                 isChecked,
@@ -325,7 +324,7 @@ class RoutineAdapter(
             )
         }
 
-    private fun updateFriday(isChecked: Boolean, routine: RoutineResponse) =
+    private fun updateFriday(isChecked: Boolean, routine: SendRoutine) =
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.animalRepo.updateFriday(
                 isChecked,
@@ -334,7 +333,7 @@ class RoutineAdapter(
             )
         }
 
-    private fun updateSaturday(isChecked: Boolean, routine: RoutineResponse) =
+    private fun updateSaturday(isChecked: Boolean, routine: SendRoutine) =
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.animalRepo.updateSaturday(
                 isChecked,
@@ -343,7 +342,7 @@ class RoutineAdapter(
             )
         }
 
-    private fun updateSunday(isChecked: Boolean, routine: RoutineResponse) =
+    private fun updateSunday(isChecked: Boolean, routine: SendRoutine) =
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.animalRepo.updateSunday(
                 isChecked,

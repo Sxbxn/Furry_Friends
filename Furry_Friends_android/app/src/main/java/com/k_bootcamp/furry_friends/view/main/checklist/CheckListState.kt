@@ -1,10 +1,14 @@
 package com.k_bootcamp.furry_friends.view.main.checklist
 
+import com.k_bootcamp.furry_friends.data.response.animal.ReadOnlyCheckListResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
 
 sealed class CheckListState{
     object Loading: CheckListState()
     object Done: CheckListState()
+    data class ReadDone(
+        val response: ReadOnlyCheckListResponse
+    ): CheckListState()
     data class Success(
         val animalId: Int,
         val session: String,

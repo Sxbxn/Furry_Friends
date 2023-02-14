@@ -4,14 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.k_bootcamp.furry_friends.data.response.animal.RoutineStatusResponse
 import com.k_bootcamp.furry_friends.databinding.ViewholderRoutineCheckBinding
-import com.k_bootcamp.furry_friends.model.animal.RoutineStatus
-import com.k_bootcamp.furry_friends.util.provider.ResourcesProviderImpl
-import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistViewModel
-
 
 class RoutineCheckReadOnlyAdapter(
-    private val routineList: List<RoutineStatus>,
+    private val routineList: List<RoutineStatusResponse>,
     val context: Context
 ) : RecyclerView.Adapter<RoutineCheckReadOnlyAdapter.RoutineCheckViewHolder>() {
 
@@ -33,7 +30,7 @@ class RoutineCheckReadOnlyAdapter(
     inner class RoutineCheckViewHolder(private val binding: ViewholderRoutineCheckBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(routine: RoutineStatus) {
+        fun bind(routine: RoutineStatusResponse) {
             binding.routineName.text = routine.routineName
             binding.chkRoutine.isChecked = routine.status
         }

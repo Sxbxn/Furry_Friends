@@ -1,21 +1,13 @@
 package com.k_bootcamp.furry_friends.data.repository.animal
 
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.google.gson.JsonObject
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
+import com.k_bootcamp.furry_friends.data.response.animal.ReadOnlyCheckListResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
-import com.k_bootcamp.furry_friends.data.response.animal.RoutineSubmit
-import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
-import com.k_bootcamp.furry_friends.data.response.user.Session
-import com.k_bootcamp.furry_friends.data.response.user.SessionResponse
+import com.k_bootcamp.furry_friends.model.animal.SendRoutine
 import com.k_bootcamp.furry_friends.model.animal.*
-import com.k_bootcamp.furry_friends.model.user.LoginUser
-import com.k_bootcamp.furry_friends.model.user.SignInUser
-import com.k_bootcamp.furry_friends.util.network.APIResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 
 interface AnimalRepository {
     // remote service
@@ -25,22 +17,25 @@ interface AnimalRepository {
     // 정보 가져오기
     suspend fun getAnimalInfo(): AnimalResponse?
     // 서버에 저장된 루틴 목록 가져오기
-    suspend fun getRoutinesFromIdByServer(): List<RoutineResponse>?
+    suspend fun getRoutinesFromIdByServer(): List<SendRoutine>?
     // 루틴 요일 체크박스 활성화시 데이터 보내기
-    suspend fun submitDateRoutine(routine: RoutineResponse): String?
+    suspend fun submitDateRoutine(routine: SendRoutine): String?
 //    suspend fun submitDateRoutine(routine: RoutineResponse): RoutineSubmit?
     // 루틴 요일체크박스 비활성화시 데이터 보내기
-    suspend fun deleteDateRoutine(routine: RoutineResponse): String?
+    suspend fun deleteDateRoutine(routine: SendRoutine): String?
 //    suspend fun deleteDateRoutine(routine: RoutineResponse): RoutineSubmit?
     // 서버에 있는 특정 루틴 지우기
     suspend fun deleteRoutineByServer(routineName: Routine): String?
 //    suspend fun deleteRoutineByServer(routineName: Routine): RoutineSubmit?
     // 현재요일에 기록된 루틴 가져오기
-    suspend fun getRoutinesFromDate(): List<RoutineResponse>?
+    suspend fun getRoutinesFromDate(): List<SendRoutine>?
+    // 서버에서 특정 동물(헤더)의 모든 루틴 가져오기
+    suspend fun getAllRoutinesByAnimalId(/*헤더*/): List<RoutineResponse>?
     // 금일 체크리스트 등록(저장)하기
-    suspend fun submitDailyChecklist(checkList: CheckList): JsonObject?
+    suspend fun submitDailyChecklist(checkList: CheckList): String?
     // 캘린더에서 접근하여 해당일자 데이터 가져오기
-    suspend fun getChecklistDatas(date: String): CheckList?
+//    suspend fun getChecklistDatas(date: String, weekday: String): CheckList?
+    suspend fun getChecklistDatas(date: String, weekday: String): ReadOnlyCheckListResponse?
     // 동물 프로필 삭제
     suspend fun deleteAnimalInfo(): String?
     // 동물 프로필 수정

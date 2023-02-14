@@ -1,10 +1,8 @@
-package com.k_bootcamp.furry_friends.data.response.animal
+package com.k_bootcamp.furry_friends.model.animal
 
 import com.google.gson.annotations.SerializedName
 
-data class RoutineResponse (
-    @SerializedName("index")
-    val index: Int,
+data class SendRoutine (
     @SerializedName("routine_id")
     val routineId: Int,
     @SerializedName("animal_id")

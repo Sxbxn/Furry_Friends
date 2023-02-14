@@ -1,5 +1,6 @@
 package com.k_bootcamp.furry_friends.data.service
 
+import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.data.response.user.SessionResponse
 import com.k_bootcamp.furry_friends.data.response.user.SignInResponse
@@ -13,7 +14,8 @@ interface UserService {
     @POST("/auth/login")
     suspend fun loginUser(
         @Body user: LoginUser
-    ): Response<Session>
+    ): Response<AnimalResponse>
+//    ): Response<Session>
 //    ): Response<SessionResponse>
 
     // 정보가져오기---- 안 쓸 듯

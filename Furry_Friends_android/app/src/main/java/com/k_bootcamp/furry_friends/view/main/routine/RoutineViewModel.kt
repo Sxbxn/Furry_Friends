@@ -68,11 +68,13 @@ class RoutineViewModel @Inject constructor(
                     )
                 } else {
                     _routineLiveData.postValue(RoutineState.Loading)
+                    // 기본 루틴이 있는지 확인
                     val existRoutines = animalRepository.getRoutinesFromId(animalId)
                     // 해당 동물의 기본 루틴이 설정 되어있는 경우 기본을 없앰
                     if (existRoutines.isNotEmpty()) {
                         defaultRoutines = listOf()
                     }
+                    // 기본 루틴을 삽입함
                     defaultRoutines.forEach {
                         try {
                             animalRepository.insertRoutine(
@@ -86,16 +88,17 @@ class RoutineViewModel @Inject constructor(
                         } catch (e: Exception) {
                             _routineLiveData.postValue(RoutineState.Error(context.getString(R.string.error_response)))
                         }
-                        val routines = animalRepository.getRoutinesFromId(animalId)
-                        _routineLiveData.postValue(
-                            RoutineState.Success(
-                                animalId!!,
-                                session,
-                                routines
-                            )
-                        )
                     }
-                    getRoutinesFromId()
+                    val routines = animalRepository.getRoutinesFromId(animalId)
+                    _routineLiveData.postValue(
+                        RoutineState.Success(
+                            animalId!!,
+                            session,
+                            routines
+                        )
+                    )
+                    // 할 필요가 있나?  동기화해야하나??
+//                    getRoutinesFromId()
                 }
             }
         }

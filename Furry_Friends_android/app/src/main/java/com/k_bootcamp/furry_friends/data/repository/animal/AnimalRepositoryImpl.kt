@@ -1,14 +1,11 @@
 package com.k_bootcamp.furry_friends.data.repository.animal
 
-import com.google.gson.JsonObject
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
+import com.k_bootcamp.furry_friends.data.response.animal.ReadOnlyCheckListResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
-import com.k_bootcamp.furry_friends.data.response.animal.RoutineSubmit
-import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
-import com.k_bootcamp.furry_friends.data.response.user.Session
+import com.k_bootcamp.furry_friends.model.animal.SendRoutine
 import com.k_bootcamp.furry_friends.data.service.AnimalService
-import com.k_bootcamp.furry_friends.data.service.UserService
 import com.k_bootcamp.furry_friends.model.animal.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -38,7 +35,7 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun getRoutinesFromIdByServer(): List<RoutineResponse>? = withContext(ioDispatcher) {
+    override suspend fun getRoutinesFromIdByServer(): List<SendRoutine>? = withContext(ioDispatcher) {
         val response = animalService.getRoutinesFromId()
         if(response.isSuccessful) {
             response.body()
@@ -47,7 +44,7 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun submitDateRoutine(routine: RoutineResponse): String? = withContext(ioDispatcher) {
+    override suspend fun submitDateRoutine(routine: SendRoutine): String? = withContext(ioDispatcher) {
         val response = animalService.submitDateRoutine(routine)
         if(response.isSuccessful) {
             response.body()
@@ -56,7 +53,7 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun deleteDateRoutine(routine: RoutineResponse): String? = withContext(ioDispatcher) {
+    override suspend fun deleteDateRoutine(routine: SendRoutine): String? = withContext(ioDispatcher) {
         val response = animalService.deleteDateRoutine(routine)
         if(response.isSuccessful) {
             response.body()
@@ -74,7 +71,8 @@ class AnimalRepositoryImpl(
         }
     }
 
-    override suspend fun getRoutinesFromDate(): List<RoutineResponse>? = withContext(ioDispatcher) {
+    // deprecated
+    override suspend fun getRoutinesFromDate(): List<SendRoutine>? = withContext(ioDispatcher) {
         val response = animalService.getRoutinesFromDate()
         if(response.isSuccessful) {
             response.body()
@@ -82,7 +80,17 @@ class AnimalRepositoryImpl(
             null
         }
     }
-    override suspend fun submitDailyChecklist(checkList: CheckList): JsonObject? =  withContext(ioDispatcher) {
+
+    override suspend fun getAllRoutinesByAnimalId(): List<RoutineResponse>? = withContext(ioDispatcher) {
+        val response = animalService.getAllRoutinesByAnimalId()
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
+
+    override suspend fun submitDailyChecklist(checkList: CheckList): String? =  withContext(ioDispatcher) {
         val response = animalService.submitDailyChecklist(checkList)
         if(response.isSuccessful) {
             response.body()
@@ -90,8 +98,9 @@ class AnimalRepositoryImpl(
             null
         }
     }
-    override suspend fun getChecklistDatas(date: String): CheckList? =  withContext(ioDispatcher) {
-        val response = animalService.getChecklistDatas(date)
+//    override suspend fun getChecklistDatas(date: String, weekday: String): CheckList? =  withContext(ioDispatcher) {
+    override suspend fun getChecklistDatas(date: String, weekday: String): ReadOnlyCheckListResponse? =  withContext(ioDispatcher) {
+        val response = animalService.getChecklistDatas(date, weekday)
         if(response.isSuccessful) {
             response.body()
         } else {

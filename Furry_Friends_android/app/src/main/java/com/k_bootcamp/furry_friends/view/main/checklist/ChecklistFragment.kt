@@ -14,17 +14,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.fc.baeminclone.screen.base.BaseFragment
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
+import com.k_bootcamp.furry_friends.data.response.animal.CheckListResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
+import com.k_bootcamp.furry_friends.data.response.animal.RoutineStatusResponse
+import com.k_bootcamp.furry_friends.model.animal.SendRoutine
 import com.k_bootcamp.furry_friends.databinding.FragmentDayDetailBinding
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.animal.CheckList
 import com.k_bootcamp.furry_friends.model.animal.RoutineStatus
-import com.k_bootcamp.furry_friends.util.etc.LoadingDialog
-import com.k_bootcamp.furry_friends.util.etc.initValidate
-import com.k_bootcamp.furry_friends.util.etc.shake
-import com.k_bootcamp.furry_friends.util.etc.validateEmpty
+import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.util.provider.ResourcesProviderImpl
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.adapter.RoutineCheckAdapter
@@ -93,26 +93,32 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                     }
                     is CheckListState.Success -> {
                         loading.dismiss()
-                        initRecyclerView(it.routines)
+                        // 작성 창에 루틴 체크할 수 있게 보여주는데 해당 요일에만 있는 루틴만 걸러서 보여줌
+                        // response 는 mon, tue... 문자열 형식으로 반환됨
+                        val todayRoutines = it.routines.filter { r-> r.weekDay == getDayOfWeek() }
+//                        initRecyclerView(it.routines)
+                        initRecyclerView(todayRoutines)
                     }
+                    is CheckListState.ReadDone -> {}
                 }
             }
         } else if(args?.getInt("flag") == 1){ // read only
             // 날짜 정보를 넘겨야함
-            val response = viewModel.getDatas(date)
+            viewModel.getDatas(date, getDayOfWeekFromDate(date))
             viewModel.routineLiveData.observe(viewLifecycleOwner) {
                 when (it) {
-                    is CheckListState.Done -> {
+                    is CheckListState.Done -> {}
+                    is CheckListState.ReadDone -> {
                         context?.toast("체크리스트 정보 로딩 완료")
                         loading.dismiss()
-                        initReadOnlyView(response!!)
-                        initRecyclerViewReadOnly(response.routineList)
+                        initReadOnlyView(it.response.checklistDefault)
+                        initRecyclerViewReadOnly(it.response.checklistRoutine)
                     }
                     is CheckListState.Loading -> {
                         loading.setVisible()
                     }
                     is CheckListState.Error -> {
-                        /////////////////////  test용 ---  삭제 예정  --> Success로 가야함
+                        /////////////////////  test용 ---  삭제 예정  --> initReadOnlyView
                         val date = args?.get("date") as GregorianCalendar
                         Log.e("date",args?.get("date").toString())
                         val d = Date(date.timeInMillis)
@@ -126,11 +132,11 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         binding.eatInputLayout.isEnabled = false
                         binding.otherInputLayout.isEnabled = false
                         binding.poobStatus.isEnabled = false
-                        binding.editTextAnimalEat.setText("123")
-                        binding.editTextAnimalOther.setText("123")
+//                        binding.editTextAnimalEat.setText("123")
+//                        binding.editTextAnimalOther.setText("123")
+//                        binding.poobStatusTextView.text = "123"
                         binding.poobStatus.toGone()
                         binding.poobStatusTextView.toVisible()
-                        binding.poobStatusTextView.text = "123"
                         /////////////// test
                         loading.setError()
                         when (it.message) {
@@ -168,7 +174,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
         } else if(args?.getInt("flag") == 1) { // read only
             val today = args?.get("date") as GregorianCalendar
             val d = Date(today.timeInMillis)
-            val sdf = SimpleDateFormat("yyyy.MM.dd")
+            val sdf = SimpleDateFormat("yyyy-MM-dd")
             date = sdf.format(d).toString()
             initDialog()
         }
@@ -176,7 +182,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
     }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
-    private fun initReadOnlyView(response:CheckList) = with(binding) {
+    private fun initReadOnlyView(response: CheckListResponse) = with(binding) {
         val date = args?.get("date") as GregorianCalendar
         val d = Date(date.timeInMillis)
         val sdf = SimpleDateFormat("yyyy.MM.dd.E")
@@ -234,7 +240,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                     Log.e("routineStatusList", routineStatusList.toString())
                     checkList = CheckList(date, eatQuantityStr, poobStatusStr, other, routineStatusList)
                     submitCheckList(checkList)
-                }, 100)
+                }, 300)
             }
         }
     }
@@ -293,7 +299,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
         binding.recyclerView.adapter = adapter
 
     }
-    private fun initRecyclerViewReadOnly(routines: List<RoutineStatus>) {
+    private fun initRecyclerViewReadOnly(routines: List<RoutineStatusResponse>) {
         val adapter = RoutineCheckReadOnlyAdapter(
             routines,
             requireContext()

@@ -5,16 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.k_bootcamp.furry_friends.R
-import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
-import com.k_bootcamp.furry_friends.databinding.ViewholderRoutineBinding
+import com.k_bootcamp.furry_friends.model.animal.SendRoutine
 import com.k_bootcamp.furry_friends.databinding.ViewholderRoutineCheckBinding
-import com.k_bootcamp.furry_friends.model.animal.Routine
 import com.k_bootcamp.furry_friends.model.animal.RoutineStatus
 import com.k_bootcamp.furry_friends.util.provider.ResourcesProviderImpl
-import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistFragment
 import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistViewModel
-import com.k_bootcamp.furry_friends.view.main.routine.RoutineViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

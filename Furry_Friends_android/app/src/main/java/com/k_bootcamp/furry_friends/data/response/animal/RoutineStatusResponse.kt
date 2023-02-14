@@ -1,15 +1,15 @@
-package com.k_bootcamp.furry_friends.model.animal
+package com.k_bootcamp.furry_friends.data.response.animal
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "routineStatus")
-data class RoutineStatus(
+data class RoutineStatusResponse(
     @SerializedName("index")
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
     @SerializedName("routine_id")
+    val animalId: Int,
+    @SerializedName("routine_index")
     val routineId: Int,
     @SerializedName("routine_name")
     val routineName: String,

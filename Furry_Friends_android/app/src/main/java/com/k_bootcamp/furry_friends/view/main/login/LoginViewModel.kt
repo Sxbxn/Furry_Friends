@@ -53,7 +53,7 @@ class LoginViewModel @Inject constructor(
             session?.let {
                 _isLogin.postValue(
                     LoginState.Success(
-                        it.sesionId,
+                        it.userId,
                         it.animalId
                     )
                 )

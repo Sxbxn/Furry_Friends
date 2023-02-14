@@ -1,11 +1,9 @@
 package com.k_bootcamp.furry_friends.data.service
 
-import com.google.gson.JsonObject
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
+import com.k_bootcamp.furry_friends.data.response.animal.ReadOnlyCheckListResponse
 import com.k_bootcamp.furry_friends.data.response.animal.RoutineResponse
-import com.k_bootcamp.furry_friends.data.response.animal.RoutineSubmit
-import com.k_bootcamp.furry_friends.data.response.animal.SubmitAnimalResponse
-import com.k_bootcamp.furry_friends.data.response.user.Session
+import com.k_bootcamp.furry_friends.model.animal.SendRoutine
 import com.k_bootcamp.furry_friends.model.animal.CheckList
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import okhttp3.MultipartBody
@@ -22,47 +20,57 @@ interface AnimalService {
         @Part("animalJson") animal: RequestBody
     ): Response<AnimalResponse>
 
-    @POST("/routine")
+    //  요일별 루틴 등록하기
+    @POST("/routine/routine")
     suspend fun submitDateRoutine(
-        @Body routine: RoutineResponse
+        @Body routine: SendRoutine
     ): Response<String>
 //    ): Response<RoutineSubmit>
 
-    @POST("/weekdayRoutine")
+    @POST("/routine/weekdayRoutine")
     suspend fun deleteDateRoutine(
-        @Body routine: RoutineResponse
+        @Body routine: SendRoutine
     ): Response<String>
 //    ): Response<RoutineSubmit>
 
-    @POST("/routinedelete")
+    @POST("/routine/routinedelete")
     suspend fun deleteRoutineByServer(
         @Body routine: Routine
     ): Response<String>
 //    ): Response<RoutineSubmit>
 
+    // 선택된 동물의 루틴을 모두 가져와서 요일별로 필터링해서 사용한다.
+    @GET("/routine/routine")
+    suspend fun getAllRoutinesByAnimalId(
+        // 헤더로 animal id 날아감
+    ): Response<List<RoutineResponse>>
 
 
 
-    @GET("/check/checklist")  ////
-    suspend fun getRoutinesFromDate(): Response<List<RoutineResponse>>
+    // deprecated
+    @GET("/check/checklist/deprecated")  ////
+    suspend fun getRoutinesFromDate(): Response<List<SendRoutine>>
+    // 루틴 정보 가져오기
+    @GET("/check/checklist/deprecated")  ////
+    suspend fun getRoutinesFromId(): Response<List<SendRoutine>>
+
+
 
     @POST("/check/checklist")
     suspend fun submitDailyChecklist(
         @Body checkList: CheckList
-    ): Response<JsonObject>
-    //    ): Response<String>  // 추후 실험 해야함  서버코드 보니까 얘는 json 반환하게 되어있었음
-
-    // 루틴 정보 가져오기
-    @GET("/check/checklist")  ////
-    suspend fun getRoutinesFromId(): Response<List<RoutineResponse>>
+    ): Response<String>
+//    ): Response<JsonObject>
+      // 추후 실험 해야함  서버코드 보니까 얘는 json 반환하게 되어있었음
 
 
-    @GET("/datas")
+    @GET("/check/checklist")
     suspend fun getChecklistDatas(
         // 추후 회의 후 추가
-        @Header("currdate") date: String
-    ): Response<CheckList>
-
+        @Header("currdate") date: String,
+        @Header("weekday") weekday: String
+    ): Response<ReadOnlyCheckListResponse>
+//    ): Response<CheckList>
 
 
 

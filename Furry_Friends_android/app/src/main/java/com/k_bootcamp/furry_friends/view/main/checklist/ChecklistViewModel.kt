@@ -9,6 +9,7 @@ import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
+import com.k_bootcamp.furry_friends.data.response.animal.ReadOnlyCheckListResponse
 import com.k_bootcamp.furry_friends.model.animal.CheckList
 import com.k_bootcamp.furry_friends.model.animal.RoutineStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,9 +47,8 @@ class ChecklistViewModel @Inject constructor(
             _routineLiveData.value = CheckListState.Error(context.getString(R.string.not_loged_in))
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                animalId = 1   ////////////////////////////////// 임시
                 // 현재 요일의 루틴을 가져옴
-                val routines = animalRepository.getRoutinesFromDate()
+                val routines = animalRepository.getAllRoutinesByAnimalId()
                 if (routines == null) {
                     _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error)))
                 } else {
@@ -105,20 +105,44 @@ class ChecklistViewModel @Inject constructor(
         }
     }
 
-    // 해당 요일의 체크리스트를 가져오는 함수 - 캘린더뷰에서 접근
-    fun getDatas(date: String): CheckList? {
-        var response: CheckList? = null
+    // 해당 요일의 체크리스트를 가져오는 함수 - 캘린더뷰에서 접근  -> get /check/checklist 에서 받아와서 파싱
+    fun getDatas(date: String, weekday: String) {
         _routineLiveData.postValue(CheckListState.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            response = animalRepository.getChecklistDatas(date)
+            val response = animalRepository.getChecklistDatas(date, weekday)
             if (response == null) {
                 _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
             } else {
-                _routineLiveData.postValue(CheckListState.Done)
+                _routineLiveData.postValue(CheckListState.ReadDone(response))
             }
         }
-        return response
     }
+//    fun getDatas(date: String, weekday: String): ReadOnlyCheckListResponse? {
+//        var response: ReadOnlyCheckListResponse? = null
+//        _routineLiveData.postValue(CheckListState.Loading)
+//        viewModelScope.launch(Dispatchers.IO) {
+//            response = animalRepository.getChecklistDatas(date, weekday)
+//            if (response == null) {
+//                _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
+//            } else {
+//                _routineLiveData.postValue(CheckListState.Done)
+//            }
+//        }
+//        return response
+//    }
+//    fun getDatas(date: String, weekday: String): CheckList? {
+//        var response: CheckList? = null
+//        _routineLiveData.postValue(CheckListState.Loading)
+//        viewModelScope.launch(Dispatchers.IO) {
+//            response = animalRepository.getChecklistDatas(date, weekday)
+//            if (response == null) {
+//                _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
+//            } else {
+//                _routineLiveData.postValue(CheckListState.Done)
+//            }
+//        }
+//        return response
+//    }
 
     suspend fun getAllStatus(): List<RoutineStatus> {
         val deffered = CoroutineScope(Dispatchers.IO).async {
