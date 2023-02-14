@@ -36,20 +36,20 @@ def checklist():
 
         if request.method=="GET":
 
-            routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
-                                            Routine.weekday == current_weekday_num)).all()
+#             routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
+#                                             Routine.weekday == current_weekday_num)).all()
             checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
                                                                 ChecklistDefault.currdate == currdate)).first()
             checklists_routine = ChecklistRoutine.query.filter(and_(ChecklistRoutine.animal_id == session['curr_animal'], 
                                                                 ChecklistRoutine.currdate == currdate)).all()
 
-            routines = query_to_dict(routines)
+#             routines = query_to_dict(routines)
             checklist_default = query_to_dict(checklist_default)
             checklists_routine = query_to_dict(checklists_routine)
 
-            # 루틴, 기본 체크리스트, 루틴 체크리스트 검색해서 불러옴
+            # 기본 체크리스트, 루틴 체크리스트 검색해서 불러옴
             # 없으면 json 안에 빈 리스트
-            return jsonify(routines, checklist_default, checklists_routine)
+            return jsonify(checklist_default, checklists_routine)
         
         else: # POST
 
