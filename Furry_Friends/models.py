@@ -17,7 +17,7 @@ class User(db.Model):
     vet = db.Column(db.Integer, nullable=False, default=0)
 
 
-    def __init__(self, user_id, pw, emai, vet):
+    def __init__(self, user_id, pw, email, vet):
         self.user_id = user_id
         self.pw = pw
         self.email = email
