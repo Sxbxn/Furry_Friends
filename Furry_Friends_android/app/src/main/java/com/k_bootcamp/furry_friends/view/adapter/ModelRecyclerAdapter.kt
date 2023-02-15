@@ -90,7 +90,7 @@ class ModelRecyclerAdapter<M : Model, VM : BaseViewModel>(
                 Pair("content",(modelList[position] as DailyModel).content),
                 Pair("index", (modelList[position] as DailyModel).id)
             )
-        },"2")
+        },DailyWritingFragment.TAG)
 //        notifyItemChanged(position) // Notify any registered observers that the item at position has changed.
     }
     @SuppressLint("SimpleDateFormat")

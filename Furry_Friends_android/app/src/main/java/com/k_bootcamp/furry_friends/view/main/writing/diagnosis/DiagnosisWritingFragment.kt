@@ -118,7 +118,7 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         Log.e("flag", args.toString())
         if (args?.get("flag") == 0) {
             initReadOnlyView()
-        } else {
+        } else if(args?.get("flag") == 1){
             initWritableView()
         }
     }
@@ -218,13 +218,13 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
     }
     // 진단 기록 등록 -> 등록하면 서버에서 받고 진단 후 진단 피드백을 반환해야함
     private fun submitDiagnosisWriting(body: MultipartBody.Part, jsonDiagnosisWriting: RequestBody) {
-        Log.e("daily", diagnosisWriting.toString())
+        Log.e("diagnosis", diagnosisWriting.toString())
         viewModel.submitDiagnosisWriting(body, jsonDiagnosisWriting)
         viewModel.isSuccess.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is DiagnosisState.Success -> {
                     loading.dismiss()
-                    requireContext().toast("진단 기록 등록이 완료되었습니다. 진단을 시작합니다.")
+                    requireContext().toast("진단 기록 등록이 완료되었습니다. 잠시 후에 결과를 확인해주세요.")
                     mainActivity.showFragment(TabWritingFragment.newInstance(), TabWritingFragment.TAG)
                 }
                 is DiagnosisState.Error -> {

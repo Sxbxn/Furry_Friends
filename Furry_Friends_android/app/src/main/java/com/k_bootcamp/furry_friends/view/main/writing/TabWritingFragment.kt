@@ -310,7 +310,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
             1 -> {
                 addRoutineButton.setOnClickListener {
                     mainActivity.showFragment(
-                        DiagnosisWritingFragment.newInstance(),
+                        DiagnosisWritingFragment.newInstance().apply { arguments = bundleOf(Pair("flag", 1))},
                         DiagnosisWritingFragment.TAG
                     )
                 }
