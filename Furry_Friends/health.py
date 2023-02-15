@@ -109,22 +109,15 @@ bp = Blueprint('health', __name__, url_prefix='/health')
 
 @bp.route('/records', methods=["GET"])
 def records():
-    # 유저아이디, 동물아이디
-    session['login'] = request.headers['user_id']
-    session['curr_animal'] = request.headers['animal_id']
 
     health_records = Health.query.filter(and_(Health.user_id==session['login'],
                                       Health.animal_id==session['curr_animal'])).all()
-    # print(health_records)
-    # print(health_records.image)
-    # print(type(health_records.content))
 
     if health_records != []:
         health_records = query_to_dict(health_records)
         for i in range(len(health_records)):
             health_records[i]['content'] = str(health_records[i]['content'])
 
-        # health_records[0]['content'] = health_records[0]['content'].decode()
         return jsonify(health_records)
     else:
         return "no entry"
@@ -132,9 +125,7 @@ def records():
 
 @bp.route('/content', methods=["GET"])
 def record_content():
-    session['login'] = request.headers['user_id']
-    session['curr_animal'] = request.headers['animal_id']
-
+    
     record_index = request.headers['index']
 
     health_record = Health.query.get(int(record_index))
@@ -146,9 +137,6 @@ def record_content():
 
 @bp.route('/factory', methods=["GET","POST"])
 def record_factory():
-    # 유저아이디, 동물아이디, 날짜
-    session['login'] = request.headers['user_id']
-    session['curr_animal'] = request.headers['animal_id']
 
     if request.method=="GET":
         return "health record entry form"
@@ -164,45 +152,39 @@ def record_factory():
 
             currdate = request.headers['currdate']
             kind = record['kind']
-            
+            affected_area = record['affected_area']
+
             f = request.files['file']
 
             if f:
                 # predict.py 함수로 전처리 후 모델 돌리기
                 # f 로 모델 돌려서 나온 값 db에 저장
-                # 결과 나오는 데 지연됨 --> Lazy Loading View ?
 
-                # 🔻 인공지능 팀에서 받은 predict.py와 app.py 🔻
-
-                # 모델 서버 내 저장 경로
-                path = "pybo\images\Ch07_lateral_EfficientNet_B0_test1.h5"
+                # 서버 내 모델 저장 경로
+                cat_path = "C:\\Users\\Admin\\Desktop\\EYE_Model\\고양이_안구질환_DenseNet.h5"
+                dog_path = "C:\\Users\\Admin\\Desktop\\EYE_Model\\개_안구질환_DenseNet121.h5"
 
                 # 이미지 전처리
                 img = mk_img(f)
                 
                 # 모델 결과 
-                result = predict_result(path, img)
+                if kind == "cat":
+                    result = predict_result(cat_path, img)
+                else:
+                    result = predict_result(dog_path, img)
 
 
-                # -------------
-                # 기존의 s3에 이미지 업로드 하는 코드
-                # -------------
-                # newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + ".png"
-
-                
-                # s3.upload_file(imgpath, AWS_S3_BUCKET_NAME, newname) # s3에 업로드
                 filename = secure_filename(f.filename)
                 img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{filename}"
                 image = img_url
                 output = upload_file_to_s3(f)
+
                 # 진단 결과
                 content = result
+
+                comment = "1" # 유저가 입력? or 피드백 받아오기?
                 
-                bodypart = "1"
-                # 진단 결과에 따른 피드백 (ex 질병 유의사항, 증상 등)
-                comment = "1"
-                
-                new_record = Health(animal=animal, user=user, content=content, image=image, currdate=currdate, animal_type=kind, comment=comment, bodypart=bodypart)  
+                new_record = Health(animal=animal, user=user, content=content, image=image, currdate=currdate, kind=kind, comment=comment, affected_area=affected_area)  
 
                 db.session.add(new_record)
                 db.session.commit()
@@ -211,9 +193,6 @@ def record_factory():
             else:
                 return "error - no image to diagnose"
 
-            
-        # except:
-        #     return "failed to create health record"
 
 @bp.route('/delete', methods=["DELETE"])
 def record_delete():
@@ -229,4 +208,3 @@ def record_delete():
     db.session.commit()
     
     return "record successfully removed"
-
