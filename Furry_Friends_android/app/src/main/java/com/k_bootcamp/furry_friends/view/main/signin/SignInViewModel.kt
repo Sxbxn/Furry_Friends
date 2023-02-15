@@ -8,15 +8,17 @@ import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
 import com.k_bootcamp.furry_friends.model.user.SignInUser
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ): BaseViewModel() {
     private val _state: MutableLiveData<SignInState> = MutableLiveData()
@@ -54,7 +56,7 @@ class SignInViewModel @Inject constructor(
 
     fun signInUser(user: SignInUser) {
         _state.value = SignInState.Loading
-        viewModelScope.launch(Dispatchers.IO)  {
+        viewModelScope.launch(ioDispatcher)  {
             val response = userRepository.signInUser(user)
             response?.let{
                 _state.postValue(SignInState.Success(it))

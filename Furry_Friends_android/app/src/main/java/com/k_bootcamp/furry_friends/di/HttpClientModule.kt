@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import java.util.concurrent.TimeUnit
 
 import javax.inject.Singleton
 
@@ -28,9 +29,9 @@ class HttpClientModule {
             .addInterceptor(loggingInterceptor)
             .addNetworkInterceptor(AuthInterceptor())
             .addInterceptor(NoConnectionInterceptor(context))
-//            .connectTimeout(10, TimeUnit.MINUTES)
-//            .writeTimeout(10,TimeUnit.MINUTES)
-//            .readTimeout(10, TimeUnit.MINUTES)
+            .connectTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10,TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
             .build()
     }
 }

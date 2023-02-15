@@ -12,12 +12,10 @@ import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
 import com.k_bootcamp.furry_friends.data.response.animal.ReadOnlyCheckListResponse
 import com.k_bootcamp.furry_friends.model.animal.CheckList
 import com.k_bootcamp.furry_friends.model.animal.RoutineStatus
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -25,6 +23,7 @@ import javax.inject.Inject
 class ChecklistViewModel @Inject constructor(
     private val animalRepository: AnimalRepository,
     private val routineDao: RoutineDao,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ) : BaseViewModel() {
     private val calendar = Calendar.getInstance()
@@ -46,7 +45,7 @@ class ChecklistViewModel @Inject constructor(
         if (session == null) {
             _routineLiveData.value = CheckListState.Error(context.getString(R.string.not_loged_in))
         } else {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(ioDispatcher) {
                 // 현재 요일의 루틴을 가져옴
                 val routines = animalRepository.getAllRoutinesByAnimalId()
                 if (routines == null) {
@@ -71,7 +70,7 @@ class ChecklistViewModel @Inject constructor(
 //                    // 루틴 페이지에서 요일 체크하면 서버에도 전송이 되므로 데이터는 로컬 -  데이터는 같음이 보장 됨
 //                    //
 //                    _routineLiveData.postValue(CheckListState.Loading)
-//                    viewModelScope.launch(Dispatchers.IO) {
+//                    viewModelScope.launch(ioDispatcher) {
 //                        // 실패하면 error 상태로 변경
 //                        val routines = animalRepository.getRoutinesFromIdByServer(animalId!!)
 //                        if(routines == null) {
@@ -95,7 +94,7 @@ class ChecklistViewModel @Inject constructor(
     // 체크리스트 저장하는 함수
     fun submitCheckList(checkList: CheckList) {
         _routineLiveData.postValue(CheckListState.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val response = animalRepository.submitDailyChecklist(checkList)
             if (response == null) {
                 _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
@@ -108,7 +107,7 @@ class ChecklistViewModel @Inject constructor(
     // 해당 요일의 체크리스트를 가져오는 함수 - 캘린더뷰에서 접근  -> get /check/checklist 에서 받아와서 파싱
     fun getDatas(date: String, weekday: String) {
         _routineLiveData.postValue(CheckListState.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val response = animalRepository.getChecklistDatas(date, weekday)
             if (response == null) {
                 _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
@@ -120,7 +119,7 @@ class ChecklistViewModel @Inject constructor(
 //    fun getDatas(date: String, weekday: String): ReadOnlyCheckListResponse? {
 //        var response: ReadOnlyCheckListResponse? = null
 //        _routineLiveData.postValue(CheckListState.Loading)
-//        viewModelScope.launch(Dispatchers.IO) {
+//        viewModelScope.launch(ioDispatcher) {
 //            response = animalRepository.getChecklistDatas(date, weekday)
 //            if (response == null) {
 //                _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
@@ -133,7 +132,7 @@ class ChecklistViewModel @Inject constructor(
 //    fun getDatas(date: String, weekday: String): CheckList? {
 //        var response: CheckList? = null
 //        _routineLiveData.postValue(CheckListState.Loading)
-//        viewModelScope.launch(Dispatchers.IO) {
+//        viewModelScope.launch(ioDispatcher) {
 //            response = animalRepository.getChecklistDatas(date, weekday)
 //            if (response == null) {
 //                _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
@@ -145,12 +144,12 @@ class ChecklistViewModel @Inject constructor(
 //    }
 
     suspend fun getAllStatus(): List<RoutineStatus> {
-        val deffered = CoroutineScope(Dispatchers.IO).async {
+        val deffered = CoroutineScope(ioDispatcher).async {
             routineDao.getAllStatus()
         }.await()
         return deffered
     }
 
     suspend fun deleteAllStatus() =
-        viewModelScope.launch(Dispatchers.IO) { routineDao.deleteAllStatus() }
+        viewModelScope.launch(ioDispatcher) { routineDao.deleteAllStatus() }
 }

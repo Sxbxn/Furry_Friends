@@ -9,15 +9,17 @@ import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
 import com.k_bootcamp.furry_friends.model.user.LoginUser
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ) : BaseViewModel() {
     private val _isLogin = MutableLiveData<LoginState>()
@@ -48,7 +50,7 @@ class LoginViewModel @Inject constructor(
 
     fun getSessionRequest(user: LoginUser) {
         _isLogin.value = LoginState.Loading
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val session = userRepository.loginUser(user)
             session?.let {
                 _isLogin.postValue(
@@ -63,7 +65,7 @@ class LoginViewModel @Inject constructor(
         }
 
     }
-    fun getUserInfo(sessionId: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun getUserInfo(sessionId: String) = viewModelScope.launch(ioDispatcher) {
         val response = userRepository.getInfo(sessionId)
         response?.let {
             getInfo.postValue(response ?: context.getString(R.string.error_response))

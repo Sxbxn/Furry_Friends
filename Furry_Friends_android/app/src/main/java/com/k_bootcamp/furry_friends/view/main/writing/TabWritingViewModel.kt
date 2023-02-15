@@ -12,15 +12,17 @@ import com.k_bootcamp.furry_friends.data.repository.animal.writing.WritingReposi
 import com.k_bootcamp.furry_friends.model.Model
 import com.k_bootcamp.furry_friends.model.writing.DailyModel
 import com.k_bootcamp.furry_friends.model.writing.DiagnosisModel
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TabWritingViewModel @Inject constructor(
     private val writingRepository: WritingRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ) : BaseViewModel() {
     private val session = Application.prefs.session
@@ -45,7 +47,7 @@ class TabWritingViewModel @Inject constructor(
             } else {
                 _tabLiveData.value = TabWritingStatus.Loading
                 // 세션, 동물id값으로 서버에서 일상 기록 목록을 가져옴
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch(ioDispatcher) {
                     val response = writingRepository.getDailyList()
                     if (response == null) {
                         _tabLiveData.postValue(TabWritingStatus.Error(context.getString(R.string.error_response)))
@@ -72,7 +74,7 @@ class TabWritingViewModel @Inject constructor(
             } else {
                 _tabLiveData.value = TabWritingStatus.Loading
                 // 세션, 동물id값으로 서버에서 일상 기록 목록을 가져옴
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch(ioDispatcher) {
                     val response = writingRepository.getDiagnosisList()
                     if (response == null) {
                         _tabLiveData.postValue(TabWritingStatus.Error(context.getString(R.string.error_response)))
@@ -89,7 +91,7 @@ class TabWritingViewModel @Inject constructor(
     }
 
     // 삭제로직 구현
-    fun deleteWriting(model: Model) = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteWriting(model: Model) = viewModelScope.launch(ioDispatcher) {
         _tabLiveData.postValue(TabWritingStatus.Loading)
         if (model is DailyModel) {
             Log.e("daily 삭제됨", model.toString())

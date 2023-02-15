@@ -10,15 +10,17 @@ import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
 import com.k_bootcamp.furry_friends.data.response.user.Session
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val animalRepository: AnimalRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ): BaseViewModel() {
     private val session = Application.prefs.session
@@ -34,7 +36,7 @@ class HomeViewModel @Inject constructor(
 //    fun getAnimalInfo() {
 //        // 해당 유저의 등록된 반려동물 정보를 가져와서 반환함
 //        _animalInfoLiveData.value = HomeState.Loading
-//        viewModelScope.launch(Dispatchers.IO) {
+//        viewModelScope.launch(ioDispatcher) {
 //            val info = animalRepository.getAnimalInfo()
 //            info?.let {
 //                _animalInfoLiveData.postValue(HomeState.Success(
@@ -57,7 +59,7 @@ class HomeViewModel @Inject constructor(
         // 해당 유저의 등록된 모든 반려동물 정보를 가져와서 반환함
         // 헤더로 사용자id와 동물id를 같이 보내지만 사용자id로만 필터링해서 보여주어야함 (서버 동작)
         _animalInfoListLiveData.value = HomeState.Loading
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val infoList = animalRepository.getAllAnimalInfo()
             Log.e("infoList",infoList.toString())
             infoList?.let{

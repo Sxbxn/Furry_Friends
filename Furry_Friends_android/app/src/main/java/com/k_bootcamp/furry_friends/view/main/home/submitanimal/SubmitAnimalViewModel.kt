@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
-
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -19,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SubmitAnimalViewModel @Inject constructor(
     private val animalRepository: AnimalRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ): BaseViewModel() {
     private val _isSuccess = MutableLiveData<SubmitAnimalState>()
@@ -31,7 +32,7 @@ class SubmitAnimalViewModel @Inject constructor(
 
     fun submitAnimal(body: MultipartBody.Part, json: RequestBody) {
         _isSuccess.value = SubmitAnimalState.Loading
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val response = animalRepository.submitAnimal(body, json)
             response?.let{
                 _isSuccess.postValue(SubmitAnimalState.Success(it))

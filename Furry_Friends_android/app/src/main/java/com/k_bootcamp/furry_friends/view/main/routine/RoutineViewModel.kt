@@ -21,11 +21,11 @@ import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
 import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import com.k_bootcamp.furry_friends.notification.AlarmReceiver
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -34,6 +34,7 @@ import javax.inject.Inject
 class RoutineViewModel @Inject constructor(
     private val animalRepository: AnimalRepository,
     private val routineDao: RoutineDao,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ) : BaseViewModel() {
     private val session = Application.prefs.session
@@ -57,11 +58,8 @@ class RoutineViewModel @Inject constructor(
             _routineLiveData.value = RoutineState.Error(context.getString(R.string.not_loged_in))
         } else {
             // 기본적으로 양치, 빗질, 산책 루틴을 로컬 db에 삽입하여 유지함  - 세션과 동물이 있을때만
-            viewModelScope.launch(Dispatchers.IO) {
-//                val info = animalRepository.getAnimalInfo(Session(session, animalId))
-//                animalId = info?.animalId
-//                animalId = 1   ////////////////////////////////// 임시
-                if (animalId == -999) {
+            viewModelScope.launch(ioDispatcher) {
+                if (animalId < 0) {
                     // 등록이 안되어 있음 -> 안되어있으므로 루틴에 아무것도 없어야함
                     _routineLiveData.postValue(
                         RoutineState.Error(context.getString(R.string.not_register_animal))
@@ -104,22 +102,40 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
+    // 동기화?
     private fun getRoutinesFromId() {
         _routineLiveData.postValue(RoutineState.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
-            val routines = animalRepository.getRoutinesFromIdByServer()
+        viewModelScope.launch(ioDispatcher) {
+            // 전부 가져와서 id로 필터링한 다음에 동기화
+            val routines = animalRepository.getAllRoutinesByAnimalId()?.filter { it.animalId == animalId }
             routines?.forEach {
-                animalRepository.insertRoutine(
-                    Routine(
-                        animalId = it.animalId,
-                        routineName = it.routineName,
-                        session = session!!,
-                        isOn = false
-                    )
-                )
+                when(it.weekDay) {
+                    "mon"-> {
+                        routineDao.updateMonday(true, animalId, it.routineName)
+                        // 알람 재설정?
+                    }
+                    "tue"-> { routineDao.updateTuesday(true, animalId, it.routineName) }
+                    "wed"-> { routineDao.updateWednesday(true, animalId, it.routineName) }
+                    "thu"-> { routineDao.updateThursday(true, animalId, it.routineName) }
+                    "fri"-> { routineDao.updateFriday(true, animalId, it.routineName) }
+                    "sat"-> { routineDao.updateSaturday(true, animalId, it.routineName) }
+                    "sun"-> { routineDao.updateSunday(true, animalId, it.routineName) }
+                }
             }
-            val updatedRoutines = animalRepository.getRoutinesFromId(animalId)
-            _routineLiveData.postValue(RoutineState.Success(animalId, session!!, updatedRoutines))
+
+//            val routines = animalRepository.getRoutinesFromIdByServer()
+//            routines?.forEach {
+//                animalRepository.insertRoutine(
+//                    Routine(
+//                        animalId = it.animalId,
+//                        routineName = it.routineName,
+//                        session = session!!,
+//                        isOn = false
+//                    )
+//                )
+//            }
+//            val updatedRoutines = animalRepository.getRoutinesFromId(animalId)
+//            _routineLiveData.postValue(RoutineState.Success(animalId, session!!, updatedRoutines))
         }
     }
 
@@ -128,7 +144,7 @@ class RoutineViewModel @Inject constructor(
             _routineLiveData.value = RoutineState.Error(context.getString(R.string.not_loged_in))
         } else {
             _routineLiveData.postValue(RoutineState.Loading)
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(ioDispatcher) {
                 var flag = true
                 // 추가 할 때 루틴이 존재하는 지 확인하고 없으면 넣음  to-do
                 val routines = routineDao.getRoutineFromId(animalId)
@@ -175,17 +191,6 @@ class RoutineViewModel @Inject constructor(
         val sun = routine.sun
         val weekStatus: BooleanArray = booleanArrayOf(false, sun, mon, tue, wed, thu, fri, sat)
 
-
-        var isRepeat = false
-        val len: Int = weekStatus.size
-        for (i in 0 until len) {
-            if (weekStatus[i]) {
-                isRepeat = true
-                break
-            }
-        }
-
-
         //AlarmReceiver에 값 전달
         val receiverIntent = Intent(context, AlarmReceiver::class.java)
 
@@ -197,10 +202,6 @@ class RoutineViewModel @Inject constructor(
         receiverIntent.putExtra("bundle",bundle)
 
         val pendingIntent = PendingIntent.getBroadcast(context, routine.routineId, receiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        //날짜 포맷을 바꿔주는 코드
-//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        var datetime: Date? = null
 
         // 특정 시간
         val cal = Calendar.getInstance()
@@ -219,7 +220,6 @@ class RoutineViewModel @Inject constructor(
             cal.set(Calendar.MILLISECOND, 0)
             Log.e("기본","기본")
         }
-//        val date = Date()
         val intervalDay: Long = 24 * 60 * 60 * 1000
         var selectTime: Long = cal.timeInMillis
         val currentTime: Long = System.currentTimeMillis()
@@ -262,17 +262,5 @@ class RoutineViewModel @Inject constructor(
         notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         mCalendar = GregorianCalendar()
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private fun todayToNextWeek(): List<String> {
-        val cal = Calendar.getInstance()
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val list = mutableListOf<String>()
-        for(i in 1..7) {
-            cal.add(Calendar.DAY_OF_MONTH, +1)
-            list.add(sdf.format(cal.time))
-        }
-        return list.toList()
     }
 }

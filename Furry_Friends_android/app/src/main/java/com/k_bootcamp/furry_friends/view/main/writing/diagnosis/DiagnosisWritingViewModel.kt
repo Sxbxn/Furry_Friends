@@ -6,10 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.animal.writing.WritingRepository
+import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DiagnosisWritingViewModel @Inject constructor(
     private val writingRepository: WritingRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
 ) : BaseViewModel() {
     private val _isSuccess = MutableLiveData<DiagnosisState>()
@@ -26,7 +28,7 @@ class DiagnosisWritingViewModel @Inject constructor(
 
     fun submitDiagnosisWriting(body: MultipartBody.Part, jsonDailyWriting: RequestBody) {
         _isSuccess.value = DiagnosisState.Loading
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val response = writingRepository.submitDiagnosisWriting(body, jsonDailyWriting)
             response?.let {
                 _isSuccess.postValue(DiagnosisState.Success(it))
