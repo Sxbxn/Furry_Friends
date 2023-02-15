@@ -7,6 +7,7 @@ import androidx.core.widget.doOnTextChanged
 import com.fc.baeminclone.screen.base.BaseActivity
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.databinding.ActivityLogInBinding
+import com.k_bootcamp.furry_friends.extension.appearSnackBar
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
@@ -101,6 +102,7 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
                 is LoginState.Error -> {
                     // error code
                     loading.setError()
+                    binding.root.appearSnackBar(this@LoginActivity, response.message)
 //                    when(response.message) {
 //
 //                    }

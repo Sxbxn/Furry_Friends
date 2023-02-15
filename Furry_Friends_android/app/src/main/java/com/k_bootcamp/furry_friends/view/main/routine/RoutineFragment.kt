@@ -58,17 +58,17 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                     binding.infoTextView.toVisible()
                     when (it.message) {
                         getString(R.string.not_loged_in) -> {
-                            binding.infoTextView.text = "로그인 되지 않았어요!"
+                            binding.infoTextView.text = getString(R.string.waiting_you)
                         }
                         getString(R.string.not_register_animal) -> {
-                            binding.infoTextView.text = "반려동물 등록이 되지 않았어요!"
+                            binding.infoTextView.text = getString(R.string.not_register_animals)
                         }
                         getString(R.string.exist_routine) -> {
                             requireContext().toast(it.message+"입니다.")
                             observeData()
                         }
                         else -> {
-                            binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
+                            binding.infoTextView.text = getString(R.string.unknown_error)
                         }
                     }
                     Log.e("message", it.message)

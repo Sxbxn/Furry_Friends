@@ -33,27 +33,19 @@ import com.google.gson.Gson
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentSubmitAnimalBinding
+import com.k_bootcamp.furry_friends.extension.appearSnackBar
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.animal.Animal
-import com.k_bootcamp.furry_friends.model.user.SignInUser
-import com.k_bootcamp.furry_friends.util.dialog.CustomAlertDialog
 import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.main.home.HomeFragment
-import com.k_bootcamp.furry_friends.view.main.login.LoginActivity
-import com.k_bootcamp.furry_friends.view.main.login.LoginState
-import com.k_bootcamp.furry_friends.view.main.signin.SignInState
-import com.k_bootcamp.furry_friends.view.main.signin.SignInViewModel
-
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Multipart
 import java.io.File
 import java.util.*
 
@@ -135,7 +127,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
             when (response) {
                 is SubmitAnimalState.Success -> {
                     loading.dismiss()
-                    requireContext().toast("등록이 완료되었습니다.")
+                    binding.root.appearSnackBar(requireContext(),response.isSuccess.name+" 등록 되었습니다 :)")
                     // 등록 후 animal_id 교체
 //                    Application.prefs.animalId = response.isSuccess.animalId
                     mainActivity.showFragment(HomeFragment.newInstance().apply {
@@ -269,11 +261,6 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
         mainActivity = context as MainActivity
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if(loading.isShowing)
-            loading.dismiss()
-    }
     companion object {
         fun newInstance() = SubmitAnimalFragment().apply {
 

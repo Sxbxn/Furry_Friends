@@ -6,9 +6,10 @@ import androidx.activity.viewModels
 import androidx.core.widget.doOnTextChanged
 import com.fc.baeminclone.screen.base.BaseActivity
 import com.k_bootcamp.furry_friends.databinding.ActivitySignInBinding
+import com.k_bootcamp.furry_friends.extension.appearSnackBar
+import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.user.SignInUser
 import com.k_bootcamp.furry_friends.util.etc.*
-import com.k_bootcamp.furry_friends.util.network.APIResponse
 import com.k_bootcamp.furry_friends.view.main.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -99,6 +100,7 @@ class SignInActivity: BaseActivity<SignInViewModel, ActivitySignInBinding>() {
             when (response) {
                 is SignInState.Success -> {
                     // success code
+                    toast("회원가입에 성공했습니다 :)")
                     loading.dismiss()
                     startActivity(Intent(this, LoginActivity::class.java).apply {
                         this@SignInActivity.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
@@ -107,6 +109,10 @@ class SignInActivity: BaseActivity<SignInViewModel, ActivitySignInBinding>() {
                 is SignInState.Error -> {
                     // error code
                     loading.setError()
+                    when(response.message) {
+                        "user id taken" -> binding.root.appearSnackBar(this@SignInActivity,"아이디가 중복되었습니다.")
+                        "email already exists" -> binding.root.appearSnackBar(this@SignInActivity,"이메일이 이미 존재합니다.")
+                    }
                 }
                 is SignInState.Loading -> {
                     // loading code

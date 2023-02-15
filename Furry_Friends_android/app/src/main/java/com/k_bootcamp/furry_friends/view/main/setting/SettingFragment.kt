@@ -185,12 +185,9 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 }
                 is SettingState.Success -> {
                     when (it.response) {
-                        "successfully removed" -> {
-                            requireContext().toast("삭제 성공")
-                        }
-                        "removal failed" -> {
-                            requireContext().toast("삭제 실패")
-                        }
+                        "successfully removed" -> requireContext().toast("프로필 삭제 성공")
+                        "removal failed" -> requireContext().toast("프로필 삭제 실패")
+                        "successfully updated" -> requireContext().toast("프로필 업데이트 성공")
                     }
                 }
 
@@ -203,8 +200,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override fun initViews() {
         loading = LoadingDialog(requireContext())
         // 더미데이터
-        dummies()
-
+//        dummies()
         initDialog()
         initSettings()
         initUpdateButton()
@@ -343,7 +339,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 //                            newInstance(),
 //                            TAG
 //                        )
-//                        observeData()
+                        observeData()
                     }
                 }
                 // 중요 !! 다이얼로그 뷰를 지워주지 않으면 뷰가 중첩되어 에러가 발생함  -> 어쩔 수 없이 findViewById 써야함
@@ -447,6 +443,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
+
     companion object {
         fun newInstance() = SettingFragment().apply {
 

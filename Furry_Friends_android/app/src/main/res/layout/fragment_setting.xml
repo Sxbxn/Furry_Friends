@@ -97,6 +97,7 @@
                     android:background="@drawable/button_style"
                     android:text="@string/change"
                     android:textColor="@color/white"
+                    android:visibility="gone"
                     android:textSize="10sp" />
             </LinearLayout>
 

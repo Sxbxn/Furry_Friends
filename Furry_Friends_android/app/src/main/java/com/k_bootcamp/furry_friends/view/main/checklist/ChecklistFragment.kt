@@ -111,6 +111,8 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                     is CheckListState.ReadDone -> {
                         context?.toast("체크리스트 정보 로딩 완료")
                         loading.dismiss()
+                        binding.noteCardView.toVisible()
+                        binding.recyclerView.toVisible()
                         initReadOnlyView(it.response.checklistDefault)
                         initRecyclerViewReadOnly(it.response.checklistRoutine)
                     }
@@ -119,38 +121,37 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                     }
                     is CheckListState.Error -> {
                         /////////////////////  test용 ---  삭제 예정  --> initReadOnlyView
-                        val date = args?.get("date") as GregorianCalendar
-                        Log.e("date",args?.get("date").toString())
-                        val d = Date(date.timeInMillis)
-                        val sdf = SimpleDateFormat("yyyy.MM.dd.E")
-                        val dates = sdf.format(d).toString().split(".")
-                        binding.yearTextView.text = dates[0] + ". "
-                        binding.monthTextView.text = dates[1] + ". "
-                        binding.dayOfMonthTextView.text = dates[2]
-                        binding.dayofWeekTextView.text = dates[3]+"요일"
-                        binding.submitButton.toGone()
-                        binding.eatInputLayout.isEnabled = false
-                        binding.otherInputLayout.isEnabled = false
-                        binding.poobStatus.isEnabled = false
-//                        binding.editTextAnimalEat.setText("123")
-//                        binding.editTextAnimalOther.setText("123")
-//                        binding.poobStatusTextView.text = "123"
-                        binding.poobStatus.toGone()
-                        binding.poobStatusTextView.toVisible()
+//                        val date = args?.get("date") as GregorianCalendar
+//                        Log.e("date",args?.get("date").toString())
+//                        val d = Date(date.timeInMillis)
+//                        val sdf = SimpleDateFormat("yyyy.MM.dd.E")
+//                        val dates = sdf.format(d).toString().split(".")
+//                        binding.yearTextView.text = dates[0] + ". "
+//                        binding.monthTextView.text = dates[1] + ". "
+//                        binding.dayOfMonthTextView.text = dates[2]
+//                        binding.dayofWeekTextView.text = dates[3]+"요일"
+//                        binding.submitButton.toGone()
+//                        binding.eatInputLayout.isEnabled = false
+//                        binding.otherInputLayout.isEnabled = false
+//                        binding.poobStatus.isEnabled = false
+//                        binding.poobStatus.toGone()
+//                        binding.poobStatusTextView.toVisible()
                         /////////////// test
                         loading.setError()
+                        binding.noteCardView.toGone()
+                        binding.recyclerView.toGone()
                         when (it.message) {
                             getString(R.string.not_loged_in) -> {
-                                binding.infoTextView.text = "로그인 되지 않았어요!"
+                                binding.infoTextView.text = getString(R.string.waiting_you)
                             }
                             getString(R.string.not_register_animal) -> {
-                                binding.infoTextView.text = "반려동물 등록이 되지 않았어요!"
+                                binding.infoTextView.text = getString(R.string.not_register_animals)
                             }
                             getString(R.string.exist_routine) -> {
                                 requireContext().toast(it.message)
                             }
                             else -> {
-                                binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
+                                binding.infoTextView.text = getString(R.string.unknown_error)
                             }
                         }
                     }

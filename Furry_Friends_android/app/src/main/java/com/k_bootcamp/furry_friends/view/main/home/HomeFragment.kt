@@ -26,6 +26,7 @@ import com.k_bootcamp.furry_friends.view.adapter.viewholder.listener.SelectAnima
 import com.k_bootcamp.furry_friends.view.main.checklist.ChecklistFragment
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.login.LoginActivity
+import com.k_bootcamp.furry_friends.view.main.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -72,11 +73,12 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 is HomeState.Error -> {
                     if (session == null) {
                         cardViewText(binding, R.string.require_login, R.string.log_in_text)
+                        binding.userTextView.text = getString(R.string.hello_null)
                         binding.submit.submitButton.setOnClickListener {
                             initLoginButton()
                         }
                     } else {
-//                        ///////////////////// 더미 데이터
+                        ///////////////////// 더미 데이터
 //                        val month = Calendar.getInstance().get(Calendar.YEAR)
 //                        val mainAnimal = dummies.first { animal -> animal.animalId == animalId }
 //                        val animalMonth = mainAnimal.birthDay.split(".")[0].toInt()
@@ -91,6 +93,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 //                        }
 //                        binding.progressbar.toGone()
 //                        binding.animalInfo.root.toVisible()
+//                        binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
 //                        binding.animalInfo.animalName.text = mainAnimal.name
 //                        binding.animalInfo.animalAge.text = (month - animalMonth).toString() + "살"
 //                        binding.animalInfo.animalSex.text = mainAnimal.sex
@@ -98,7 +101,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 //                        binding.animalInfo.add.setOnClickListener {
 //                            mainActivity.showFragment(SubmitAnimalFragment(), SubmitAnimalFragment.TAG)
 //                        }
-                        /////////////////////
+                      /////////////////
                         // 진짜 데이터
                         when(it.message) {
                             getString(R.string.not_register_animal) -> {
@@ -118,7 +121,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                                 binding.submit.topicTextView.text =
                                     getString(R.string.load_fail_animal_info)
                                 binding.submit.submitButton.text = getString(R.string.retry)
-                                binding.userTextView.text = String.format(resources.getString(R.string.hello), "GUEST")
+                                binding.userTextView.text = String.format(resources.getString(R.string.hello), session ?: "Unknown")
                                 binding.submit.submitButton.setOnClickListener {
                                     observeData()
                                 }
@@ -181,11 +184,13 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
 
-    override fun initViews() {
+    override fun initViews() = with(binding) {
         Log.e("session", session.toString())
-        holidayColor(binding.calendarView)
+        holidayColor(calendarView)
         initCalendarView()
-
+        goToSettings.setOnClickListener {
+            mainActivity.showFragment(SettingFragment.newInstance(), SettingFragment.TAG)
+        }
     }
 
     private fun initCalendarView() = with(binding) {

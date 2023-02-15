@@ -130,12 +130,12 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         binding.infoTextView.toVisible()
                         showErrorMessage(it.message, binding)
                         // 테스트 코드-----임시 데이터 *************************************** success에 들어갈것
-                        binding.diagnosisRecyclerView.toGone()
-                        binding.infoTextView.toGone()
-                        binding.dailyRecyclerView.toVisible()
-                        binding.dailyRecyclerView.hideShimmer()
-                        initRecyclerView(0)
-                        dailyAdapter.submitList(list)
+//                        binding.diagnosisRecyclerView.toGone()
+//                        binding.infoTextView.toGone()
+//                        binding.dailyRecyclerView.toVisible()
+//                        binding.dailyRecyclerView.hideShimmer()
+//                        initRecyclerView(0)
+//                        dailyAdapter.submitList(list)
                         // ********************************************
                     }
                     is TabWritingStatus.SuccessDiagnosis -> {
@@ -182,12 +182,12 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         binding.infoTextView.toVisible()
                         showErrorMessage(it.message, binding)
                         // 테스트 코드-----임시 데이터 ***************************************
-                        binding.dailyRecyclerView.toGone()
-                        binding.diagnosisRecyclerView.toVisible()
-                        binding.infoTextView.toGone()
-                        binding.diagnosisRecyclerView.hideShimmer()
-                        initRecyclerView(1)
-                        diagnosisAdapter.submitList(list2)
+//                        binding.dailyRecyclerView.toGone()
+//                        binding.diagnosisRecyclerView.toVisible()
+//                        binding.infoTextView.toGone()
+//                        binding.diagnosisRecyclerView.hideShimmer()
+//                        initRecyclerView(1)
+//                        diagnosisAdapter.submitList(list2)
                         // ********************************************
                     }
                     is TabWritingStatus.SuccessDaily -> {
@@ -321,13 +321,13 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
     private fun showErrorMessage(msg: String, binding: FragmentTabWritingBinding) {
         when (msg) {
             getString(R.string.not_loged_in) -> {
-                binding.infoTextView.text = "로그인 되지 않았어요!"
+                binding.infoTextView.text = getString(R.string.waiting_you)
             }
             getString(R.string.not_register_animal) -> {
                 binding.infoTextView.text = getString(R.string.notice)
             }
             else -> {
-                binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
+                binding.infoTextView.text = getString(R.string.unknown_error)
             }
         }
     }
@@ -346,6 +346,8 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
+
+
 
     companion object {
         fun newInstance() = TabWritingFragment().apply {

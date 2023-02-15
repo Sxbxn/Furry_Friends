@@ -308,6 +308,8 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         mainActivity = context as MainActivity
     }
 
+
+
     companion object {
         fun newInstance() = DailyWritingFragment().apply {
 
