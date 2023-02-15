@@ -1275,6 +1275,11 @@ pre code {
     -ms-flex: 0 0 91.66667%;
     flex: 0 0 91.66667%;
     max-width: 91.66667%;
+    margin-bottom: 30%;    
+  }
+
+  .col-md-11-1 {
+    margin-top: 20%;    
   }
 
   .col-md-12 {
@@ -11866,12 +11871,17 @@ h5,
 .hero-wrap {
   width: 100%;
   height: 100%;
+  height: 500px;
   position: inherit;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top center;
   position: relative;
 }
+
+/* .hero-wrap {
+  height: 500px !important;
+} */
 
 @media (max-width: 1199.98px) {
   .hero-wrap {

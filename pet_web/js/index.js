@@ -1,3 +1,9 @@
+const scrollBtn = document.getElementById('scroll-topic');
+const topic = document.getElementById('topic');
+
+scrollBtn.addEventListener('click', () => {
+    window.scrollBy({ top: topic.getBoundingClientRect().top, behavior: 'smooth' });
+});
 // function nav() {
 
 //     const nav = document.getElementById('ftco-navbar');
@@ -8,7 +14,7 @@
 //         .then(res => res.text())
 //         // .then(data => nav.innerHTML = data)
 //         .then(data => nav.insertAdjacentHTML("afterbegin", data))
-//         .then(selected());                
+//         .then(selected());
 // }
 
 // function selected() {
