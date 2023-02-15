@@ -2,6 +2,8 @@ from flask import Flask, jsonify, session
 from connect_db import db
 from flask_migrate import Migrate
 
+from util import query_to_dict
+
 
 # models
 from models import Animal
@@ -35,27 +37,20 @@ db.init_app(app)
 Migrate(app,db)
 
 
-def query_to_dict(objs):
-    try:
-        lst = [obj.__dict__ for obj in objs]
-        for obj in lst:
-            del obj['_sa_instance_state']
-        return lst
-    except TypeError: # non-iterable
-        objs = objs.__dict__
-        del objs['_sa_instance_state']
-        lst = [objs]
-        return lst
-
-
 # 메인 화면
 @app.route('/', methods=["GET"])
 def main():
 
     # 세션에 로그인한 기록이 있음
     if 'login' in session: 
-        animal = query_to_dict(Animal.query.filter_by(user_id = session['login']).all())
-        return jsonify(animal)
+        animal = query_to_dict(Animal.query.filter_by(user_id = session['login']).first())
+
+        if "curr_animal" not in session:
+            return "no animal registered"
+        else:
+            session['curr_animal'] = animal[0]['animal_id']
+            print(session['curr_animal'])
+            return jsonify(animal[0])
         
     # 세션에 로그인한 기록이 없음
     else:
@@ -63,4 +58,4 @@ def main():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
