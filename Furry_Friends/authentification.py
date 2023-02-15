@@ -99,10 +99,14 @@ def login():
             session.clear()
             session['login'] = user_id
 
-            animal = query_to_dict(Animal.query.filter_by(user_id = user_id).first())
-            session['curr_animal'] = animal[0]['animal_id']
+            try:
+                animal = query_to_dict(Animal.query.filter_by(user_id = user_id).first())
+                session['curr_animal'] = animal[0]['animal_id']
 
-            return jsonify(animal)
+                return jsonify(animal)
+                
+            except:
+                return "no animal registered"
 
             # animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
 
