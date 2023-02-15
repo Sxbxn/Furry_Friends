@@ -9,39 +9,13 @@ from sqlalchemy import and_
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os
-from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
+
+from util import s3_connection, query_to_dict, upload_file_to_s3
+from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, ALLOWED_EXTENSIONS
 
 
 bp = Blueprint('authentification', __name__, url_prefix='/auth')
 
-
-def s3_connection():
-    try:
-        s3 = boto3.client(
-            service_name="s3",
-            region_name=AWS_S3_BUCKET_REGION,
-            aws_access_key_id=AWS_ACCESS_KEY,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
-        return s3
-
-    except Exception as e:
-        print(e)
-        print('ERROR_S3_CONNECTION_FAILED') 
-
-
-def query_to_dict(objs):
-    try:
-        lst = [obj.__dict__ for obj in objs]
-        for obj in lst:
-            del obj['_sa_instance_state']
-        return lst
-    except TypeError: # non-iterable
-        objs = objs.__dict__
-        del objs['_sa_instance_state']
-        lst = [objs]
-        return lst
-        
 
 s3 = s3_connection()
 
@@ -104,7 +78,6 @@ def login():
                 session['curr_animal'] = animal[0]['animal_id']
 
                 return jsonify(animal)
-                
             except:
                 return "no animal registered"
 
@@ -181,16 +154,21 @@ def register_animal():
 
             f = request.files['file']
             if f:
-                newname = session['login'] + '_' + animal_name + ".png"
+                extension = f.filename.split('.')[-1]
+                if extension in ALLOWED_EXTENSIONS:
+                    extension = '.' + extension
 
-                imgpath = f"./static/{secure_filename(newname)}"
-                f.save(imgpath) # 로컬에 저장
+                    newname = session['login'] + '_' + animal_name + extension
+                    img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+                    f.filename = newname
 
-                s3.upload_file(imgpath, AWS_S3_BUCKET_NAME, newname) # s3에 업로드
-                img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
-                os.remove(imgpath) # 로컬에 저장된 파일 삭제
+                    upload_file_to_s3(f)
 
-                image = img_url
+                    image = img_url
+
+                # 업로드된 파일이 이미지 파일이 아님
+                else:
+                    return "wrong file extension"
             else:
                 image = ""
 
