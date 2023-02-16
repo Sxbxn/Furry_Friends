@@ -1,42 +1,22 @@
-#새 루틴 등록
-from flask import Flask, request, jsonify, session, Blueprint, render_template, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from pybo.model import Routine, ChecklistRoutine, ChecklistDefault, User, Animal
-from pybo.connect_db import db
-import json
-import boto3
-import requests
-from flask import flash
-import datetime
+from flask import request, jsonify, session, Blueprint, g
 from sqlalchemy import and_
-from markupsafe import escape
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-import os
+
+from util import query_to_dict, to_weekday
+from models import User, Animal, Routine
+from connect_db import db
 
 
-
-def query_to_dict(objs):
-    try:
-        lst = []
-        for obj in objs:
-            obj = obj.__dict__
-            del obj['_sa_instance_state']
-            lst.append(obj)
-        return lst
-    except TypeError: # non-iterable
-        lst = []
-        objs = objs.__dict__
-        del objs['_sa_instance_state']
-        lst.append(objs)
-        return lst
-
-def to_weekday(num):
-    weekdays = ['mon','tue','wed','thu','fri','sat','sun']
-    num = int(num)
-    return weekdays[num]
- 
 bp = Blueprint('routine', __name__, url_prefix='/routine')
+
+
+@bp.before_app_request
+def load_logged_in_user():
+    username = session.get('login')
+    if username is None:
+        g.user = None
+    else:
+        g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
+
 
 @bp.route('/routine', methods=['GET','POST']) 
 def routine():
@@ -46,10 +26,12 @@ def routine():
          #json: 
     
         #json에서 각 값 임의 변수에 저장
-        routine_id = request.headers['routineId']
-        weekday = request.headers['weekDay']
-        routine_name = request.headers['routineName']
-        animal_id = request.headers['animalId']
+        param = request.get_json()
+
+        routine_id = param['routineId']
+        weekday = param['weekDay']
+        routine_name = param['routineName']
+        animal_id = param['animalId']
         
         animal = Animal.query.filter_by(animal_id = animal_id).first()
         weekday = to_weekday(weekday)
@@ -89,33 +71,29 @@ def routine():
         # return redirect(url_for('routine.routine'), routines = jsonify(routines))
 
 
-
-
-
 #특정 루틴의 체크되어있던 요일 체크 해제 
 @bp.route('/weekdaydelete', methods=['POST']) 
 def weekdaydelete():
      #json: routine_name, animal_id, weekday
     
     #json에서 각 값 임의 변수에 저장
-     
-    routine_id = request.headers['routineId']
-    weekday = request.headers['weekDay']
-    routine_name = request.headers['routineName']
-    animal_id = request.headers['animalId']
+    param = request.get_json()
+
+    routine_id = param['routineId']
+    weekday = param['weekDay']
+    routine_name = param['routineName']
+    animal_id = param['animalId']
+
     del_date = to_weekday(weekday)
 
     #루틴 db 삭제
     
     del_routine = Routine.query.filter(and_(Routine.animal_id == animal_id, Routine.routine_id==routine_id,
                                                                 Routine.weekday == del_date)).first() #체크였다가 체크해제된 row 탐색
-        
     
     del_r = Routine.query.get(del_routine.index)
     db.session.delete(del_r)
-    db.session.commit()
-
-    
+    db.session.commit()   
     
     return "success"
     # return redirect(url_for('routine.routine'))
@@ -126,8 +104,10 @@ def weekdaydelete():
 def routinedelete():
      #json:  animal_id, routine_name
 
-    routine_id = request.headers['routineId']
-    animal_id = request.headers['animalId']
+    param = request.get_json()
+
+    routine_id = param['routineId']
+    animal_id =  param['animalId']
 
     del_routines = Routine.query.filter(and_(Routine.animal_id == animal_id, Routine.routine_id==routine_id))
                                         
