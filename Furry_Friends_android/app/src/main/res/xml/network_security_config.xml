@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <!--Set application-wide security config using base-config tag.-->
+<!--    <domain-config cleartextTrafficPermitted="true">-->
+<!--        <domain includeSubdomains="true">http://10.221.251.115:5000</domain>-->
+<!--    </domain-config>-->
+
     <base-config cleartextTrafficPermitted="true"/>
 </network-security-config>

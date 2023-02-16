@@ -81,6 +81,8 @@ dependencies {
     // Fragment ktx
     implementation "androidx.fragment:fragment-ktx:1.5.5"
 
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:4.9.2"
+
     // open sources
 
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'

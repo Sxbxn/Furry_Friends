@@ -9,8 +9,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
 import javax.inject.Singleton
@@ -29,6 +31,7 @@ class HttpClientModule {
             .addInterceptor(loggingInterceptor)
             .addNetworkInterceptor(AuthInterceptor())
             .addInterceptor(NoConnectionInterceptor(context))
+            .cookieJar(JavaNetCookieJar(CookieManager()))
             .connectTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10,TimeUnit.MINUTES)
             .readTimeout(10, TimeUnit.MINUTES)
