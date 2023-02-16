@@ -35,7 +35,7 @@ class Animal(db.Model):
     animal_name = db.Column(db.String(10), nullable=False)
     bday = db.Column(db.String(10))
     sex = db.Column(db.String(10))
-    neutered = db.Column(db.String(10))
+    neutered = db.Column(db.Integer)
     weight = db.Column(db.Float)
     image = db.Column(db.String, default="")
 
