@@ -17,7 +17,7 @@ interface AnimalService {
     @POST("/auth/registerAnimal")
     suspend fun submitAnimal(
         @Part animalImg: MultipartBody.Part,
-        @Part("animalJson") animal: RequestBody
+        @Part("data") animal: RequestBody
     ): Response<AnimalResponse>
 
     //  요일별 루틴 등록하기
@@ -91,6 +91,6 @@ interface AnimalService {
     @PUT("/pet/update")
     suspend fun updateAnimalInfo(
         @Part body: MultipartBody.Part,
-        @Part("updateAnimal") jsonUpdateProfile: RequestBody
+        @Part("data") jsonUpdateProfile: RequestBody
     ): Response<String>
 }

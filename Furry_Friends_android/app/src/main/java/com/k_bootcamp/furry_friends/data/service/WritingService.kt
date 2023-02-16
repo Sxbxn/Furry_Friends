@@ -20,7 +20,7 @@ interface WritingService {
     @POST("journal/factory")
     suspend fun submitDailyWriting(
         @Part body: MultipartBody.Part,
-        @Part("dailyWritingJson") jsonDailyWriting: RequestBody
+        @Part("data") jsonDailyWriting: RequestBody
     ): Response<String>
 
     // 일상기록 수정하기
@@ -29,7 +29,7 @@ interface WritingService {
     suspend fun updateDailyWriting(
         @Header("index") id: Int,
         @Part body: MultipartBody.Part,
-        @Part("dailyUpdateWritingJson") updatedJsonDailyWriting: RequestBody
+        @Part("data") updatedJsonDailyWriting: RequestBody
     ): Response<String>
 
     // 일상 정보 삭제하기
@@ -50,7 +50,7 @@ interface WritingService {
     @POST("/health/factory")
     suspend fun submitDiagnosisWriting(
         @Part body: MultipartBody.Part,
-        @Part("diagnosisWritingJson") jsonDailyWriting: RequestBody
+        @Part("data") jsonDailyWriting: RequestBody
     ): Response<String>
 
     // 진단 기록 삭제하기
