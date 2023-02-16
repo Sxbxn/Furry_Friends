@@ -207,48 +207,59 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     private fun initSettings() = with(binding) {
-        logout.setOnClickListener {
-            viewModel.logout()
-            viewModel.isSuccess.observe(viewLifecycleOwner) {
-                when(it) {
-                    is SettingState.Error -> {
-                        loading.setError()
-                        requireContext().toast("로그아웃 실패")
+        if(session == null) {
+            logout.text = "로그인"
+            logout.setOnClickListener {
+                startActivity(LoginActivity.newIntent(requireContext()))
+            }
+            withdrawUser.isClickable = false
+            withdrawUser.isFocusable = false
+            deleteProfile.isClickable = false
+            deleteProfile.isFocusable = false
+        } else {
+            logout.setOnClickListener {
+                viewModel.logout()
+                viewModel.isSuccess.observe(viewLifecycleOwner) {
+                    when(it) {
+                        is SettingState.Error -> {
+                            loading.setError()
+                            requireContext().toast("로그아웃 실패")
+                        }
+                        is SettingState.Loading -> {
+                            loading.setVisible()
+                        }
+                        is SettingState.Success -> {
+                            loading.dismiss()
+                            requireContext().toast("로그인 창으로 돌아갑니다.")
+                            mainActivity.startActivity(LoginActivity.newIntent(requireContext()).apply{
+                                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            })
+                        }
+                        is SettingState.SuccessGetInfo -> {}
                     }
-                    is SettingState.Loading -> {
-                        loading.setVisible()
-                    }
-                    is SettingState.Success -> {
-                        loading.dismiss()
-                        requireContext().toast("로그인 창으로 돌아갑니다.")
-                        mainActivity.startActivity(LoginActivity.newIntent(requireContext()).apply{
-                            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        })
-                    }
-                    is SettingState.SuccessGetInfo -> {}
                 }
             }
-        }
-        withdrawUser.setOnClickListener {
-            viewModel.withdrawUser()
-        }
-        deleteProfile.setOnClickListener {
-            viewModel.deleteProfile()
-            viewModel.isSuccess.observe(viewLifecycleOwner) {
-                when(it) {
-                    is SettingState.Error -> {
-                        loading.setError()
-                        requireContext().toast("프로필 삭제 실패")
+            withdrawUser.setOnClickListener {
+                viewModel.withdrawUser()
+            }
+            deleteProfile.setOnClickListener {
+                viewModel.deleteProfile()
+                viewModel.isSuccess.observe(viewLifecycleOwner) {
+                    when(it) {
+                        is SettingState.Error -> {
+                            loading.setError()
+                            requireContext().toast("프로필 삭제 실패")
+                        }
+                        is SettingState.Loading -> {
+                            loading.setVisible()
+                        }
+                        is SettingState.Success -> {
+                            loading.dismiss()
+                            requireContext().toast("프로필 삭제에 성공하였습니다.")
+                        }
+                        is SettingState.SuccessGetInfo -> {}
                     }
-                    is SettingState.Loading -> {
-                        loading.setVisible()
-                    }
-                    is SettingState.Success -> {
-                        loading.dismiss()
-                        requireContext().toast("프로필 삭제에 성공하였습니다.")
-                    }
-                    is SettingState.SuccessGetInfo -> {}
                 }
             }
         }

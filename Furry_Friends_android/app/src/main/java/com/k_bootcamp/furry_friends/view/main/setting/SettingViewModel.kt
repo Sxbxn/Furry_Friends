@@ -58,6 +58,14 @@ class SettingViewModel @Inject constructor(
         _isSuccess.value = SettingState.Loading
         viewModelScope.launch(ioDispatcher) {
             // 추후 추가
+            val response = userRepository.withdrawUser()
+            if(response != null) {
+                context.toast("회원 탈퇴되었습니다.")
+                Application.prefs.clear()
+                _isSuccess.postValue(SettingState.Success(response))
+            } else {
+                _isSuccess.postValue(SettingState.Error("오류"))
+            }
         }
 
     }
