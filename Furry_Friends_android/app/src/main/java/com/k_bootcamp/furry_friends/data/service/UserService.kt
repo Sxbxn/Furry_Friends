@@ -32,4 +32,7 @@ interface UserService {
 
     @GET("/auth/logout")
     suspend fun logoutUser(): Response<String>
+
+    @DELETE("/auth/withdrawal")
+    suspend fun withdrawalUser(): Response<String>
 }

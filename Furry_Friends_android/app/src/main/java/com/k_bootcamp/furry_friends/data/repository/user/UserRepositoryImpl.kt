@@ -49,4 +49,12 @@ class UserRepositoryImpl(
         }
     }
 
+    override suspend fun withdrawUser(): String? = withContext(ioDispatcher) {
+        val response = userService.withdrawalUser()
+        if (response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
 }

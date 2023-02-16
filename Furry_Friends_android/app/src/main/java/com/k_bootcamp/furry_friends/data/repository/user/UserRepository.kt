@@ -14,6 +14,7 @@ interface UserRepository {
     suspend fun getInfo(sessionId: String): String?
     suspend fun signInUser(user: SignInUser): String?
     suspend fun logout(): String?
+    suspend fun withdrawUser(): String?
 //    suspend fun loginUser(user: LoginUser): APIResponse<SessionResponse>
 //    suspend fun getInfo(sessionId: String): APIResponse<String?>
 }
