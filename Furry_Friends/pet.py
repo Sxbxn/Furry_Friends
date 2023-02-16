@@ -1,4 +1,4 @@
-from flask import request, jsonify, session, Blueprint, url_for, redirect
+from flask import request, jsonify, session, Blueprint, url_for, redirect, g
 from werkzeug.utils import secure_filename
 import os
 from sqlalchemy import and_
@@ -6,6 +6,8 @@ import boto3
 import json
 
 
+from util import s3_connection, query_to_dict, upload_file_to_s3
+from connect_session import sess
 from connect_db import db
 from models import User, Animal
 from config import AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, ALLOWED_EXTENSIONS
@@ -14,70 +16,70 @@ from config import AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, AWS_ACCESS_KEY, AWS
 bp = Blueprint("pet", __name__, url_prefix="/pet")
 
 
-# s3 클라이언트 생성
-def s3_connection():
-    try:
-        s3 = boto3.client(
-            service_name="s3",
-            region_name=AWS_S3_BUCKET_REGION,
-            aws_access_key_id=AWS_ACCESS_KEY,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
-        return s3
-
-    except Exception as e:
-        print(e)
-        print('ERROR_S3_CONNECTION_FAILED') 
-
-
-def query_to_dict(objs):
-    try:
-        lst = [obj.__dict__ for obj in objs]
-        for obj in lst:
-            del obj['_sa_instance_state']
-        return lst
-    except TypeError: # non-iterable
-        if objs == None:
-            return []
-        objs = objs.__dict__
-        del objs['_sa_instance_state']
-        lst = [objs]
-        return lst
-
-
-def upload_file_to_s3(file):
-    filename = secure_filename(file.filename)
-    s3.upload_fileobj(
-            file,
-            AWS_S3_BUCKET_NAME,
-            file.filename
-    )
-
-    return file.filename
-
-
 s3 = s3_connection()
+
+
+# 세션에 로그인 기록이 있나 사용자를 확인하는 기능
+@bp.before_app_request
+def load_logged_in_user():
+    username = session._get_current_object()
+    if username is None:
+        g.user = None
+    else:
+        g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
 
 
 @bp.route('/management', methods=['GET'])
 def management():
 
-    if 'login' in session:
+    asd = session._get_current_object()
+    print(asd)
+    req = request.headers['user_id']
 
-        # 해당 아이디로 등록한 동물 전부
+    # 해당 아이디로 등록한 동물 전부
+    if asd['login'] == req:
         animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
         animal_list = query_to_dict(animal_list)
 
-        # 등록한 동물이 없음
         if animal_list == []:
-            return "no animal registered"
-        
-        # 등록한 동물이 있음
+
+            # resp = {"user_id":session['login'],
+            #             "animal_id":-999,
+            #             "animal_name":"",
+            #             "bday":"",
+            #             "sex":"",
+            #             "neutered":"",
+            #             "weight":0.0,
+            #             "image":""}
+
+            return []    #jsonify(resp)
         else:
-            return jsonify(animal_list)
+
+            for animal in animal_list:
+                if animal['neutered'] == 0:
+                    animal['neutered'] = False
+                else:
+                    animal['neutered'] = True
+
+            return jsonify(animal_list) 
 
     else:
-        "unauthorized"
+        
+        return jsonify()
+
+    # else:
+
+    #     resp = {"user_id":"",
+    #                     "animal_id":-999,
+    #                     "animal_name":"",
+    #                     "bday":"",
+    #                     "sex":"",
+    #                     "neutered":"",
+    #                     "weight":0.0,
+    #                     "image":""}
+
+    #     return jsonify(resp)
+
 
 
 @bp.route('/profile', methods=["GET"])
@@ -218,13 +220,14 @@ def info_update():
 def pet_delete():
     
     # 삭제할 동물 id header로 받음
-    animal_id = request.headers['animal_id']
+    animal_id = int(request.headers['animal_id'])
 
     # 세션에 동물과 일치 시
     if session['curr_animal'] == animal_id:
+        
         try:
             animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
-
+            
             # 프로필 이미지 s3에서 삭제
             try:
                 s3.delete_object(
@@ -238,7 +241,9 @@ def pet_delete():
 
             # db에서 animal 삭제
             db.session.delete(animal)
+            
             db.session.commit()
+
             return "successfully removed"
 
         except:

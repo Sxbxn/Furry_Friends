@@ -31,8 +31,7 @@ def query_to_dict(objs):
             return []
         objs = objs.__dict__
         del objs['_sa_instance_state']
-        lst = [objs]
-        return lst
+        return objs
 
 
 def upload_file_to_s3(file):

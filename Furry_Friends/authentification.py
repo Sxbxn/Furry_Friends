@@ -1,4 +1,4 @@
-from flask import request, jsonify, session, Blueprint, url_for, redirect
+from flask import request, jsonify, session, Blueprint, url_for, redirect, g
 from models import User, Animal
 from connect_db import db
 from sqlalchemy import and_
@@ -18,6 +18,16 @@ bp = Blueprint('authentification', __name__, url_prefix='/auth')
 
 
 s3 = s3_connection()
+
+
+# 세션에 로그인 기록이 있나 사용자를 확인하는 기능
+@bp.before_app_request
+def load_logged_in_user():
+    username = session.get('login')
+    if username is None:
+        g.user = None
+    else:
+        g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
 
 
 @bp.route('/register', methods=['GET','POST']) 
@@ -70,16 +80,33 @@ def login():
             return "error - wrong pw"
 
         else:
-            session.clear()
+            # session.clear()
+            g.user = user_id
             session['login'] = user_id
 
             try:
-                animal = query_to_dict(Animal.query.filter_by(user_id = user_id).first())
-                session['curr_animal'] = animal[0]['animal_id']
+                animal = Animal.query.filter_by(user_id = user_id).first()
+                animal = query_to_dict(animal)
+                session['curr_animal'] = animal['animal_id']
+
+                if animal['neutered'] == 0:
+                    animal['neutered'] = False
+                else:
+                    animal['neutered'] = True
 
                 return jsonify(animal)
+
             except:
-                return "no animal registered"
+                resp = {"user_id":session['login'],
+                        "animal_id":-999,
+                        "animal_name":"",
+                        "bday":"",
+                        "sex":"",
+                        "neutered":"",
+                        "weight":0.0,
+                        "image":""}
+
+                return jsonify(resp)
 
             # animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
 
@@ -100,8 +127,6 @@ def login():
             #     else:
             #         return jsonify(animal_list)
             
-            
-    
     else: # GET
         if 'login' in session:
             return f"{session['login']}"
@@ -130,8 +155,12 @@ def logout():
 @bp.route('/registerAnimal', methods=['GET','POST'])
 def register_animal():
     
+    asd = session._get_current_object()
+
+    req = request.headers['user_id']
+
     # 로그인 x
-    if 'login' not in session:
+    if not asd['login']:
         return "not logged in"
 
     # 로그인 o
@@ -181,6 +210,11 @@ def register_animal():
                                                 Animal.animal_name == animal_name)).first()
 
             curr_animal = query_to_dict(curr_animal)
+
+            if curr_animal['neutered'] == 0:
+               curr_animal['neutered'] = False
+            else:
+                curr_animal['neutered'] = True
 
             return jsonify(curr_animal)
             # 등록된 동물 정보 json 반환, 이 뒤로 header에 animal_id 주고받기

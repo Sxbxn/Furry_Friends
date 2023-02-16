@@ -1,6 +1,9 @@
-from flask import Flask, jsonify, session
+from flask import Flask, jsonify, render_template, session, g
 from connect_db import db
+from connect_session import sess
 from flask_migrate import Migrate
+from flask_session import Session
+# from flask_cors import CORS
 
 from util import query_to_dict
 
@@ -31,7 +34,23 @@ app.register_blueprint(pet.bp)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pet_test.db'
 app.config['SECRET_KEY'] = "test"
+
+app.config['SESSION_PERMANANENT'] = True # default
+app.config["SESSION_USE_SIGNER"] = True
+app.config['SESSION_TYPE'] = "filesystem"
+
+# app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
+
+# app.config['SESSION_TYPE'] = "sqlalchemy" 
+# app.config["SESSION_SQLALCHEMY_TABLE"] = 'sessions'
+
+# app.config['SESSION_SQLALCHEMY'] = db
+# app.session_interface.sql_session_model.__table__.create(bind = db.session.bind)
+
+
+sess.init_app(app)
 db.init_app(app)
+# CORS(app)
 
 
 Migrate(app,db)
@@ -41,20 +60,41 @@ Migrate(app,db)
 @app.route('/', methods=["GET"])
 def main():
 
+    try:
+        asd = session._get_current_object()
+        print(asd['login'])
+    
+    except:
+        pass
+    
     # 세션에 로그인한 기록이 있음
     if 'login' in session: 
         animal = query_to_dict(Animal.query.filter_by(user_id = session['login']).first())
 
-        if "curr_animal" not in session:
-            return "no animal registered"
+        if "curr_animal" not in session:     
+            
+            resp = {"user_id":session['login'],
+                        "animal_id":-999,
+                        "animal_name":"",
+                        "bday":"",
+                        "sex":"",
+                        "neutered":"",
+                        "weight":0.0,
+                        "image":""}
+
+            return jsonify(resp)
+
         else:
-            session['curr_animal'] = animal[0]['animal_id']
-            print(session['curr_animal'])
-            return jsonify(animal[0])
+            animal = query_to_dict(Animal.query.filter_by(animal_id = session['curr_animal']).first())
+
+            animal = jsonify(animal)
+
+            return render_template('index.html', animal = animal)
         
     # 세션에 로그인한 기록이 없음
     else:
-        return "not logged in"
+        message = "not logged in"
+        return render_template('index.html', message=message)
 
 
 if __name__ == "__main__":
