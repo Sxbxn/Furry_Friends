@@ -42,3 +42,9 @@ def upload_file_to_s3(file):
             file.filename
     )
     return file.filename
+
+
+def to_weekday(num):
+    weekdays = ['mon','tue','wed','thu','fri','sat','sun']
+    num = int(num)
+    return weekdays[num]
