@@ -9,6 +9,6 @@ data class SignInUser(
     val pwd: String,
     @SerializedName("email")
     val email: String,
-    @SerializedName("type")
+    @SerializedName("vet")
     val userType: Int = 0
 )
