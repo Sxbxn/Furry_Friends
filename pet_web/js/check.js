@@ -88,3 +88,39 @@ function DropFile(dropAreaId, fileListId) {
 
 const dropFile = new DropFile("drop-file", "files");
 
+
+
+
+
+
+
+
+// 시작 버튼
+const signInForm = document.querySelector('#sign-in-form');
+
+signInForm.addEventListener("submit", event => {
+  event.preventDefault();
+
+  const formData = new FormData(signInForm);
+  const data = Object.fromEntries(formData);
+  // console.log(data);
+
+  fetch('/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  // .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(error => console.log(error))
+		.then(localStorage.setItem('test', 1)) // 세션 아이디 설정
+    .then(history.back()); // 이전 페이지로 이동
+
+});
+
+
+
+
+

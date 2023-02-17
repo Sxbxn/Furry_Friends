@@ -51,10 +51,8 @@
                 <div class="col-md-9 ftco-animate pb-5">
                     <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
                                     class="ion-ios-arrow-forward"></i></a></span> <span class="mr-2"><a
-                                href="diary.html">Diary <i class="ion-ios-arrow-forward"></i></a></span> <span>Diary
-                            Detail
-                            <i class="ion-ios-arrow-forward"></i></span></p>
-                    <h1 class="mb-0 bread">Diary Detail</h1>
+                                href="diary.html">Check <i class="ion-ios-arrow-forward"></i></a></span>
+                    <h1 class="mb-0 bread">Check</h1>
                 </div>
             </div>
         </div>
@@ -64,24 +62,69 @@
         <div class="container">
             <div class="col-lg-8 ftco-animate" id="col-lg-div">
                 <div id="root">
-                    <h2 class="title">Upload your images</h2>
+                    <h1 class="title">AI helps you analyze X-ray images !</h1>
                     <hr>
                     <div class="about">설명 적을 예정
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                        the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
+                        of type and scrambled it to make a type specimen book.
                     </div>
-                    <div class="contents">
-                        <div class="upload-box">
-                            <div id="drop-file" class="drag-file">
-                                <img src="https://img.icons8.com/pastel-glyph/2x/image-file.png" alt="파일 아이콘"
-                                    class="image">
-                                <p class="message">Drag files to upload</p>
-                                <img src=" " alt="미리보기 이미지" class="preview" id="upload-img">
+                    <form>
+                        <h2 class="title">Step 1. Upload your images</h2>
+                        <div class="contents">
+                            <div class="upload-box">
+                                <div id="drop-file" class="drag-file">
+                                    <img src="https://img.icons8.com/pastel-glyph/2x/image-file.png" alt="파일 아이콘"
+                                        class="image">
+                                    <p class="message">Drag files to upload</p>
+                                    <img src=" " alt="미리보기 이미지" class="preview" id="upload-img">
+                                </div>
+                                <label class="file-label" for="chooseFile">Choose File</label>
+                                <input class="file" id="chooseFile" type="file"
+                                    onchange="dropFile.handleFiles(this.files)"
+                                    accept="image/png, image/jpeg, image/gif">
                             </div>
-                            <label class="file-label" for="chooseFile">Choose File</label>
-                            <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
-                                accept="image/png, image/jpeg, image/gif">
                         </div>
-                    </div>
+                        <h2 class="title">Step 2. Select the options</h2>
+                        <div class="opt">
+                            <div class="swappy-radios" role="radiogroup" aria-labelledby="swappy-radios-label">
+                                <h3 id="swappy-radios-label">Species</h3>
+                                <label>
+                                    <input type="radio" name="options" checked />
+                                    <span class="radio"></span>
+                                    <span>Dog</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="options" />
+                                    <span class="radio"></span>
+                                    <span>Cat</span>
+                                </label>
+                            </div>
+                            <div class="swappy-radios" role="radiogroup" aria-labelledby="swappy-radios-label">
+                                <h3 id="swappy-radios-label">Parts</h3>
+                                <label>
+                                    <input type="radio" name="options" checked />
+                                    <span class="radio"></span>
+                                    <span>1</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="options" />
+                                    <span class="radio"></span>
+                                    <span>2</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="options" />
+                                    <span class="radio"></span>
+                                    <span>3</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h2 class="title">Step 3. Press the start button !</h2>
+                        <div class="button_container">
+                            <button class="btn" type="submit"><span>Start !</span></button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <!-- <div class="col-lg-8 ftco-animate">
