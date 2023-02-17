@@ -56,6 +56,8 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                     binding.recyclerView.hideShimmer()
                     binding.recyclerView.toGone()
                     binding.infoTextView.toVisible()
+                    binding.addRoutineButton.isEnabled = false
+
                     when (it.message) {
                         getString(R.string.not_loged_in) -> {
                             binding.infoTextView.text = getString(R.string.waiting_you)
@@ -78,6 +80,7 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                     binding.recyclerView.hideShimmer()
                     binding.infoTextView.toGone()
                     binding.recyclerView.toVisible()
+                    binding.addRoutineButton.isEnabled = true
                     initRecyclerView(it.routines)
                 }
             }

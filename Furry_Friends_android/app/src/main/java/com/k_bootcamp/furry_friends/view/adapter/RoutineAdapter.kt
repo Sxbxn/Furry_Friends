@@ -66,11 +66,11 @@ class RoutineAdapter(
                     viewModel.animalRepo.updateRoutine(
                         updatedRoutine.isOn,
                         updatedRoutine.session,
-                        updatedRoutine.animalId,
+                        updatedRoutine.animal_id,
                         updatedRoutine.routineName
                     ) // 토글 상태 저장
                     alarmRoutine =
-                        viewModel.animalRepo.getRoutinesFromId(updatedRoutine.animalId)[adapterPosition]
+                        viewModel.animalRepo.getRoutinesFromId(updatedRoutine.animal_id)[adapterPosition]
                     Log.e("alarmroutine", alarmRoutine.toString())
                     CoroutineScope(Dispatchers.Main).launch {
                         when (isChecked) {
@@ -132,7 +132,7 @@ class RoutineAdapter(
         binding.chkMon.setOnCheckedChangeListener { _, isChecked ->
             val sendRoutine = SendRoutine(
                 routine.routineId,
-                routine.animalId,
+                routine.animal_id,
                 routine.routineName,
                 "0"
             )
@@ -157,7 +157,7 @@ class RoutineAdapter(
         binding.chkTue.setOnCheckedChangeListener { _, isChecked ->
             val sendRoutine = SendRoutine(
                 routine.routineId,
-                routine.animalId,
+                routine.animal_id,
                 routine.routineName,
                 "1"
             )
@@ -179,7 +179,7 @@ class RoutineAdapter(
         binding.chkWed.setOnCheckedChangeListener { _, isChecked ->
             val sendRoutine = SendRoutine(
                 routine.routineId,
-                routine.animalId,
+                routine.animal_id,
                 routine.routineName,
                 "2"
             )
@@ -201,7 +201,7 @@ class RoutineAdapter(
         binding.chkThu.setOnCheckedChangeListener { _, isChecked ->
             val sendRoutine = SendRoutine(
                 routine.routineId,
-                routine.animalId,
+                routine.animal_id,
                 routine.routineName,
                 "3"
             )
@@ -223,7 +223,7 @@ class RoutineAdapter(
         binding.chkFri.setOnCheckedChangeListener { _, isChecked ->
             val sendRoutine = SendRoutine(
                 routine.routineId,
-                routine.animalId,
+                routine.animal_id,
                 routine.routineName,
                 "4"
             )
@@ -245,7 +245,7 @@ class RoutineAdapter(
         binding.chkSat.setOnCheckedChangeListener { _, isChecked ->
             val sendRoutine = SendRoutine(
                 routine.routineId,
-                routine.animalId,
+                routine.animal_id,
                 routine.routineName,
                 "5"
             )
@@ -267,7 +267,7 @@ class RoutineAdapter(
         binding.chkSun.setOnCheckedChangeListener { _, isChecked ->
             val sendRoutine = SendRoutine(
                 routine.routineId,
-                routine.animalId,
+                routine.animal_id,
                 routine.routineName,
                 "6"
             )
@@ -359,14 +359,14 @@ class RoutineAdapter(
                 CoroutineScope(Dispatchers.IO).launch {
                     viewModel.animalRepo.updateTime(
                         "$hour:$minute",
-                        routine.animalId,
+                        routine.animal_id,
                         routine.routineName
                     )
                     CoroutineScope(Dispatchers.Main).launch {
                         if (minute < 10) binding.timeSelect.text = "$hour:0$minute"
                         else binding.timeSelect.text = "$hour:$minute"
                         alarmRoutine =
-                            viewModel.animalRepo.getRoutinesFromId(routine.animalId)[position]
+                            viewModel.animalRepo.getRoutinesFromId(routine.animal_id)[position]
                         // 시간을 바꿨을 때 토글이 켜져 있다면 바꾼 시간으로 다시 알람 세팅
                         if (alarmRoutine.isOn) {
 //                            viewModel.cancelAlarm(alarmRoutine.routineId)

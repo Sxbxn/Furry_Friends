@@ -77,7 +77,7 @@ class RoutineViewModel @Inject constructor(
                         try {
                             animalRepository.insertRoutine(
                                 Routine(
-                                    animalId = animalId,
+                                    animal_id = animalId,
                                     session = session,
                                     routineName = it,
                                     isOn = false
@@ -157,7 +157,7 @@ class RoutineViewModel @Inject constructor(
                 if(flag) {
                     animalRepository.insertRoutine(
                         Routine(
-                            animalId = animalId,
+                            animal_id = animalId,
                             session = session,
                             routineName = routineName,
                             isOn = false
