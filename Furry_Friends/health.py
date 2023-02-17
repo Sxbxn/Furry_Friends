@@ -1,114 +1,34 @@
-from flask import Flask, request, jsonify, session, Blueprint, render_template, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from pybo.model import Routine, ChecklistRoutine, ChecklistDefault, User, Animal, Health
-from pybo.connect_db import db
-import json
-import boto3
-import requests
-from flask import flash
-import datetime
+from flask import url_for, redirect, jsonify, request, session, Blueprint
+from connect_db import db
 from sqlalchemy import and_
-from markupsafe import escape
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-import os
-from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
 from PIL import Image
-from PIL import ImageFile
-import numpy as np
-import tensorflow as tf
-from pybo.connect_s3 import s3_put_object
-import logging
-import binascii
+
+import json
+
+from models import User, Animal, Health
+from util import s3_connection, query_to_dict, upload_file_to_s3
+from werkzeug.utils import secure_filename
+from predict import padding, mk_img, predict_result
 
 
-#model 함수--------------------------------------------------------------------------
-def padding(file):
-    img = Image.open(file.stream)
-    img = img.convert('RGB')
-    w, h = img.size
-    img = np.array(img)
-    
-    margin = [np.abs(w - h) // 2 , np.abs(w - h) // 2]
-    if w > h:
-        margin_list = [margin, [0,0]]
-    else:
-        margin_list = [[0,0], margin]
-        
-    if len(img.shape) == 3:
-        margin_list.append([0,0])
-        
-    output = np.pad(img, margin_list, mode='constant')
-    img = Image.fromarray(output)
-    # 이미지 크기
-    img = img.resize((224, 224))
-    img = np.array(img)
-    return img
-
-def mk_img(file):
-    np_img = padding(file)
-    np_img = np.expand_dims(np_img, axis = 0)
-    return np_img
-
-def predict_result(model_path, img):
-    model = tf.keras.models.load_model(model_path)
-    result = model.predict(img)
-    return result
-
-#s3 ----------------------------------------------------------------------
-def s3_connection():
-    try:
-        s3 = boto3.client(
-            service_name="s3",
-            region_name=AWS_S3_BUCKET_REGION,
-            aws_access_key_id=AWS_ACCESS_KEY,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
-        return s3
-
-    except Exception as e:
-        print(e)
-        print('ERROR_S3_CONNECTION_FAILED') 
-
-def query_to_dict(objs):
-    try:
-        lst = []
-        for obj in objs:
-            obj = obj.__dict__
-            del obj['_sa_instance_state']
-            lst.append(obj)
-        return lst
-    except TypeError: # non-iterable
-        lst = []
-        objs = objs.__dict__
-        del objs['_sa_instance_state']
-        lst.append(objs)
-        return lst
-
-def upload_file_to_s3(file):
-    filename = secure_filename(file.filename)
-    s3.upload_fileobj(
-            file,
-            AWS_S3_BUCKET_NAME,
-            file.filename
-            
-    )
-
-    # after upload file to s3 bucket, return filename of the uploaded file
-    return file.filename
-
-    
-s3 = s3_connection()
-
-# current_time = datetime.datetime.now()
-# weekday = current_time.weekday()
-
+from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
+import os
 
 bp = Blueprint('health', __name__, url_prefix='/health')
 
 
+s3 = s3_connection()
+
 @bp.route('/records', methods=["GET"])
 def records():
+
+    animals = Animal.query.filter_by(user_id = session['login']).all()
+    animal_id = int(request.headers['animal_id'])
+
+    ids = [animal.animal_id for animal in animals]
+
+    if animal_id in ids:
+        session['curr_animal'] = animal_id
 
     health_records = Health.query.filter(and_(Health.user_id==session['login'],
                                       Health.animal_id==session['curr_animal'])).all()
@@ -116,11 +36,11 @@ def records():
     if health_records != []:
         health_records = query_to_dict(health_records)
         for i in range(len(health_records)):
-            health_records[i]['content'] = str(health_records[i]['content'])
+            health_records[i]['comment'] = str(health_records[i]['comment'])
 
         return jsonify(health_records)
     else:
-        return "no entry"
+        return []
         
 
 @bp.route('/content', methods=["GET"])
@@ -150,7 +70,8 @@ def record_factory():
             user = User.query.filter_by(user_id = session['login']).first()
             animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
 
-            currdate = request.headers['currdate']
+            currdate = record['currdate']
+            currdate = currdate.split(" ")[0]
             kind = record['kind']
             affected_area = record['affected_area']
 
@@ -164,25 +85,31 @@ def record_factory():
                 cat_path = "C:\\Users\\Admin\\Desktop\\EYE_Model\\고양이_안구질환_DenseNet.h5"
                 dog_path = "C:\\Users\\Admin\\Desktop\\EYE_Model\\개_안구질환_DenseNet121.h5"
 
+                # s3에 이미지 업로드
+                filename = secure_filename(f.filename)
+                img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{filename}"
+                image = img_url
+                upload_file_to_s3(f)
+
+                # 업로드하면 파일 닫혀서 업로드한 파일 다시 받아옴
+                obj = s3.get_object(Bucket=AWS_S3_BUCKET_NAME,
+                                Key=filename)
+                response = obj['Body']
+                img = Image.open(response)
+
                 # 이미지 전처리
-                img = mk_img(f)
+                img = mk_img(img)
                 
                 # 모델 결과 
-                if kind == "cat":
+                if kind == "고양이":
                     result = predict_result(cat_path, img)
                 else:
                     result = predict_result(dog_path, img)
 
-
-                filename = secure_filename(f.filename)
-                img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{filename}"
-                image = img_url
-                output = upload_file_to_s3(f)
-
                 # 진단 결과
-                content = result
+                comment = result
 
-                comment = "1" # 유저가 입력? or 피드백 받아오기?
+                content = record['content'] # 유저가 입력
                 
                 new_record = Health(animal=animal, user=user, content=content, image=image, currdate=currdate, kind=kind, comment=comment, affected_area=affected_area)  
 

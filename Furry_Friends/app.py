@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, session, g
+from flask import Flask, jsonify, render_template, session, g, request
 from connect_db import db
 from connect_session import sess
 from flask_migrate import Migrate
@@ -74,21 +74,19 @@ def main():
         if "curr_animal" not in session:     
             
             resp = {"user_id":session['login'],
-                        "animal_id":-999,
-                        "animal_name":"",
-                        "bday":"",
-                        "sex":"",
-                        "neutered":"",
-                        "weight":0.0,
-                        "image":""}
+                    "animal_id":-999,
+                    "animal_name":"",
+                    "bday":"",
+                    "sex":"",
+                    "neutered":"",
+                    "weight":0.0,
+                    "image":""}
 
             return jsonify(resp)
 
         else:
             animal = query_to_dict(Animal.query.filter_by(animal_id = session['curr_animal']).first())
-
             animal = jsonify(animal)
-
             return render_template('index.html', animal = animal)
         
     # 세션에 로그인한 기록이 없음

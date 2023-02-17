@@ -9,54 +9,12 @@ import os
 
 from werkzeug.utils import secure_filename
 # from predict import padding, mk_img, predict_result
+from util import s3_connection, query_to_dict, upload_file_to_s3
 
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, ALLOWED_EXTENSIONS
 
 # app = Flask(__name__)
 bp = Blueprint('journal', __name__, url_prefix='/journal')
-
-
-# s3 클라이언트 생성
-def s3_connection():
-    try:
-        s3 = boto3.client(
-            service_name="s3",
-            region_name=AWS_S3_BUCKET_REGION,
-            aws_access_key_id=AWS_ACCESS_KEY,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
-        return s3
-
-    except Exception as e:
-        print(e)
-        print('ERROR_S3_CONNECTION_FAILED') 
-
-
-def query_to_dict(objs):
-    try:
-        lst = [obj.__dict__ for obj in objs]
-        for obj in lst:
-            del obj['_sa_instance_state']
-        return lst
-    except TypeError: # non-iterable
-        if objs == None:
-            return []
-        objs = objs.__dict__
-        del objs['_sa_instance_state']
-        lst = [objs]
-        return lst
-
-
-def upload_file_to_s3(file):
-    filename = secure_filename(file.filename)
-    s3.upload_fileobj(
-            file,
-            AWS_S3_BUCKET_NAME,
-            file.filename
-            
-    )
-
-    return file.filename
 
 
 s3 = s3_connection()
@@ -65,6 +23,14 @@ s3 = s3_connection()
 # 기록 목록 출력
 @bp.route('/journals', methods = ['GET'])
 def journals():
+
+    animals = Animal.query.filter_by(user_id = session['login']).all()
+    animal_id = int(request.headers['animal_id'])
+
+    ids = [animal.animal_id for animal in animals]
+
+    if animal_id in ids:
+        session['curr_animal'] = animal_id
 
     # order by도?
     journals = Journal.query.filter(and_(Journal.user_id==session['login'],
@@ -77,7 +43,7 @@ def journals():
 
     # 기록이 없을 시
     else:
-        return "no entry"
+        return []
 
 
 # 아이템 클릭 시 기록 열람
@@ -87,8 +53,7 @@ def journal_content():
 
     journal_entry = Journal.query.get(int(journal_index))
     
-    journal_entry = journal_entry.__dict__
-    del journal_entry['_sa_instance_state']
+    journal_entry = query_to_dict(journal_entry)
 
     return jsonify(journal_entry)
 
@@ -96,7 +61,6 @@ def journal_content():
 # 기록 생성
 @bp.route('/factory', methods=["GET","POST"])
 def journal_factory():
-    currdate = request.headers['currdate']
 
     if request.method == "GET":
         return "journal entry form"
@@ -111,7 +75,8 @@ def journal_factory():
 
         title = journal_entry['title']
         content = journal_entry['content']
-        currdate = request.headers['currdate']
+        currdate = journal_entry['currdate']
+        currdate = currdate.split(" ")[0]
 
         f = request.files['file']
         
@@ -125,7 +90,7 @@ def journal_factory():
                 img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
                 f.filename = newname
 
-                output = upload_file_to_s3(f)
+                upload_file_to_s3(f)
     
                 image = img_url
 
@@ -159,7 +124,7 @@ def journal_update():
         return jsonify(existing_entry)
 
 
-    else: # POST
+    else: # PUT
         
         journal_index = request.headers['index']
         editing_entry = Journal.query.get(journal_index)

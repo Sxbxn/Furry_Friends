@@ -1,26 +1,12 @@
 from flask import session, request, jsonify, redirect, Blueprint, url_for
 from sqlalchemy import and_
 
+from util import query_to_dict
 from models import Animal, Routine, ChecklistDefault, ChecklistRoutine
 from connect_db import db
 
 
 bp = Blueprint('checklist', __name__, url_prefix='/check')
-
-
-def query_to_dict(objs):
-    try:
-        lst = [obj.__dict__ for obj in objs]
-        for obj in lst:
-            del obj['_sa_instance_state']
-        return lst
-    except TypeError: # non-iterable
-        if objs == None:
-            return []
-        objs = objs.__dict__
-        del objs['_sa_instance_state']
-        lst = [objs]
-        return lst
 
 
 @bp.route('/checklist', methods=["GET", "POST"])
@@ -31,8 +17,10 @@ def checklist():
     
     # 로그인 O --> curr_animal도 세션에 O
     else:
-        currdate = request.headers['currdate']
-        current_weekday_num = request.headers['weekday']
+        currdate = param['currdate']
+        currdate = currdate.split(" ")[0]
+        # print(currdate)
+        current_weekday_num = param['weekday']
 
         if request.method=="GET":
 

@@ -21,17 +21,23 @@ def load_logged_in_user():
 @bp.route('/routine', methods=['GET','POST']) 
 def routine():
     
+    animals = Animal.query.filter_by(user_id = session['login']).all()
+    animal_id = int(request.headers['animal_id'])
+
+    ids = [animal.animal_id for animal in animals]
+
+    if animal_id in ids:
+        session['curr_animal'] = animal_id
  
     if request.method=="POST": #루틴 등록
-         #json: 
     
         #json에서 각 값 임의 변수에 저장
         param = request.get_json()
 
-        routine_id = param['routineId']
-        weekday = param['weekDay']
-        routine_name = param['routineName']
-        animal_id = param['animalId']
+        routine_id = param['routine_id']
+        weekday = param['weekday']
+        routine_name = param['routine_name']
+        animal_id = param['animal_id']
         
         animal = Animal.query.filter_by(animal_id = animal_id).first()
         weekday = to_weekday(weekday)
@@ -41,34 +47,15 @@ def routine():
         db.session.add(routine)
         db.session.commit()
 
-        # date_dict = param['weekday'] #date 부분의 json array를 object로 변환
-        # routine_date = [] #월수금
-        # for key, val in date_dict.items():
-        #     if val=='true':
-        #         routine_date.append(key) #true인 요일값들 저장
-
-
-        # #모델로 routine 객체 만들기
-        # for i in range(len(routine_date)): #월, 수, 금 3개 저장
-        #     routine = Routine(animal_id=animal_id, routine_name=routine_name, weekday=routine_date[i]) 
-        #     #db에 저장, 업데이트
-        #     db.session.add(routine)
-        #     db.session.commit()
-
         return "success"
-        # return redirect(url_for('routine.routine'))
+        
     
     else: #get 루틴 불러오기
-         #json: animal_id, routine_name, date:{mon=true,tue=true...}, 
     
-        #json에서 각 값 임의 변수에 저장
-     
-        
-        animal_id = request.headers['animalId']
+        animal_id = request.headers['animal_id']
         routines = Routine.query.filter(Routine.animal_id==animal_id).all()
         routines = query_to_dict(routines)
         return jsonify(routines)
-        # return redirect(url_for('routine.routine'), routines = jsonify(routines))
 
 
 #특정 루틴의 체크되어있던 요일 체크 해제 
@@ -79,24 +66,24 @@ def weekdaydelete():
     #json에서 각 값 임의 변수에 저장
     param = request.get_json()
 
-    routine_id = param['routineId']
-    weekday = param['weekDay']
-    routine_name = param['routineName']
-    animal_id = param['animalId']
+    routine_id = param['routine_id']
+    weekday = param['weekday']
+    routine_name = param['routine_name']
+    animal_id = param['animal_id']
 
     del_date = to_weekday(weekday)
 
     #루틴 db 삭제
     
-    del_routine = Routine.query.filter(and_(Routine.animal_id == animal_id, Routine.routine_id==routine_id,
-                                                                Routine.weekday == del_date)).first() #체크였다가 체크해제된 row 탐색
+    del_routine = Routine.query.filter(and_(Routine.animal_id == animal_id, 
+                                            Routine.routine_id==routine_id,
+                                            Routine.weekday == del_date)).first() #체크였다가 체크해제된 row 탐색
     
     del_r = Routine.query.get(del_routine.index)
     db.session.delete(del_r)
     db.session.commit()   
     
     return "success"
-    # return redirect(url_for('routine.routine'))
 
 
 #루틴 수정: 루틴 이름으로 수정은 안되고 아예 해당 루틴을 지우게끔 
@@ -107,9 +94,10 @@ def routinedelete():
     param = request.get_json()
 
     routine_id = param['routineId']
-    animal_id =  param['animalId']
+    animal_id =  param['animal_id']
 
-    del_routines = Routine.query.filter(and_(Routine.animal_id == animal_id, Routine.routine_id==routine_id))
+    del_routines = Routine.query.filter(and_(Routine.animal_id == animal_id, 
+                                            Routine.routine_id==routine_id))
                                         
     for del_r in del_routines:
         r = Routine.query.get(del_r.index)
@@ -117,4 +105,3 @@ def routinedelete():
         db.session.commit()
 
     return "success"
-    # return redirect(url_for('routine.routine'))

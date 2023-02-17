@@ -99,6 +99,11 @@ def profile():
             curr_animal = Animal.query.get(animal_id)
             curr_animal = query_to_dict(curr_animal)
 
+            if  curr_animal['neutered'] == 0:
+                curr_animal['neutered'] = False
+            else:
+                curr_animal['neutered'] = True
+
             return jsonify(curr_animal)
 
         else:
@@ -109,42 +114,16 @@ def profile():
         return "not logged in"
 
 
-    #     # 관리할 동물 header와 일치 시
-    #     if session['curr_animal'] == animal_id:
-    #         animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
-    #         animal = query_to_dict(animal)
-    #         return jsonify(animal)
-        
-    #     # 관리할 동물 교체 시
-    #     else:
-    #         session['curr_animal'] = animal_id
-    #         animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
-    #         animal = query_to_dict(animal)
-    #         return jsonify(animal)
-
-    # # 세션에 관리할 동물 x
-    # else:
-    #     try:
-    #     # header로 animal_id 받으면 프로필
-    #         session['curr_animal'] = animal_id
-    #         animal = query_to_dict(Animal.query.filter_by(animal_id = session['curr_animal']).first())
-    #         return jsonify(animal)
-
-    #     except:   
-    #         # header로 온 게 없으면 동물 관리 화면
-    #         animal_list = query_to_dict(Animal.query.filter_by(user_id = session['login']).all())
-
-    #         return jsonify(animal_list)
-
-
 @bp.route('/update', methods=["GET","PUT"])
 def info_update():
 
+    asd = session._get_current_object()
     # 수정할 동물 id header로 받음
-    animal_id = request.headers['animal_id']
+    animal_id = int(request.headers['animal_id'])
+
 
     # 세션과 일치 시
-    if session['curr_animal'] == animal_id:
+    if asd['curr_animal'] == animal_id:
 
         # 동물 정보 수정 페이지 접근
         if request.method == "GET":
@@ -203,6 +182,8 @@ def info_update():
             except:
                 changes = request.get_json()
 
+                print(changes)
+
                 animal.animal_name = changes['animal_name']
                 animal.bday = changes['bday']
                 animal.sex = changes['sex']
@@ -219,11 +200,12 @@ def info_update():
 @bp.route('/delete', methods=["DELETE"])
 def pet_delete():
     
+    asd = session._get_current_object()
     # 삭제할 동물 id header로 받음
     animal_id = int(request.headers['animal_id'])
 
     # 세션에 동물과 일치 시
-    if session['curr_animal'] == animal_id:
+    if asd['curr_animal'] == animal_id:
         
         try:
             animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
@@ -244,7 +226,27 @@ def pet_delete():
             
             db.session.commit()
 
-            return "successfully removed"
+            animal = Animal.query.filter_by(user_id = asd['login']).first()
+            if animal is None:
+                resp = {"user_id": asd['login'],
+                        "animal_id":-999,
+                        "animal_name":"",
+                        "bday":"",
+                        "sex":"",
+                        "neutered":"",
+                        "weight":0.0,
+                        "image":""}
+
+                return jsonify(resp)
+            else:
+                animal = query_to_dict(animal)
+
+                if  animal['neutered'] == 0:
+                    animal['neutered'] = False
+                else:
+                    animal['neutered'] = True
+                
+                return jsonify(animal)
 
         except:
             return "removal failed"

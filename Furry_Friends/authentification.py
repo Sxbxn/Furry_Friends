@@ -1,4 +1,4 @@
-from flask import request, jsonify, session, Blueprint, url_for, redirect, g
+from flask import request, jsonify, session, Blueprint, url_for, redirect, g, render_template
 from models import User, Animal
 from connect_db import db
 from sqlalchemy import and_
@@ -30,10 +30,9 @@ def load_logged_in_user():
         g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
 
 
-@bp.route('/register', methods=['GET','POST']) 
+@bp.route('/register', methods=['POST']) 
 def register():
-
-    if request.method=="POST":
+    
         forms = request.get_json()
 
         user_id = forms['user_id']
@@ -57,11 +56,8 @@ def register():
 
         return "successfully registered"
 
-    else: # GET
-        return "registration form"
 
-
-@bp.route('/login', methods=['GET','POST'])  
+@bp.route('/login', methods=['POST'])  
 def login():
     if request.method=="POST":
 
@@ -74,10 +70,28 @@ def login():
         user = User.query.filter(User.user_id == user_id).first()
 
         if not user:
-            return "error - user not in db"
+            resp = {"user_id":"user unregistered",
+                        "animal_id":-999,
+                        "animal_name":"",
+                        "bday":"",
+                        "sex":"",
+                        "neutered":"",
+                        "weight":0.0,
+                        "image":""}
+
+            return jsonify(resp)
         
         elif not check_password_hash(user.pw, password):
-            return "error - wrong pw"
+            resp = {"user_id":"wrong password",
+                        "animal_id":-999,
+                        "animal_name":"",
+                        "bday":"",
+                        "sex":"",
+                        "neutered":"",
+                        "weight":0.0,
+                        "image":""}
+
+            return jsonify(resp)
 
         else:
             # session.clear()
@@ -107,49 +121,15 @@ def login():
                         "image":""}
 
                 return jsonify(resp)
-
-            # animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
-
-            # # 등록된 동물이 없음
-            # if animal_list == []:
-            #     return "no animal registered"
-
-            # # 등록된 동물이 있음
-            # else:
-            #     animal_list = query_to_dict(animal_list)
-
-            #     # 등록된 동물이 1마리 --> 바로 세션에 저장, json 반환
-            #     if len(animal_list) == 1:
-            #         session['curr_animal'] = animal_list['animal_id']
-            #         return jsonify(animal_list)
-
-            #     # 등록된 동물이 여러 마리 --> 선택 화면으로 이동
-            #     else:
-            #         return jsonify(animal_list)
             
     else: # GET
-        if 'login' in session:
-            return f"{session['login']}"
-        else:
-            return "login form"
+        return render_template('sign.html')
 
 
 @bp.route('/logout',methods=['GET'])
 def logout():
     session.clear()
     return "logged out"
-
-
-# app.py로 이동 ----- session['login'] 유무에 따라 라우팅
-# @bp.route('/', methods=["GET"])
-# def main():
-#     if 'user_id' in session:  # session안에 user_id가 있으면 로그인
-#         animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
-#         animal_list = query_to_dict(animal_list)
-#         return f"{session['user_id']} is logged in"
-
-
-    # return redirect(url_for('authentification.login')) 
 
 
 @bp.route('/registerAnimal', methods=['GET','POST'])
