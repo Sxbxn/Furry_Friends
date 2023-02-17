@@ -51,6 +51,8 @@ class TabWritingViewModel @Inject constructor(
                     val response = writingRepository.getDailyList()
                     if (response == null) {
                         _tabLiveData.postValue(TabWritingStatus.Error(context.getString(R.string.error_response)))
+                    } else if(response.isEmpty()) {
+                        _tabLiveData.postValue(TabWritingStatus.Error(context.getString(R.string.not_register_animal)))
                     } else {
                         _tabLiveData.postValue(
                             TabWritingStatus.SuccessDaily(
@@ -67,7 +69,7 @@ class TabWritingViewModel @Inject constructor(
         if (session == null) {
             _tabLiveData.value = TabWritingStatus.Error(context.getString(R.string.not_loged_in))
         } else {
-            if (animalId == -1) {
+            if (animalId == -999) {
                 // 동물이 없음 --> 등록해야함
                 _tabLiveData.value =
                     TabWritingStatus.Error(context.getString(R.string.not_register_animal))
@@ -78,6 +80,8 @@ class TabWritingViewModel @Inject constructor(
                     val response = writingRepository.getDiagnosisList()
                     if (response == null) {
                         _tabLiveData.postValue(TabWritingStatus.Error(context.getString(R.string.error_response)))
+                    } else if(response.isEmpty()) {
+                        _tabLiveData.postValue(TabWritingStatus.Error(context.getString(R.string.not_register_animal)))
                     } else {
                         _tabLiveData.postValue(
                             TabWritingStatus.SuccessDiagnosis(

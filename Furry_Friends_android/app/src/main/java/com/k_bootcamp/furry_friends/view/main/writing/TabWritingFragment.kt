@@ -139,6 +139,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         // ********************************************
                     }
                     is TabWritingStatus.SuccessDiagnosis -> {
+                        loading.dismiss()
                         loading.setError()
                         binding.dailyRecyclerView.hideShimmer()
                     }
@@ -191,6 +192,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         // ********************************************
                     }
                     is TabWritingStatus.SuccessDaily -> {
+                        loading.dismiss()
                         loading.setError()
                         binding.diagnosisRecyclerView.hideShimmer()
                     }

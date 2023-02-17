@@ -23,7 +23,7 @@ class DiagnosisViewHolder(
     override fun bindData(model: DiagnosisModel) {
         super.bindData(model)
         with(binding) {
-            thumbnailDayDiagnosis.load(model.imageUrl,0f, CenterCrop())
+            thumbnailDayDiagnosis.load(model.imageUrl)
             diagnosisTextView.text = model.currdate+" 진단내용"
         }
     }
