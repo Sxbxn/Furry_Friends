@@ -93,4 +93,12 @@ interface AnimalService {
         @Part body: MultipartBody.Part,
         @Part("data") jsonUpdateProfile: RequestBody
     ): Response<String>
+
+
+
+    @Multipart
+    @POST("/")
+    suspend fun runAiProfile(
+        @Part body: MultipartBody.Part
+    ): Response<String>
 }

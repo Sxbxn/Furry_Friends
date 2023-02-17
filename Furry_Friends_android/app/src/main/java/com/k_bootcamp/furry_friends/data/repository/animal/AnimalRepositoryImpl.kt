@@ -135,6 +135,14 @@ class AnimalRepositoryImpl(
         }
     }
 
+    override suspend fun runAiProfile(image: MultipartBody.Part): String? = withContext(ioDispatcher) {
+        val response = animalService.runAiProfile(image)
+        if(response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
+    }
 
     override suspend fun insertRoutine(routine: Routine) = routineDao.insertRoutine(routine)
 

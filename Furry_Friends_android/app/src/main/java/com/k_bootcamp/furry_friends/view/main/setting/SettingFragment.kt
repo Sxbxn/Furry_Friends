@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ import com.k_bootcamp.furry_friends.extension.toVisible
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.animal.Animal
 import com.k_bootcamp.furry_friends.model.writing.Daily
+import com.k_bootcamp.furry_friends.util.dialog.setAiFancyDialog
 import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
@@ -86,6 +88,10 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     private lateinit var body: MultipartBody.Part
     private lateinit var jsonUpdateProfile: RequestBody
     private lateinit var updateProfile: Animal
+    // ai 프로필을 클릭했다는 플래그
+    private lateinit var flag: String
+
+
     private fun dummies() {
         imageUrl =
             "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"
@@ -204,6 +210,53 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         initDialog()
         initSettings()
         initUpdateButton()
+        initAiProfileImage()
+    }
+
+    private fun initAiProfileImage() = with(binding) {
+        // 세션이 있고 동물이 있을 때만 작동
+        Log.e("user_id",session.toString())
+        Log.e("animal_id",animalId.toString())
+        if (session != null && animalId != -999) {
+            ivMember.setOnClickListener {
+                Log.e("pushed","pushed!")
+                flag = "ai"
+                setAiFancyDialog(requireContext()) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        imageUrl = "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"
+                        val file = viewModel.getFile(imageUrl)
+                        val fileName = file.name
+                        Log.e("ai file",fileName)
+                        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                        body = MultipartBody.Part.createFormData("file", fileName, requestFile)
+                    }
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        // url ?? image file ??
+                        Log.e("ai body", body.toString())
+                        profileScoping(body)
+                    }, 1000)
+                }.show()
+            }
+        }
+    }
+
+    private fun profileScoping(body: MultipartBody.Part) {
+        viewModel.runAiProfile(body)
+        viewModel.isSuccess.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingState.Error -> {
+                    loading.setError()
+                    requireContext().toast("AI 프로필 이미지 생성에 실패했습니다.")
+                }
+                is SettingState.Loading -> { loading.setVisible() }
+                is SettingState.Success -> {
+                    loading.dismiss()
+                    requireContext().toast("AI 프로필 이미지 생성에 성공공습니다.")
+                    binding.ivMember.load(it.response)
+                }
+                is SettingState.SuccessGetInfo -> { }
+            }
+        }
     }
 
     private fun initSettings() = with(binding) {
@@ -277,7 +330,9 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
         // 요청 다시시도
         loading.retryButton().setOnClickListener {
-            observeData()
+            // ai 프로필일 때 다시요청
+            if(flag == "ai") profileScoping(body)
+            else observeData()
         }
     }
 

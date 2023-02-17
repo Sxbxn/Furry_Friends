@@ -128,5 +128,17 @@ class SettingViewModel @Inject constructor(
             BitmapFactory.decodeStream(it)
         }
 
+    fun runAiProfile(image: MultipartBody.Part) {
+        _isSuccess.value = SettingState.Loading
+        viewModelScope.launch(ioDispatcher) {
+            val response = animalRepository.runAiProfile(image)
+            if(response == null) {
+                _isSuccess.postValue(SettingState.Error(context.getString(R.string.error)))
+            } else {
+                _isSuccess.postValue(SettingState.Success(response))
+            }
+        }
+    }
+
 
 }

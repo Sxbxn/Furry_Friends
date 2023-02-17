@@ -42,6 +42,8 @@ interface AnimalRepository {
     suspend fun updateAnimalProfile(body: MultipartBody.Part, jsonUpdateProfile: RequestBody): String?
     // 동물 프로필 선택을 위한 모든 동물 리스트 가져오기
     suspend fun getAllAnimalInfo(): List<AnimalResponse>?
+    // ai 프로필 사진을 생성 후 생성딘 s3 url 가져오기
+    suspend fun runAiProfile(image: MultipartBody.Part): String?
 
 
 
