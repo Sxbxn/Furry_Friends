@@ -85,7 +85,7 @@ interface AnimalService {
     suspend fun getAnimalInfo(): Response<AnimalResponse>
 
     @DELETE("/pet/delete")
-    suspend fun deleteAnimalInfo(): Response<String>
+    suspend fun deleteAnimalInfo(): Response<AnimalResponse>
 
     @Multipart
     @PUT("/pet/update")

@@ -77,7 +77,7 @@ class SettingViewModel @Inject constructor(
             if(response == null) {
                 _isSuccess.postValue(SettingState.Error(context.getString(R.string.error)))
             } else {
-                _isSuccess.postValue(SettingState.Success(response))
+                _isSuccess.postValue(SettingState.Success(response.animalId.toString()))
             }
         }
     }

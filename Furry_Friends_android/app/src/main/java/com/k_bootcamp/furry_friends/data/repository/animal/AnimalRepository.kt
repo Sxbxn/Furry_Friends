@@ -13,7 +13,7 @@ interface AnimalRepository {
     // remote service
     // 동물 등록
     suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): AnimalResponse?
-//    suspend fun submitAnimal(body: MultipartBody.Part, json: RequestBody): SubmitAnimalResponse?
+
     // 정보 가져오기
     suspend fun getAnimalInfo(): AnimalResponse?
     // 서버에 저장된 루틴 목록 가져오기
@@ -37,7 +37,7 @@ interface AnimalRepository {
 //    suspend fun getChecklistDatas(date: String, weekday: String): CheckList?
     suspend fun getChecklistDatas(date: String, weekday: String): ReadOnlyCheckListResponse?
     // 동물 프로필 삭제
-    suspend fun deleteAnimalInfo(): String?
+    suspend fun deleteAnimalInfo(): AnimalResponse?
     // 동물 프로필 수정
     suspend fun updateAnimalProfile(body: MultipartBody.Part, jsonUpdateProfile: RequestBody): String?
     // 동물 프로필 선택을 위한 모든 동물 리스트 가져오기
@@ -50,8 +50,11 @@ interface AnimalRepository {
     suspend fun insertRoutine(routine: Routine)
     // 불러오기
     suspend fun getAllRoutines(): List<Routine>
+
     suspend fun getRoutinesFromId(animalId: Int): List<Routine>
+
     suspend fun updateRoutine(isChecked: Boolean, session: String, animalId:Int, routineName:String)
+
     suspend fun deleteRoutine(routine: Routine)
 
     suspend fun updateMonday(date:Boolean, animalId:Int, routineName: String )
@@ -75,6 +78,4 @@ interface AnimalRepository {
     suspend fun getAllStatus(): List<RoutineStatus>
 
     suspend fun deleteAllStatus()
-
-
 }

@@ -256,7 +256,9 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                         }
                         is SettingState.Success -> {
                             loading.dismiss()
+                            Application.prefs.animalId = it.response.toInt()
                             requireContext().toast("프로필 삭제에 성공하였습니다.")
+                            observeData()
                         }
                         is SettingState.SuccessGetInfo -> {}
                     }
@@ -338,6 +340,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                     } else {
                         //수정 등록
                         updateProfile = Animal(updateName, updateBirthday, updateWeight.toFloat(), updateSex, updateNeutered)
+                        Log.e("updateProfile",updateProfile.toString())
                         val fileName = sendFile.name
                         val requestFile = sendFile.asRequestBody("image/*".toMediaTypeOrNull())
                         jsonUpdateProfile = Gson().toJson(updateProfile).toString()
@@ -346,11 +349,11 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                         updateAnimalProfile(body, jsonUpdateProfile)
                         d.dismiss()
                         // 둘 중 하나 - 다시 프래그먼트 띄우던지, 데이터만 다시 보던지
-//                        mainActivity.showFragment(
-//                            newInstance(),
-//                            TAG
-//                        )
-                        observeData()
+                        mainActivity.showFragment(
+                            newInstance(),
+                            TAG
+                        )
+//                        observeData()
                     }
                 }
                 // 중요 !! 다이얼로그 뷰를 지워주지 않으면 뷰가 중첩되어 에러가 발생함  -> 어쩔 수 없이 findViewById 써야함
