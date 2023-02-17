@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/each_card_view"
-    android:layout_margin="30dp"
+    android:layout_margin="10dp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,11 +21,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="양치"
+            android:layout_weight="1"
             tools:text="양치"
             android:layout_marginStart="30dp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             />
 
         <LinearLayout
@@ -33,71 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_weight="1"
             >
-
-<!--            <LinearLayout-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal">-->
-<!--                <CheckBox-->
-<!--                    android:id="@+id/chk_mon"-->
-<!--                    android:button="@null"-->
-<!--                    android:layout_width="16dp"-->
-<!--                    android:layout_height="16dp"-->
-<!--                    android:layout_margin="5dp"-->
-<!--                    android:enabled="false"-->
-<!--                    android:background="@drawable/check_box_mon"/>-->
-<!--                <CheckBox-->
-<!--                    android:id="@+id/chk_tue"-->
-<!--                    android:button="@null"-->
-<!--                    android:layout_width="19dp"-->
-<!--                    android:layout_height="19dp"-->
-<!--                    android:layout_margin="5dp"-->
-<!--                    android:enabled="false"-->
-<!--                    android:background="@drawable/check_box_tue"/>-->
-<!--                <CheckBox-->
-<!--                    android:id="@+id/chk_wed"-->
-<!--                    android:button="@null"-->
-<!--                    android:layout_width="16dp"-->
-<!--                    android:layout_height="16dp"-->
-<!--                    android:layout_margin="5dp"-->
-<!--                    android:enabled="false"-->
-<!--                    android:background="@drawable/check_box_wed"/>-->
-<!--                <CheckBox-->
-<!--                    android:id="@+id/chk_thu"-->
-<!--                    android:button="@null"-->
-<!--                    android:layout_width="14dp"-->
-<!--                    android:layout_height="14dp"-->
-<!--                    android:layout_margin="5dp"-->
-<!--                    android:enabled="false"-->
-<!--                    android:background="@drawable/check_box_thu"/>-->
-<!--                <CheckBox-->
-<!--                    android:id="@+id/chk_fri"-->
-<!--                    android:button="@null"-->
-<!--                    android:layout_width="16dp"-->
-<!--                    android:layout_height="16dp"-->
-<!--                    android:layout_margin="5dp"-->
-<!--                    android:enabled="false"-->
-<!--                    android:background="@drawable/check_box_fri">-->
-<!--                </CheckBox>-->
-<!--                <CheckBox-->
-<!--                    android:id="@+id/chk_sat"-->
-<!--                    android:button="@null"-->
-<!--                    android:layout_width="14dp"-->
-<!--                    android:layout_height="14dp"-->
-<!--                    android:layout_margin="5dp"-->
-<!--                    android:enabled="false"-->
-<!--                    android:background="@drawable/check_box_sat"/>-->
-<!--                <CheckBox-->
-<!--                    android:id="@+id/chk_sun"-->
-<!--                    android:button="@null"-->
-<!--                    android:layout_width="14dp"-->
-<!--                    android:layout_height="14dp"-->
-<!--                    android:layout_margin="5dp"-->
-<!--                    android:enabled="false"-->
-<!--                    android:background="@drawable/check_box_sun"/>-->
-<!--            </LinearLayout>-->
             <CheckBox
                 android:id="@+id/chk_routine"
                 android:layout_gravity="end"

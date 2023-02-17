@@ -233,9 +233,9 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
             tools:listitem="@layout/viewholder_routine_check"
             tools:itemCount="3"/>
