@@ -8,6 +8,7 @@ import com.fc.baeminclone.screen.base.BaseActivity
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.databinding.ActivityLogInBinding
 import com.k_bootcamp.furry_friends.extension.appearSnackBar
+import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
@@ -61,7 +62,6 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
         }
         gotoSignInTextView.setOnClickListener {
             startActivity(SignInActivity.newIntent(baseContext))
-            finish()
         }
     }
 
@@ -89,23 +89,28 @@ class LoginActivity: BaseActivity<LoginViewModel, ActivityLogInBinding>() {
                 is LoginState.Success -> {
                     loading.dismiss()
                     // success code
-                    Application.prefs.apply {
-                        session = response.session
-                        animalId = response.animalId
-                    }
+                    when(response.session) {
+                        "user unregistered" -> binding.root.appearSnackBar(this, "등록되지 않은 사용자입니다.")
+                        "wrong password" -> binding.root.appearSnackBar(this, "비밀번호가 틀렸습니다!")
+                        else -> {
+                            Application.prefs.apply {
+                                session = response.session
+                                animalId = response.animalId
+                            }
 
-                    startActivity(Intent(this, MainActivity::class.java).apply {
-                        this.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                        this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    })
+                            startActivity(Intent(this, MainActivity::class.java).apply {
+                                this.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                                this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            })
+                            finish()
+                        }
+                    }
                 }
                 is LoginState.Error -> {
                     // error code
                     loading.setError()
                     binding.root.appearSnackBar(this@LoginActivity, response.message)
-//                    when(response.message) {
-//
-//                    }
+
                 }
                 is LoginState.Loading -> {
                     // loading code

@@ -9,6 +9,7 @@ import com.k_bootcamp.furry_friends.model.user.SignInUser
 import com.k_bootcamp.furry_friends.util.network.APIResponse
 
 interface UserRepository {
+//    suspend fun loginUser(user: LoginUser): Any?
     suspend fun loginUser(user: LoginUser): AnimalResponse?
 //    suspend fun loginUser(user: LoginUser): Session?
     suspend fun getInfo(sessionId: String): String?

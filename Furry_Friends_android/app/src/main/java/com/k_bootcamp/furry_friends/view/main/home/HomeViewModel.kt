@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
     private val animalRepository: AnimalRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
-): BaseViewModel() {
+) : BaseViewModel() {
     private val session = Application.prefs.session
     private val animalId = Application.prefs.animalId
     private val _animalInfoLiveData = MutableLiveData<HomeState>()
@@ -59,17 +59,23 @@ class HomeViewModel @Inject constructor(
         // 해당 유저의 등록된 모든 반려동물 정보를 가져와서 반환함
         // 헤더로 사용자id와 동물id를 같이 보내지만 사용자id로만 필터링해서 보여주어야함 (서버 동작)
         _animalInfoListLiveData.value = HomeState.Loading
+        Log.e("log", _animalInfoListLiveData.value.toString())
         viewModelScope.launch(ioDispatcher) {
-            val infoList = animalRepository.getAllAnimalInfo()
-            Log.e("infoList",infoList.toString())
-            infoList?.let{
-                if(infoList.isNullOrEmpty()) {
-                    _animalInfoListLiveData.postValue(HomeState.Error(context.getString(R.string.not_register_animal)))
-                } else {
-                    _animalInfoListLiveData.postValue(HomeState.SuccessList(infoList))
-                }
-            } ?: kotlin.run {
+            if (session == null) {
                 _animalInfoListLiveData.postValue(HomeState.Error(context.getString(R.string.error_response)))
+            } else {
+                val infoList = animalRepository.getAllAnimalInfo()
+                Log.e("infoList", infoList.toString())
+                Log.e("log", _animalInfoListLiveData.value.toString())
+                infoList?.let {
+                    if (infoList.isNullOrEmpty()) {
+                        _animalInfoListLiveData.postValue(HomeState.Error(context.getString(R.string.not_register_animal)))
+                    } else {
+                        _animalInfoListLiveData.postValue(HomeState.SuccessList(infoList))
+                    }
+                } ?: kotlin.run {
+                    _animalInfoListLiveData.postValue(HomeState.Error(context.getString(R.string.error_response)))
+                }
             }
         }
     }

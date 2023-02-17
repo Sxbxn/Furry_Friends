@@ -14,6 +14,7 @@ interface UserService {
     @POST("/auth/login")
     suspend fun loginUser(
         @Body user: LoginUser
+//    ): Response<Any>
     ): Response<AnimalResponse>
 //    ): Response<Session>
 //    ): Response<SessionResponse>

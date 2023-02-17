@@ -1,6 +1,8 @@
 package com.k_bootcamp.furry_friends.di
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.k_bootcamp.furry_friends.data.service.AnimalService
 import com.k_bootcamp.furry_friends.data.service.UserService
 import com.k_bootcamp.furry_friends.data.service.WritingService
@@ -23,12 +25,16 @@ import javax.inject.Singleton
 @Module
 class NetModule {
 
+    val gson: Gson = GsonBuilder()
+        .setLenient()
+        .create()
+
     @Singleton
     @Provides
     fun providesUserService(okHttpClient: OkHttpClient): UserService {
         return Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(Url.BASE_URL)
             .client(okHttpClient)
             .build().create(UserService::class.java)
@@ -41,7 +47,7 @@ class NetModule {
     ): AnimalService {
         return Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(Url.BASE_URL)
             .client(okHttpClient)
             .build().create(AnimalService::class.java)
@@ -54,7 +60,7 @@ class NetModule {
     ): WritingService {
         return Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(Url.BASE_URL)
             .client(okHttpClient)
             .build().create(WritingService::class.java)

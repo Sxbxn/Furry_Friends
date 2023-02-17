@@ -27,7 +27,7 @@ interface AnimalService {
     ): Response<String>
 //    ): Response<RoutineSubmit>
 
-    @POST("/routine/weekdayRoutine")
+    @POST("/routine/weekdaydelete")
     suspend fun deleteDateRoutine(
         @Body routine: SendRoutine
     ): Response<String>

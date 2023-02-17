@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.repository.user.UserRepository
+import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,6 +53,8 @@ class LoginViewModel @Inject constructor(
         _isLogin.value = LoginState.Loading
         viewModelScope.launch(ioDispatcher) {
             val session = userRepository.loginUser(user)
+            // 테스트 필요
+
             session?.let {
                 _isLogin.postValue(
                     LoginState.Success(
@@ -65,6 +68,7 @@ class LoginViewModel @Inject constructor(
         }
 
     }
+
     fun getUserInfo(sessionId: String) = viewModelScope.launch(ioDispatcher) {
         val response = userRepository.getInfo(sessionId)
         response?.let {
