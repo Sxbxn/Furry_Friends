@@ -1,0 +1,6 @@
+flask
+flask-migrate
+flask-session
+boto3
+PIL
+tensorflow

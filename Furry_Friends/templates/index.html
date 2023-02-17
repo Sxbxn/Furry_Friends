@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+        <p>{{ routines }}</p>
+
+        <p>{{ checklist_d }}</p>
+
+        <p>{{ checklist_r }}</p>
+    <hr>
+
+    <form action="/journal" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <input type="submit"/>
+    </form>
+
+    {% if img_url %}
+    <img src="{{ img_url }}" width="200"></img>
+    {% endif %}
+
+
+
+</body>
+</html>
