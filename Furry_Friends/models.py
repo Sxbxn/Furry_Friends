@@ -52,7 +52,7 @@ class Animal(db.Model):
 
 class Routine(db.Model):
     __tablename__= 'Routine'
-    index = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=False)
+    index = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     animal_id = db.Column(db.ForeignKey('animals.animal_id', ondelete='CASCADE'), nullable=False)
     routine_id = db.Column(db.Integer)
 
