@@ -19,19 +19,18 @@ signUpForm.addEventListener("submit", event => {
   const data = Object.fromEntries(formData);
   // console.log(data);
 
-  fetch('/auth/signup', {
+  fetch('/auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
   })
-  // .then(res => res.json())
+    // .then(res => res.json())
     .then(data => console.log(data))
     .catch(error => console.log(error))
-    .then(location.href="sign.html")
+  // .then(location.href = "sign.html")
 });
-
 
 // 로그인
 const signInForm = document.querySelector('#sign-in-form');
@@ -50,10 +49,12 @@ signInForm.addEventListener("submit", event => {
     },
     body: JSON.stringify(data)
   })
-  // .then(res => res.json())
-    .then(data => console.log(data))
+    .then(res => res.json())
+    .then(data => {
+      localStorage.setItem('user_id', data.user_id)
+      localStorage.setItem('animal_id', data.animal_id)
+      console.log(data)
+      location.href = "/"
+    })
     .catch(error => console.log(error))
-		.then(localStorage.setItem('test', 1)) // 세션 아이디 설정
-    .then(history.back()); // 이전 페이지로 이동
-
 });

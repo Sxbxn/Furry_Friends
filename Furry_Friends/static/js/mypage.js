@@ -1,9 +1,11 @@
-if (sessionId == null) {
+if (user_id == null) {
 	alert('로그인이 필요합니다!');
 	history.back()
 }
 
 function createProfile(data) {
+	console.log("?");
+	console.log("animal id: ", data.animal_id);
 	const idx = data.animal_id;
 	const name = data.animal_name;
 	const sex = data.sex;
@@ -74,7 +76,7 @@ function createProfile(data) {
 	let sex_form = document.createElement("div");
 	sex_form.setAttribute('class', 'form-group')
 	sex_form.setAttribute('id', 'sex_form' + idx);
-	document.getElementById('p_sex' + idx).append(row);
+	document.getElementById('p_sex' + idx).append(sex_form);
 
 	let sex_label = document.createElement("label");
 	sex_label.setAttribute('class', 'label')
@@ -167,9 +169,20 @@ function createProfile(data) {
 }
 
 function showProfile() {
-	fetch('https://jsonplaceholder.typicode.com/photos/')
+	fetch('/pet/management', {
+		method: 'GET'
+	})
+		.catch(error => console.log(error))
 		.then((response) => response.json())
-		.then((data) => createProfile(data))
+		// .then((data) => console.log(data))
+		.then((data) => callcreateProfile(data))
+}
+
+function callcreateProfile(data) {
+	for(let i = 0; i < data.length; i++) {
+		console.log(data[i]);
+		createProfile(data[i]);
+	}
 }
 
 showProfile();

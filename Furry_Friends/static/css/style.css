@@ -622,6 +622,7 @@ pre code {
 .no-gutters {
   margin-right: 0;
   margin-left: 0;
+  margin-bottom: 3rem;
 }
 
 .no-gutters>.col,
@@ -13526,6 +13527,7 @@ textarea.form-control {
   -webkit-box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1);
   box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 @media (min-width: 768px) {

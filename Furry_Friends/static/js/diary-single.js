@@ -6,35 +6,47 @@
 // "title": str,
 // "user_id": str
 
-if (sessionId == null) {
+if (user_id == null) {
 	alert('로그인이 필요합니다!');
 	history.back()
 }
 
 const idx = localStorage.getItem("content_idx");
 
-let obj = {
-	"index": idx
-};
-
-// fetch('/journal/content', {
-	fetch('https://jsonplaceholder.typicode.com/photos/', {
+fetch('/journal/content', {
 	method: 'GET',
-	// headers: { 'Content-Type': 'application/json' },
-	// body: JSON.stringify(obj),
-})
-	// .then(console.log(JSON.stringify(obj)))
-	.then(response => response.json())
-	.then((data) => callCreateDiary(data))
-	// .then((data) => createDiaryDetail(data))
-
-	function callCreateDiary(data) {
-		for (let i = 0; i < 1; i++) {
-			// console.log(data[i]);
-			createDiaryDetail(data[i]);
-	
-		}
+	headers: {
+		'index': idx
 	}
+})
+	.then((response) => response.json())
+	.then((data) => {
+		console.log(data);
+		createDiaryDetail(data)
+	}
+	);
+
+
+
+
+// // fetch('/journal/content', {
+// fetch('https://jsonplaceholder.typicode.com/photos/', {
+// 	method: 'GET',
+// 	// headers: { 'Content-Type': 'application/json' },
+// 	// body: JSON.stringify(obj),
+// })
+// 	// .then(console.log(JSON.stringify(obj)))
+// 	.then(response => response.json())
+// 	.then((data) => callCreateDiary(data))
+// // .then((data) => createDiaryDetail(data))
+
+// function callCreateDiary(data) {
+// 	for (let i = 0; i < 1; i++) {
+// 		console.log(data);
+// 		createDiaryDetail(data[i]);
+
+// 	}
+// }
 
 function createDiaryDetail(data) {
 	// const image = data.image;
@@ -42,11 +54,12 @@ function createDiaryDetail(data) {
 	// const title = data.title;
 	// const content = data.content;
 
-	const image = data.thumbnailUrl;
+	console.log(data);
+
+	const image = data.image;
 	const title = data.title;
-	const content = data.title;
-	// content = data.content;
-	const date = data.id;
+	const content = data.content;
+	const date = data.currdate;
 
 	let img_p = document.createElement("p");
 	img_p.setAttribute('id', 'img_p');

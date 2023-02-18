@@ -183,21 +183,24 @@
 })(jQuery);
 
 // try {
-const sessionId = localStorage.getItem('test');
+const user_id = localStorage.getItem('user_id');
 
-if (sessionId !== null) {
+if (user_id !== null) {
 	const login_li = document.getElementById('l6');
-	login_li.style.display='none';
+	login_li.style.display = 'none';
 } else {
 	const mypage_li = document.getElementById('l7');
-	mypage_li.style.display='none';
+	mypage_li.style.display = 'none';
 
 	const logout_li = document.getElementById('l8');
-	logout_li.style.display='none';
+	logout_li.style.display = 'none';
 }
 
 // 로그아웃
 const logout_li = document.getElementById('l8');
 logout_li.addEventListener("click", event => {
+	fetch('/auth/logout', {
+		method: 'GET',
+	})
 	localStorage.clear();
 });
