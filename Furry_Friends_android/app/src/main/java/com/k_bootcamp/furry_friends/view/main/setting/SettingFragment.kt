@@ -480,7 +480,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 shake(animalAge, requireContext())
                 check = false
             }
-            if (!validateEmpty(weightInputLayout, updateWeight)) {
+            if (!validateEmpty(weightInputLayout, updateWeight) || updateWeight.last() == '.') {
                 shake(animalWeight, requireContext())
                 check = false
             }

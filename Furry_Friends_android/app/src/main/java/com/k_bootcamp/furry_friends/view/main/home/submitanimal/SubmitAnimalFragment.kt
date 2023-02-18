@@ -128,8 +128,9 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                 is SubmitAnimalState.Success -> {
                     loading.dismiss()
                     binding.root.appearSnackBar(requireContext(),response.isSuccess.name+" 등록 되었습니다 :)")
-                    // 등록 후 animal_id 교체
-//                    Application.prefs.animalId = response.isSuccess.animalId
+                    // 등록했는데 없었더라면 animal_id 교체 이후에 교체해도 바뀌지않게
+                    if(Application.prefs.animalId == -999)
+                        Application.prefs.animalId = response.isSuccess.animalId
                     mainActivity.showFragment(HomeFragment.newInstance().apply {
                         arguments = bundleOf("session" to session)
                     }, HomeFragment.TAG)
@@ -247,7 +248,7 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                 shake(editTextAnimalAge, requireContext())
                 check = false
             }
-            if (!validateEmpty(weightInputLayout, weight.toString())) {
+            if (!validateEmpty(weightInputLayout, weight) || weight.last() == '.') {
                 shake(editTextAnimalWeight, requireContext())
                 check = false
             }
