@@ -3,6 +3,13 @@ if (user_id == null) {
 	history.back()
 }
 
+animal_id = sessionStorage.getItem('animal_id');
+
+if (animal_id == -999) {
+	alert('동물 등록이 필요합니다! 어플에서 등록 후 이용 바랍니다.');
+	history.back()
+}
+
 function createProfile(data) {
 	console.log("?");
 	console.log("animal id: ", data.animal_id);
@@ -186,7 +193,7 @@ function showProfile() {
 }
 
 function callcreateProfile(data) {
-	for(let i = 0; i < data.length; i++) {
+	for (let i = 0; i < data.length; i++) {
 		console.log(data[i]);
 		createProfile(data[i]);
 	}
@@ -200,10 +207,10 @@ document.addEventListener('click', function (e) {
 	const targetStr = String(e.target.id);
 	const imgStr = 'mb'
 	const idx = targetStr.substring(2);
-
-	localStorage.setItem('animal_id', idx);
-
+	console.log(idx);
+	
 	if (targetStr.indexOf(imgStr) != -1) {
 		alert("Pet number " + idx + " has been selected")
+		sessionStorage.setItem('animal_id', idx);
 	}
 });
