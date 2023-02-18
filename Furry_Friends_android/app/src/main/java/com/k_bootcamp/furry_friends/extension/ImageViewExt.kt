@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.Target
@@ -17,7 +18,7 @@ private val factory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(tru
 // 클리어
 fun ImageView.clear() = Glide.with(context).clear(this)
 
-fun ImageView.load(url: String, corner: Float = 0f, scaleType: Transformation<Bitmap> = CenterInside()) {
+fun ImageView.load(url: String, corner: Float = 0f, scaleType: Transformation<Bitmap> = FitCenter()) {
     Glide.with(this)
         .load(url)
         // fade in animation

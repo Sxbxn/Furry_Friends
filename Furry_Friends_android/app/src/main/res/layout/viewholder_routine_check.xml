@@ -20,7 +20,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="양치"
             android:layout_weight="1"
             tools:text="양치"
             android:layout_marginStart="30dp"
@@ -38,11 +37,10 @@
             >
             <CheckBox
                 android:id="@+id/chk_routine"
-                android:layout_gravity="end"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp" />
-            <!-- 요일 확인해서 checked 바꿔주면 됨 -->
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -19,7 +19,7 @@ class CustomAlertDialog(context: Context) : AlertDialog(context) {
             .setNegativeButton(negativeText) { _, _ -> }
             .create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCancelable(false)
+        dialog.setCancelable(true)
         dialog.show()
     }
     fun initWithView(title: String, viewId: View, positiveText: String, negativeText: String){
@@ -31,7 +31,7 @@ class CustomAlertDialog(context: Context) : AlertDialog(context) {
             .setNegativeButton(negativeText) { _, _ -> }
             .create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCancelable(false)
+        dialog.setCancelable(true)
         dialog.show()
     }
 

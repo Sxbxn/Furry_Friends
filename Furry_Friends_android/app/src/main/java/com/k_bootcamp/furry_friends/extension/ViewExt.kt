@@ -17,6 +17,6 @@ fun View.toGone() {
 fun View.appearSnackBar(context: Context, message: String) {
     Snackbar.make(this, message, 3000).apply{
         setTextColor(ResourcesProviderImpl(context).getColor(R.color.white))
-        setBackgroundColor(ResourcesProviderImpl(context).getColor(R.color.main_color))
+        setBackgroundTint(ResourcesProviderImpl(context).getColor(R.color.main_color))
     }.show()
 }

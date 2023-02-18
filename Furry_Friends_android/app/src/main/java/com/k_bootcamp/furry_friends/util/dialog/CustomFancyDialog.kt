@@ -44,15 +44,15 @@ fun setFancyDialog(
 fun setAiFancyDialog(context: Context, runAiProfile:() -> Unit): FancyAlertDialog =
     FancyAlertDialog.Builder.with(context)
         .setBackgroundColor(Color.parseColor("#00BD56"))
-        .setTitle("AI 프로필 이미지 생성")
-        .setMessage("반려동물 사진 변환을 진행합니다")
-        .setPositiveBtnText("예")
+        .setTitle("AI 프로필 이미지")
+        .setMessage("AI가 표현한 반려동물을 만나보세요")
+        .setPositiveBtnText("네!")
         .onPositiveClicked {
             it.dismiss()
             runAiProfile()
         }
         .setPositiveBtnBackgroundRes(R.color.main_color)
-        .setNegativeBtnText("아니오")
+        .setNegativeBtnText("다음에..")
         .onNegativeClicked {
             it.dismiss()
         }
