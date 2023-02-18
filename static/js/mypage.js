@@ -4,11 +4,6 @@ if (sessionId == null) {
 }
 
 function createProfile(data) {
-	// img_url = data[i].img_url;
-	// title = data[i].title;
-	// content = data[i].content;
-	// date = data[i].date;
-
 	const idx = data.animal_id;
 	const name = data.animal_name;
 	const sex = data.sex;
@@ -34,7 +29,7 @@ function createProfile(data) {
 
 	let mb_4 = document.createElement("h3");
 	mb_4.setAttribute('class', 'mb-4')
-	mb_4.textContent = "Pet Profile" + idx;
+	mb_4.textContent = "Pet Profile " + idx;
 	document.getElementById('cw' + idx).append(mb_4);
 
 	let myPageDiv = document.createElement("div");
