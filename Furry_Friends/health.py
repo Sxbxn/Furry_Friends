@@ -82,8 +82,8 @@ def record_factory():
                 # f 로 모델 돌려서 나온 값 db에 저장
 
                 # 서버 내 모델 저장 경로
-                cat_path = "C:\\Users\\Admin\\Desktop\\EYE_Model\\고양이_안구질환_DenseNet.h5"
-                dog_path = "C:\\Users\\Admin\\Desktop\\EYE_Model\\개_안구질환_DenseNet121.h5"
+                cat_path = ".\\EYE_Model\\고양이_안구질환_DenseNet.h5"
+                dog_path = ".\\EYE_Model\\개_안구질환_DenseNet121.h5"
 
                 # s3에 이미지 업로드
                 filename = secure_filename(f.filename)
@@ -109,7 +109,7 @@ def record_factory():
                 # 진단 결과
                 comment = result
 
-                content = record['content'] # 유저가 입력
+                content = record['content'] # 결과에 따른 피드백
                 
                 new_record = Health(animal=animal, user=user, content=content, image=image, currdate=currdate, kind=kind, comment=comment, affected_area=affected_area)  
 

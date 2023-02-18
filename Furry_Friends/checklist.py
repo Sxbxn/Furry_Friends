@@ -17,21 +17,14 @@ def checklist():
     
     # 로그인 O --> curr_animal도 세션에 O
     else:
-        currdate = param['currdate']
-        currdate = currdate.split(" ")[0]
-        # print(currdate)
-        current_weekday_num = param['weekday']
-
+        
         if request.method=="GET":
 
-#             routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
-#                                             Routine.weekday == current_weekday_num)).all()
             checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == session['curr_animal'], 
                                                                 ChecklistDefault.currdate == currdate)).first()
             checklists_routine = ChecklistRoutine.query.filter(and_(ChecklistRoutine.animal_id == session['curr_animal'], 
                                                                 ChecklistRoutine.currdate == currdate)).all()
 
-#             routines = query_to_dict(routines)
             checklist_default = query_to_dict(checklist_default)
             checklists_routine = query_to_dict(checklists_routine)
 
@@ -40,6 +33,16 @@ def checklist():
             return jsonify(checklist_default, checklists_routine)
         
         else: # POST
+            param = request.get_json() 
+
+            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+
+            currdate = param['currdate']
+            currdate = currdate.split(" ")[0]
+            current_weekday_num = int(param['weekday']) # int or str? 5 or 토요일?
+            food = param['food']
+            bowels = param['bowels']
+            note = param['note']
 
             routines = Routine.query.filter(and_(Routine.animal_id == session['curr_animal'], 
                                             Routine.weekday == current_weekday_num)).all()
@@ -55,31 +58,24 @@ def checklist():
             except:
                 pass
 
-            param = request.get_json() 
-
-            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
-
-            food = param['food']
-            bowels = param['bowels']
-            note = param['note']
-
             new_cd = ChecklistDefault(currdate, animal, food, bowels, note)
             db.session.add(new_cd)
 
             try:
-
                 # 전달받은 루틴이 있을 때
                 json_routines = param['routines']
+                print(json_routines)
 
                 j = 0
                 for r in routines:
                     j += 1
-
+                print(j)
                 for i in range(j):
 
                     json_routine = json_routines[f'routine{i+1}']
-
+                    print(json_routine)
                     routine = Routine.query.filter_by(index = json_routine['index']).first()
+
 
                     routine_id = json_routine['routine_id']
                     routine_name = json_routine['routine_name']

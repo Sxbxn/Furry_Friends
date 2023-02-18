@@ -42,4 +42,3 @@ def predict_result(model_path, img):
        for path in path_list:
             print(path_list) 
     """
-

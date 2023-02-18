@@ -3,12 +3,8 @@ from models import User, Animal
 from connect_db import db
 from sqlalchemy import and_
 import json
-import boto3
-import datetime
 from sqlalchemy import and_
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-import os
 
 from util import s3_connection, query_to_dict, upload_file_to_s3
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, ALLOWED_EXTENSIONS
@@ -162,24 +158,16 @@ def register_animal():
             weight = param['weight']
 
             f = request.files['file']
-            if f:
-                extension = f.filename.split('.')[-1]
-                if extension in ALLOWED_EXTENSIONS:
-                    extension = '.' + extension
 
-                    newname = session['login'] + '_' + animal_name + extension
-                    img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
-                    f.filename = newname
+            extension = '.' + f.filename.split('.')[-1]
 
-                    upload_file_to_s3(f)
+            newname = session['login'] + '_' + animal_name + extension
+            img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+            f.filename = newname
 
-                    image = img_url
+            upload_file_to_s3(f)
 
-                # 업로드된 파일이 이미지 파일이 아님
-                else:
-                    return "wrong file extension"
-            else:
-                image = ""
+            image = img_url
 
             animal = Animal(user, animal_name, bday, sex, neutered, weight, image)
 

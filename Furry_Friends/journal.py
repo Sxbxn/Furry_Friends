@@ -81,30 +81,19 @@ def journal_factory():
         f = request.files['file']
         
         # 사진 업로드 시 사진 링크 반환, 일상 기록 db 저장
-        if f:
-            extension = f.filename.split('.')[-1]
-            if extension in ALLOWED_EXTENSIONS:
-                extension = '.' + extension
+        extension = '.' + f.filename.split('.')[-1]
 
-                newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
-                img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
-                f.filename = newname
+        newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
+        img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+        f.filename = newname
 
-                upload_file_to_s3(f)
-    
-                image = img_url
+        upload_file_to_s3(f)
 
-            # 업로드된 파일이 이미지 파일이 아님
-            else:
-                return "wrong file extension"
-            
-        # 사진 업로드 x시 image 링크
-        else: 
-            image = ""
+        image = img_url
 
         new_entry = Journal(animal, user, title, image, content, currdate)
-        db.session.add(new_entry)
 
+        db.session.add(new_entry)
         db.session.commit()
     
         return "journal successfully created"
@@ -137,39 +126,24 @@ def journal_update():
 
         f = request.files['file']
 
-        # 새로 이미지 업로드
-        if f:
-            # 기존의 이미지 s3에서 삭제
-            try:
-                s3.delete_object(
-                    Bucket = AWS_S3_BUCKET_NAME,
-                    Key = (editing_entry.image).split('/')[-1]
-                )
+        try:
+            s3.delete_object(
+                Bucket = AWS_S3_BUCKET_NAME,
+                Key = (editing_entry.image).split('/')[-1]
+            )
 
-            # 기존에 이미지가 없었던 경우 -- pass
-            except: 
-                pass
-            
-            extension = f.filename.split('.')[-1]
-            if extension in ALLOWED_EXTENSIONS:
-                extension = '.' + extension
-
-                newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
-                img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
-                f.filename = newname
-
-                output = upload_file_to_s3(f)
-
-                editing_entry.image = img_url
-            
-            else:
-                return "wrong file extension"
-
-        # 새로 이미지 업로드 X --> 기존의 image 칼럼 데이터 그대로 유지
-        else:
-            # 이미지가 있었는데 삭제하는 건?????
+        except: # s3에서 이미지 못찾은 경우
             pass
+        
+        extension = '.' + f.filename.split('.')[-1]
 
+        newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
+        img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+        f.filename = newname
+
+        upload_file_to_s3(f)
+
+        editing_entry.image = img_url
         editing_entry.title = title
         editing_entry.content = content
 
@@ -184,13 +158,11 @@ def journal_delete():
     journal_index = int(request.headers['index'])
     deleting_journal = Journal.query.get(journal_index)
 
-    if deleting_journal.image != "":
-        s3.delete_object(
-                        Bucket = AWS_S3_BUCKET_NAME,
-                        Key = (deleting_journal.image).split('/')[-1]
-                        )
-    else:
-        pass
+    s3.delete_object(
+                    Bucket = AWS_S3_BUCKET_NAME,
+                    Key = (deleting_journal.image).split('/')[-1]
+                    )
+
 
     db.session.delete(deleting_journal)
     db.session.commit()

@@ -3,14 +3,11 @@ from connect_db import db
 from connect_session import sess
 from flask_migrate import Migrate
 from flask_session import Session
-# from flask_cors import CORS
 
 from util import query_to_dict
 
-
 # models
 from models import Animal
-
 
 # blueprints
 import authentification
@@ -50,7 +47,6 @@ app.config['SESSION_TYPE'] = "filesystem"
 
 sess.init_app(app)
 db.init_app(app)
-# CORS(app)
 
 
 Migrate(app,db)
@@ -86,13 +82,20 @@ def main():
 
         else:
             animal = query_to_dict(Animal.query.filter_by(animal_id = session['curr_animal']).first())
-            animal = jsonify(animal)
-            return render_template('index.html', animal = animal)
+            return jsonify(animal)
         
     # 세션에 로그인한 기록이 없음
     else:
-        message = "not logged in"
-        return render_template('index.html', message=message)
+        resp = {"user_id":"",
+                "animal_id":-999,
+                "animal_name":"",
+                "bday":"",
+                "sex":"",
+                "neutered":"",
+                "weight":0.0,
+                "image":""}
+
+        return jsonify(resp)
 
 
 if __name__ == "__main__":

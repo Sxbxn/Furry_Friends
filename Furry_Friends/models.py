@@ -1,19 +1,16 @@
-from flask_sqlalchemy import SQLAlchemy
-import datetime
 from connect_db import db
 from sqlalchemy.orm import declarative_base, relationship
 
 
 Base = declarative_base()
-# db = SQLAlchemy()
 
 
 class User(db.Model):
     __tablename__ = 'user'
 
-    user_id = db.Column(db.String(10), primary_key=True, nullable=False, unique=True)
-    pw = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(40), nullable=False, unique=True)
+    user_id = db.Column(db.String, primary_key=True, nullable=False, unique=True)
+    pw = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
     vet = db.Column(db.Integer, nullable=False, default=0)
 
 
@@ -30,11 +27,11 @@ class Animal(db.Model):
     animal_id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)    
     user_id = db.Column(db.ForeignKey('user.user_id', ondelete='CASCADE'), nullable=False)
 
-    user = db.relationship('User', backref=db.backref('animal_set')) #User의 객체에서 등록된 동물들 참조 가능
+    user = db.relationship('User', backref=db.backref('animal_set')) 
 
-    animal_name = db.Column(db.String(10), nullable=False)
+    animal_name = db.Column(db.String, nullable=False)
     bday = db.Column(db.String(10))
-    sex = db.Column(db.String(10))
+    sex = db.Column(db.String)
     neutered = db.Column(db.Integer)
     weight = db.Column(db.Float)
     image = db.Column(db.String, default="")
@@ -58,8 +55,8 @@ class Routine(db.Model):
 
     animal = db.relationship('Animal', backref=db.backref('routine_set'))
 
-    routine_name= db.Column(db.String(20), nullable=False)
-    weekday = db.Column(db.Integer, nullable=False)
+    routine_name= db.Column(db.String, nullable=False)
+    weekday = db.Column(db.String, nullable=False)
 
     def __init__(self, animal, routine_id, routine_name, weekday):
         self.animal = animal
@@ -72,14 +69,14 @@ class ChecklistDefault(db.Model):
     __tablename__ = 'checklist_default'
 
     index = db.Column(db.Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)
-    currdate = db.Column(db.String(20), nullable=False, default=datetime.datetime.now().date())
+    currdate = db.Column(db.String, nullable=False)
     animal_id = db.Column(db.ForeignKey('animals.animal_id', ondelete='CASCADE'), nullable=False)
 
     animal = db.relationship('Animal', backref=db.backref('checklistDefault_set'))
 
-    food = db.Column(db.String(10))
-    bowels = db.Column(db.String(10))
-    note = db.Column(db.String(100))
+    food = db.Column(db.String)
+    bowels = db.Column(db.String)
+    note = db.Column(db.String)
 
     def __init__(self, currdate, animal, food, bowels, note):
         self.currdate = currdate
@@ -99,8 +96,8 @@ class ChecklistRoutine(db.Model):
     routine = db.relationship('Routine', backref=db.backref('checklistRoutine_set'))
     animal = db.relationship('Animal')
     
-    currdate = db.Column(db.String(20), nullable=False, default=datetime.datetime.now().date())
-    routine_name = db.Column(db.String(20))
+    currdate = db.Column(db.String, nullable=False)
+    routine_name = db.Column(db.String)
     status = db.Column(db.Integer, default=0)
 
     def __init__(self, currdate, animal, routine, routine_id, routine_name, status):
@@ -122,10 +119,10 @@ class Journal(db.Model):
     animal = db.relationship('Animal', backref=db.backref('journal_set'))
     user = db.relationship('User')
 
-    title = db.Column(db.String)
-    image = db.Column(db.String)
-    content = db.Column(db.String)
-    currdate = db.Column(db.String(10))
+    title = db.Column(db.String, nullable=False)
+    image = db.Column(db.String, nullable=False)
+    content = db.Column(db.String, nullable=False)
+    currdate = db.Column(db.String)
 
     def __init__(self, animal, user, title, image, content, currdate):
         self.animal = animal
@@ -147,10 +144,10 @@ class Health(db.Model):
     user = db.relationship('User')
 
     content = db.Column(db.String)
-    image = db.Column(db.String, default="")
+    image = db.Column(db.String, nullable=False)
     comment = db.Column(db.String)
-    currdate = db.Column(db.String(10))
-    kind = db.Column(db.String)
+    currdate = db.Column(db.String)
+    kind = db.Column(db.String, nullable=False)
     affected_area = db.Column(db.String)
 
 

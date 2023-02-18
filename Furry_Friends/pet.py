@@ -23,11 +23,14 @@ s3 = s3_connection()
 @bp.before_app_request
 def load_logged_in_user():
     username = session._get_current_object()
-    if username is None:
-        g.user = None
-    else:
-        g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
+    try:
+        if username is None:
+            g.user = None
+        else:
+            g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
 
+    except:
+        pass
 
 @bp.route('/management', methods=['GET'])
 def management():
@@ -64,21 +67,7 @@ def management():
             return jsonify(animal_list) 
 
     else:
-        
         return jsonify()
-
-    # else:
-
-    #     resp = {"user_id":"",
-    #                     "animal_id":-999,
-    #                     "animal_name":"",
-    #                     "bday":"",
-    #                     "sex":"",
-    #                     "neutered":"",
-    #                     "weight":0.0,
-    #                     "image":""}
-
-    #     return jsonify(resp)
 
 
 
@@ -121,7 +110,6 @@ def info_update():
     # 수정할 동물 id header로 받음
     animal_id = int(request.headers['animal_id'])
 
-
     # 세션과 일치 시
     if asd['curr_animal'] == animal_id:
 
@@ -137,58 +125,33 @@ def info_update():
         else: # PUT
             animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
 
-            # 새로 이미지 업로드
-            try:
-                f = request.files['file']
+            # 이미지 업로드
+            f = request.files['file']
 
-                changes = request.form
-                changes = json.loads(changes['data'])
+            changes = request.form
+            changes = json.loads(changes['data'])
 
-                animal.animal_name = changes['animal_name']
-                animal.bday = changes['bday']
-                animal.sex = changes['sex']
-                animal.neutered = changes['neutered']
-                animal.weight = changes['weight']
+            animal.animal_name = changes['animal_name']
+            animal.bday = changes['bday']
+            animal.sex = changes['sex']
+            animal.neutered = changes['neutered']
+            animal.weight = changes['weight']
 
-                # 기존의 이미지 s3에서 삭제
-                try:
-                    s3.delete_object(
-                        Bucket = AWS_S3_BUCKET_NAME,
-                        Key = (animal.image).split('/')[-1]
-                    )
+            # 기존의 이미지 s3에서 삭제, 새 이미지 등록
+            s3.delete_object(
+                Bucket = AWS_S3_BUCKET_NAME,
+                Key = (animal.image).split('/')[-1]
+            )
 
-                # 기존에 이미지가 없었던 경우 -- pass
-                except: 
-                    pass
+            extension = '.' + f.filename.split('.')[-1]
 
-                extension = f.filename.split('.')[-1]
-                if extension in ALLOWED_EXTENSIONS:
-                    extension = '.' + extension
+            newname = session['login'] + '_' + animal.animal_name + extension
+            img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+            f.filename = newname
 
-                    newname = session['login'] + '_' + animal.animal_name + extension
-                    img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
-                    f.filename = newname
+            upload_file_to_s3(f)
 
-                    upload_file_to_s3(f)
-
-                    animal.image = img_url
-
-                # 업로드된 파일이 이미지 파일이 아님
-                else:
-                    return "wrong file extension"
-
-            # 이미지 업로드 x
-            # 이미지 삭제 시에는?
-            except:
-                changes = request.get_json()
-
-                print(changes)
-
-                animal.animal_name = changes['animal_name']
-                animal.bday = changes['bday']
-                animal.sex = changes['sex']
-                animal.neutered = changes['neutered']
-                animal.weight = changes['weight']
+            animal.image = img_url
 
             db.session.commit()
 
