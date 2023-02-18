@@ -3,7 +3,7 @@ if (user_id == null) {
 	history.back()
 }
 
-const animal_id = localStorage.getItem('animal_id');
+const animal_id = sessionStorage.getItem('animal_id');
 
 function createDiary(data) {
 	index = data.index;
@@ -84,7 +84,7 @@ document.addEventListener('click', function (e) {
 
 	const idx = targetStr.substring(7);
 
-	localStorage.setItem('content_idx', idx);
+	sessionStorage.setItem('content_idx', idx);
 
 	console.log(e.target.id);
 	if (targetStr.indexOf(imgStr) != -1) {

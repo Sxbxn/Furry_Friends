@@ -11,7 +11,7 @@ if (user_id == null) {
 	history.back()
 }
 
-const idx = localStorage.getItem("content_idx");
+const idx = sessionStorage.getItem("content_idx");
 
 fetch('/journal/content', {
 	method: 'GET',

@@ -51,10 +51,15 @@ signInForm.addEventListener("submit", event => {
   })
     .then(res => res.json())
     .then(data => {
-      localStorage.setItem('user_id', data.user_id)
-      localStorage.setItem('animal_id', data.animal_id)
-      console.log(data)
-      location.href = "/"
+      const user_id = data.user_id;
+      if (user_id == 'user unregistered' || user_id == 'wrong password') {
+        alert(user_id);
+      } else {
+        sessionStorage.setItem('user_id', user_id)
+        sessionStorage.setItem('animal_id', data.animal_id)
+        console.log(data)
+        location.href = "/"
+      }
     })
     .catch(error => console.log(error))
 });
