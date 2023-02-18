@@ -64,6 +64,7 @@ function createProfile(data) {
 
 	let name_div = document.createElement("div");
 	name_div.setAttribute('id', 'puppy-name' + idx);
+	name_div.setAttribute('class', 'cont');
 	name_div.textContent = name;
 	document.getElementById('name_form' + idx).append(name_div);
 
@@ -86,6 +87,7 @@ function createProfile(data) {
 
 	let sex_div = document.createElement("div");
 	sex_div.setAttribute('id', 'puppy-sex' + idx);
+	sex_div.setAttribute('class', 'cont');
 	sex_div.textContent = sex;
 	document.getElementById('sex_form' + idx).append(sex_div);
 
@@ -108,6 +110,7 @@ function createProfile(data) {
 
 	let birth_div = document.createElement("div");
 	birth_div.setAttribute('id', 'puppy-birth' + idx);
+	birth_div.setAttribute('class', 'cont');
 	birth_div.textContent = birth;
 	document.getElementById('birth_form' + idx).append(birth_div);
 
@@ -130,7 +133,8 @@ function createProfile(data) {
 
 	let weight_div = document.createElement("div");
 	weight_div.setAttribute('id', 'puppy-weight' + idx);
-	weight_div.textContent = weight;
+	weight_div.setAttribute('class', 'cont');
+	weight_div.textContent = weight + 'kg';
 	document.getElementById('weight_form' + idx).append(weight_div);
 
 	// neutering
@@ -152,6 +156,7 @@ function createProfile(data) {
 
 	let neutering_div = document.createElement("div");
 	neutering_div.setAttribute('id', 'puppy-neutering' + idx);
+	neutering_div.setAttribute('class', 'cont');
 	neutering_div.textContent = neutering;
 	document.getElementById('neutering_form' + idx).append(neutering_div);
 
