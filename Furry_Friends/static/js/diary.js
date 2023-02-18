@@ -70,7 +70,6 @@ function showDiary() {
 
 function callCreateDiary(data) {
 	for (let i = 0; i < data.length; i++) {
-		console.log('dddd: ', data);
 		createDiary(data[i]);
 	}
 }
@@ -89,19 +88,6 @@ document.addEventListener('click', function (e) {
 
 	console.log(e.target.id);
 	if (targetStr.indexOf(imgStr) != -1) {
-		clickedImgDiv = document.getElementById(targetStr)
 		location.href = "/diary-single"
 	}
 });
-
-
-
-// function prepare() {
-// 	// const img = document.querySelectorAll("[id^='img_div']");
-// 	const img = document.querySelector("#img_div1");
-// 	console.log(img);
-// }
-
-// function clickImage() {
-
-// }
