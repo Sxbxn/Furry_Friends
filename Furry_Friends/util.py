@@ -1,3 +1,4 @@
+from flask import request, session
 import boto3
 
 from werkzeug.utils import secure_filename
@@ -48,3 +49,22 @@ def to_weekday(num):
     weekdays = ['mon','tue','wed','thu','fri','sat','sun']
     num = int(num)
     return weekdays[num]
+
+
+def to_bool(animal):
+    if animal['neutered'] == 0:
+        animal['neutered'] = False
+    else:
+        animal['neutered'] = True
+    return animal
+
+
+def get_user_info():
+    user_id = request.cookies.get('login')
+    try:
+        s = session._get_current_object()
+        animal_id = s['curr_animal']
+        return user_id, animal_id
+    except:
+        animal_id = request.headers['animal_id']
+        return user_id, animal_id

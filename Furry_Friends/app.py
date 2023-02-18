@@ -4,10 +4,6 @@ from connect_session import sess
 from flask_migrate import Migrate
 from flask_session import Session
 
-from util import query_to_dict
-
-# models
-from models import Animal
 
 # blueprints
 import authentification
@@ -55,48 +51,31 @@ Migrate(app,db)
 # 메인 화면
 @app.route('/', methods=["GET"])
 def main():
+    return render_template('index.html')
 
-    try:
-        asd = session._get_current_object()
-        print(asd['login'])
-    
-    except:
-        pass
-    
-    # 세션에 로그인한 기록이 있음
-    if 'login' in session: 
-        animal = query_to_dict(Animal.query.filter_by(user_id = session['login']).first())
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
-        if "curr_animal" not in session:     
-            
-            resp = {"user_id":session['login'],
-                    "animal_id":-999,
-                    "animal_name":"",
-                    "bday":"",
-                    "sex":"",
-                    "neutered":"",
-                    "weight":0.0,
-                    "image":""}
+@app.route('/diary')
+def diary():
+    return render_template('diary.html')
 
-            return jsonify(resp)
+@app.route('/medical-record')
+def medical_record():
+    return render_template('medical-record.html')
 
-        else:
-            animal = query_to_dict(Animal.query.filter_by(animal_id = session['curr_animal']).first())
-            return jsonify(animal)
-        
-    # 세션에 로그인한 기록이 없음
-    else:
-        resp = {"user_id":"",
-                "animal_id":-999,
-                "animal_name":"",
-                "bday":"",
-                "sex":"",
-                "neutered":"",
-                "weight":0.0,
-                "image":""}
+@app.route('/sign')
+def sign():
+    return render_template('sign.html')
 
-        return jsonify(resp)
+@app.route('/mypage')
+def mypage():
+    return render_template('mypage.html')
 
+@app.route('/diary-single')
+def ds():
+    return render_template('diary-single.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

@@ -23,10 +23,11 @@ s3 = s3_connection()
 # 기록 목록 출력
 @bp.route('/journals', methods = ['GET'])
 def journals():
+    user = request.cookies.get('login')
+    animal_id = int(request.headers('curr_animal'))
 
-    animals = Animal.query.filter_by(user_id = session['login']).all()
-    animal_id = int(request.headers['animal_id'])
-
+    animals = Animal.query.filter_by(user_id = user).all()
+    
     ids = [animal.animal_id for animal in animals]
 
     if animal_id in ids:
@@ -59,44 +60,40 @@ def journal_content():
 
 
 # 기록 생성
-@bp.route('/factory', methods=["GET","POST"])
+@bp.route('/factory', methods=["POST"])
 def journal_factory():
 
-    if request.method == "GET":
-        return "journal entry form"
+    journal_entry = request.form
+
+    user = User.query.filter_by(user_id = session['login']).first()
+    animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+
+    journal_entry = json.loads(journal_entry['data'])
+
+    title = journal_entry['title']
+    content = journal_entry['content']
+    currdate = journal_entry['currdate']
+    currdate = currdate.split(" ")[0]
+
+    f = request.files['file']
     
-    else: # POST
-        journal_entry = request.form
+    # 사진 업로드 시 사진 링크 반환, 일상 기록 db 저장
+    extension = '.' + f.filename.split('.')[-1]
 
-        user = User.query.filter_by(user_id = session['login']).first()
-        animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+    newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
+    img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+    f.filename = newname
 
-        journal_entry = json.loads(journal_entry['data'])
+    upload_file_to_s3(f)
 
-        title = journal_entry['title']
-        content = journal_entry['content']
-        currdate = journal_entry['currdate']
-        currdate = currdate.split(" ")[0]
+    image = img_url
 
-        f = request.files['file']
-        
-        # 사진 업로드 시 사진 링크 반환, 일상 기록 db 저장
-        extension = '.' + f.filename.split('.')[-1]
+    new_entry = Journal(animal, user, title, image, content, currdate)
 
-        newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
-        img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
-        f.filename = newname
+    db.session.add(new_entry)
+    db.session.commit()
 
-        upload_file_to_s3(f)
-
-        image = img_url
-
-        new_entry = Journal(animal, user, title, image, content, currdate)
-
-        db.session.add(new_entry)
-        db.session.commit()
-    
-        return "journal successfully created"
+    return "journal successfully created"
 
 
 # 기록 수정

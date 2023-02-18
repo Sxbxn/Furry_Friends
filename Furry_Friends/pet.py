@@ -19,29 +19,18 @@ bp = Blueprint("pet", __name__, url_prefix="/pet")
 s3 = s3_connection()
 
 
-# 세션에 로그인 기록이 있나 사용자를 확인하는 기능
-@bp.before_app_request
-def load_logged_in_user():
-    username = session._get_current_object()
-    try:
-        if username is None:
-            g.user = None
-        else:
-            g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
-
-    except:
-        pass
-
 @bp.route('/management', methods=['GET'])
 def management():
 
-    asd = session._get_current_object()
-    print(asd)
-    req = request.headers['user_id']
+    # asd = session._get_current_object()
+    # req = request.headers['user_id']
+
+    user_id = request.cookies.get('login')
 
     # 해당 아이디로 등록한 동물 전부
-    if asd['login'] == req:
-        animal_list = Animal.query.filter(Animal.user_id==session['login']).all()
+    # if asd['login'] == req:
+    if user_id:
+        animal_list = Animal.query.filter(Animal.user_id==user_id).all()
         animal_list = query_to_dict(animal_list)
 
         if animal_list == []:
@@ -55,9 +44,9 @@ def management():
             #             "weight":0.0,
             #             "image":""}
 
-            return []    #jsonify(resp)
+            return jsonify()    #jsonify(resp)
+        
         else:
-
             for animal in animal_list:
                 if animal['neutered'] == 0:
                     animal['neutered'] = False
@@ -73,12 +62,14 @@ def management():
 
 @bp.route('/profile', methods=["GET"])
 def profile():
-    # 로그인 o
-    if 'login' in session:
+    
+    user_id = request.cookies.get('login')
+
+    if user_id:
 
         # 유저에게 등록된 동물들 id에 헤더로 받은 동물 id가 포함되어 있는지 확인
         # 있으면 헤더로 받은 동물 세션에 저장, 동물 정보 json 반환
-        animals = Animal.query.filter_by(user_id = session['login']).all()
+        animals = Animal.query.filter_by(user_id = user_id).all()
         animal_id = int(request.headers['animal_id'])
 
         ids = [animal.animal_id for animal in animals]

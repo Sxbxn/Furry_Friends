@@ -9,15 +9,6 @@ from connect_db import db
 bp = Blueprint('routine', __name__, url_prefix='/routine')
 
 
-@bp.before_app_request
-def load_logged_in_user():
-    username = session.get('login')
-    if username is None:
-        g.user = None
-    else:
-        g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
-
-
 @bp.route('/routine', methods=['GET','POST']) 
 def routine():
     

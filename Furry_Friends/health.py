@@ -135,3 +135,25 @@ def record_delete():
     db.session.commit()
     
     return "record successfully removed"
+
+
+# 웹에 x-ray 분석 결과 반환
+@bp.route('/xray',methods=["POST"])
+def xray():
+    xray_record = request.form
+    xray_record = json.loads(xray_record)
+
+    kind = xray_record['kind']
+    affected_area = xray_record['affected_area']
+
+    f = request.files['file']
+
+    # 동물별, 부위별로 6 종류 모델
+    xray_path = [] # config에 경로 다 모아 놓고 import
+    
+
+    if kind == "고양이":
+        result = "."
+
+    # result = "result"
+    return "."

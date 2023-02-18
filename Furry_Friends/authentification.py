@@ -1,4 +1,4 @@
-from flask import request, jsonify, session, Blueprint, url_for, redirect, g, render_template
+from flask import request, jsonify, session, Blueprint, url_for, redirect, g, render_template, make_response
 from models import User, Animal
 from connect_db import db
 from sqlalchemy import and_
@@ -16,16 +16,6 @@ bp = Blueprint('authentification', __name__, url_prefix='/auth')
 s3 = s3_connection()
 
 
-# 세션에 로그인 기록이 있나 사용자를 확인하는 기능
-@bp.before_app_request
-def load_logged_in_user():
-    username = session.get('login')
-    if username is None:
-        g.user = None
-    else:
-        g.user = db.session.query(User).filter(User.user_id == request.headers['user_id']).first()
-
-
 @bp.route('/register', methods=['POST']) 
 def register():
     
@@ -36,7 +26,7 @@ def register():
         email = forms['email']
         vet = forms['vet']
 
-        user = User(user_id = user_id, pw=pw, email=email, vet=vet)
+        user = User(user_id=user_id, pw=pw, email=email, vet=vet)
         # 중복 검사
         check_email = User.query.filter(User.email==email).first()
         check_userid = User.query.filter(User.user_id==user_id).first()
@@ -53,7 +43,7 @@ def register():
         return "successfully registered"
 
 
-@bp.route('/login', methods=['POST'])  
+@bp.route('/login', methods=['POST', "GET"])  
 def login():
     if request.method=="POST":
 
@@ -74,7 +64,7 @@ def login():
                         "neutered":"",
                         "weight":0.0,
                         "image":""}
-
+            
             return jsonify(resp)
         
         elif not check_password_hash(user.pw, password):
@@ -91,12 +81,12 @@ def login():
 
         else:
             # session.clear()
-            g.user = user_id
             session['login'] = user_id
 
             try:
                 animal = Animal.query.filter_by(user_id = user_id).first()
                 animal = query_to_dict(animal)
+
                 session['curr_animal'] = animal['animal_id']
 
                 if animal['neutered'] == 0:
@@ -104,10 +94,14 @@ def login():
                 else:
                     animal['neutered'] = True
 
-                return jsonify(animal)
+                resp = make_response(jsonify(animal))
+                resp.set_cookie('login', user_id, secure=True)
+
+                return resp
 
             except:
-                resp = {"user_id":session['login'],
+                
+                obj = {"user_id":session['login'],
                         "animal_id":-999,
                         "animal_name":"",
                         "bday":"",
@@ -115,8 +109,11 @@ def login():
                         "neutered":"",
                         "weight":0.0,
                         "image":""}
+                
+                resp = make_response(jsonify(obj))
+                resp.set_cookie('login', user_id, secure=True)
 
-                return jsonify(resp)
+                return resp
             
     else: # GET
         return render_template('sign.html')
@@ -125,7 +122,9 @@ def login():
 @bp.route('/logout',methods=['GET'])
 def logout():
     session.clear()
-    return "logged out"
+    resp = make_response("logged out")
+    resp.set_cookie('login','',expires=0, secure=True)
+    return resp
 
 
 @bp.route('/registerAnimal', methods=['GET','POST'])
