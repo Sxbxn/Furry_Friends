@@ -24,7 +24,7 @@ s3 = s3_connection()
 @bp.route('/journals', methods = ['GET'])
 def journals():
     user = request.cookies.get('login')
-    animal_id = int(request.headers('curr_animal'))
+    animal_id = int(request.headers['animal_id'])
 
     animals = Animal.query.filter_by(user_id = user).all()
     

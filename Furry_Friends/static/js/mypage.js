@@ -31,6 +31,8 @@ function createProfile(data) {
 
 	let mb_4 = document.createElement("h3");
 	mb_4.setAttribute('class', 'mb-4')
+	mb_4.setAttribute('style', 'cursor: pointer');
+	mb_4.setAttribute('id', 'mb' + idx);
 	mb_4.textContent = "Pet Profile " + idx;
 	document.getElementById('cw' + idx).append(mb_4);
 
@@ -191,3 +193,17 @@ function callcreateProfile(data) {
 }
 
 showProfile();
+
+
+// 동물 선택 기능
+document.addEventListener('click', function (e) {
+	const targetStr = String(e.target.id);
+	const imgStr = 'mb'
+	const idx = targetStr.substring(2);
+
+	localStorage.setItem('animal_id', idx);
+
+	if (targetStr.indexOf(imgStr) != -1) {
+		alert("Pet number " + idx + " has been selected")
+	}
+});
