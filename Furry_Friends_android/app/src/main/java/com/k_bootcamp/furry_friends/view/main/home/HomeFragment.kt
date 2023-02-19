@@ -43,12 +43,14 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var selectAdapter: SelectAnimalAdapter
-    private val dummies = listOf<AnimalResponse>(
-        AnimalResponse(1,"456","asd1","2018.1.2", 1.1f,"남",true,"https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"),
-        AnimalResponse(2,"456","asd2","2019.1.3", 1.2f,"남",true,"https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"),
-        AnimalResponse(3,"456","asd3","2020.1.4", 1.3f,"남",true,"https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"),
-        AnimalResponse(4,"456","asd4","2021.1.5", 1.4f,"남",true,"https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"),
-        AnimalResponse(5,"456","asd5","2022.1.6", 1.5f,"남",true,"https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"),
+    private val writing = listOf(
+        "오늘은 일요일이에요 \n이번 주 잘 마무리 하셨나요?\n오늘은 푹 쉬어요~",
+        "오늘은 월요일이에요 \n한 주를 즐겁게 시작해봐요!! \n이번 주도 화이팅!" ,
+        "오늘은 화요일이에요 \n이번 주 계획은 잘 세우셨나요? \n오늘도 화이팅!",
+        "오늘은 수요일이에요 \n벌써 수요일이네요~ 시간이 참 빠른거같아요 \n오늘도 화이팅!",
+        "오늘은 목요일이에요 \n이번 주의 절반이 지나가는군요! \n남은 날도 화이팅!",
+        "오늘은 금요일이에요 \n신나는 금요일이에요 \n내일부턴 주말이니 오늘도 화이팅해봐요!",
+        "오늘은 토요일이에요 \n한 주의 끝이 다가왔네요~ \n우리 아이와 함께 잘 놀아봐요~"
     )
     override fun getViewBinding(): FragmentHomeBinding = FragmentHomeBinding.inflate(layoutInflater)
     override fun observeData() {
@@ -58,18 +60,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         viewModel.getAllAnimalInfo()
         viewModel.animalInfoListLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is HomeState.Success -> {
-//                    val month = Calendar.getInstance().get(Calendar.YEAR)
-//                    val animalMonth = it.birthDay.split(".")[0].toInt()
-//                    binding.progressbar.toGone()
-//                    binding.animalInfo.root.toVisible()
-//                    binding.animalInfo.animalName.text = it.name
-//                    binding.animalInfo.animalAge.text = (month - animalMonth).toString()
-//                    binding.animalInfo.animalSex.text = it.sex
-//                    binding.animalInfo.ivMember.load(it.imageUrl)
-//                    // TO-DO 이미지, 할 일은 나중에 더 얘기해보고 넣기
-//                    initAnimalCardViewButton()
-                }
+                is HomeState.Success -> {}
                 is HomeState.Error -> {
                     if (session == null) {
                         cardViewText(binding, R.string.require_login, R.string.log_in_text)
@@ -78,30 +69,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                             initLoginButton()
                         }
                     } else {
-                        ///////////////////// 더미 데이터
-//                        val month = Calendar.getInstance().get(Calendar.YEAR)
-//                        val mainAnimal = dummies.first { animal -> animal.animalId == animalId }
-//                        val animalMonth = mainAnimal.birthDay.split(".")[0].toInt()
-//                        // 한 마리 일때는 변경 불가능
-//                        when(dummies.size) {
-//                            1 -> binding.animalInfo.change.isEnabled = false
-//                            else -> {
-//                                // 변경버튼 활성화하고, 리사이클러뷰에 데이터를 줌
-//                                binding.animalInfo.change.isEnabled = true
-//                                initAnimalCardViewButton(dummies)
-//                            }
-//                        }
-//                        binding.progressbar.toGone()
-//                        binding.animalInfo.root.toVisible()
-//                        binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
-//                        binding.animalInfo.animalName.text = mainAnimal.name
-//                        binding.animalInfo.animalAge.text = (month - animalMonth).toString() + "살"
-//                        binding.animalInfo.animalSex.text = mainAnimal.sex
-//                        binding.animalInfo.ivMember.load(mainAnimal.imageUrl)
-//                        binding.animalInfo.add.setOnClickListener {
-//                            mainActivity.showFragment(SubmitAnimalFragment(), SubmitAnimalFragment.TAG)
-//                        }
-                      /////////////////
                         // 진짜 데이터
                         when(it.message) {
                             getString(R.string.not_register_animal) -> {
@@ -127,27 +94,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                                 }
                             }
                         }
-
-
-//                        if (viewModel.animalInfoLiveData.value == null) {
-//                            cardViewText(binding, R.string.submit_animal, R.string.submit)
-//                            binding.submit.submitButton.setOnClickListener {
-//                                // 등록 페이지로 넘어가기
-//                                mainActivity.showFragment(
-//                                    SubmitAnimalFragment.newInstance(),
-//                                    SubmitAnimalFragment.TAG
-//                                )
-//                            }
-//                        } else {
-//                            binding.progressbar.toGone()
-//                            binding.submit.root.toVisible()
-//                            binding.submit.topicTextView.text =
-//                                getString(R.string.load_fail_animal_info)
-//                            binding.submit.submitButton.text = getString(R.string.retry)
-//                            binding.submit.submitButton.setOnClickListener {
-//                                observeData()
-//                            }
-//                        }
                     }
                 }
                 is HomeState.Loading -> {
@@ -174,6 +120,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                     binding.animalInfo.animalName.text = mainAnimal.name
                     binding.animalInfo.animalAge.text = (month - animalMonth).toString() + "살"
                     binding.animalInfo.animalSex.text = mainAnimal.sex
+                    binding.animalInfo.writing.text = writing[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1]
                     binding.animalInfo.ivMember.load(mainAnimal.imageUrl)
                     binding.animalInfo.add.setOnClickListener {
                         mainActivity.showFragment(SubmitAnimalFragment(), SubmitAnimalFragment.TAG)
@@ -194,7 +141,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
     private fun initCalendarView() = with(binding) {
-        calendarView.setOnDateChangedListener { widget, date, selected ->
+        calendarView.setOnDateChangedListener { _, date, _ ->
             Log.e("date", date.toString())
             val fragment = ChecklistFragment()
             fragment.arguments = bundleOf(Pair("flag", 1), Pair("date", date.calendar))

@@ -18,7 +18,7 @@
     <string name="first_visit">처음 오셨나요?</string>
     <string name="email_hint_text">이메일</string>
     <string name="change">변경</string>
-    <string name="today_do">오늘의 할 일</string>
+    <string name="today_do">오늘의 글귀</string>
     <string name="submit">등록</string>
     <string name="name">이름을 입력해주세요</string>
     <string name="sex">성별: &#160;</string>
@@ -82,4 +82,5 @@
     <string name="waiting_you">여러분을 기다리는 중이에요!</string>
     <string name="not_register_animals">반려동물 등록이 되지 않았어요!</string>
     <string name="unknown_error">알 수 없는 오류가 발생했어요</string>
+    <string name="no_response">데이터 없음</string>
 </resources>

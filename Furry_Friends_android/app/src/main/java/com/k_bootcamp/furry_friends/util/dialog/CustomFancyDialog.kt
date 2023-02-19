@@ -61,3 +61,24 @@ fun setAiFancyDialog(context: Context, runAiProfile:() -> Unit): FancyAlertDialo
         .setAnimation(Animation.SLIDE)
         .setIcon(R.drawable.ic_image_36, View.VISIBLE)
         .build()
+
+fun setWithDrawUser(context: Context, withDraw:() -> Unit): FancyAlertDialog =
+    FancyAlertDialog.Builder.with(context)
+        .setBackgroundColor(Color.parseColor("#00BD56"))
+        .setTitle("회원탈퇴")
+        .setMessage("탈퇴 시 모든 정보가 삭제됩니다")
+        .setPositiveBtnText("예")
+        .onPositiveClicked {
+            withDraw()
+            it.dismiss()
+        }
+        .setPositiveBtnBackgroundRes(R.color.main_color)
+        .setNegativeBtnText("아니오")
+        .onNegativeClicked {
+            it.dismiss()
+        }
+        .setNegativeBtnBackgroundRes(R.color.main_color)
+        .isCancellable(true)
+        .setAnimation(Animation.SLIDE)
+        .setIcon(R.drawable.ic_delete_24, View.VISIBLE)
+        .build()
