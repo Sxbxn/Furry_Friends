@@ -4,11 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -19,29 +23,29 @@ import androidx.core.app.ActivityCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.Rotate
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
 import com.fc.baeminclone.screen.base.BaseFragment
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
-import com.k_bootcamp.furry_friends.databinding.DialogUpdateAnimalBinding
 import com.k_bootcamp.furry_friends.databinding.FragmentSettingBinding
-import com.k_bootcamp.furry_friends.extension.load
-import com.k_bootcamp.furry_friends.extension.toGone
-import com.k_bootcamp.furry_friends.extension.toVisible
+import com.k_bootcamp.furry_friends.extension.*
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.animal.Animal
-import com.k_bootcamp.furry_friends.model.writing.Daily
 import com.k_bootcamp.furry_friends.util.dialog.setAiFancyDialog
 import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
+import com.k_bootcamp.furry_friends.util.dialog.setWithDrawUser
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.login.LoginActivity
-import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -91,17 +95,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     // ai 프로필을 클릭했다는 플래그
     private lateinit var flag: String
 
-
-    private fun dummies() {
-        imageUrl =
-            "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"
-        updateName = "123"
-        updateWeight = "1.2"
-        updateBirthday = "2020-1-2"
-        updateSex = "남"
-        updateNeutered = false
-    }
-    ///////////////////////////////////////////////////////////////// 런쳐 변수는 추후 모듈화 해야할 듯 중복이 많음
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
@@ -143,13 +136,12 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             }
         }
 
-    /////////////////////////////////////////////////////////////////
     override fun getViewBinding(): FragmentSettingBinding =
         FragmentSettingBinding.inflate(layoutInflater)
 
     @SuppressLint("SetTextI18n")
     override fun observeData() {
-        // 동물 정보 가져와서 바인딩딩
+        // 동물 정보 가져와서 바인딩
         viewModel.getAnimalInfo()
         viewModel.animalInfoLiveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -175,7 +167,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                     loading.dismiss()
                     binding.update.toVisible()    //중요!!!!!!! 테스트시 주석해제
                     binding.ivMember.load(it.imageUrl)
-                    binding.textView2.text = it.userId
+                    binding.textView2.text = it.userId+"님"
                     binding.animalName.text = it.name
                     binding.birthDay.text = it.birthDay
                     binding.sex.text = it.sex
@@ -196,11 +188,8 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                         "successfully updated" -> requireContext().toast("프로필 업데이트 성공")
                     }
                 }
-
             }
         }
-
-
     }
 
     override fun initViews() {
@@ -222,8 +211,10 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 Log.e("pushed","pushed!")
                 flag = "ai"
                 setAiFancyDialog(requireContext()) {
+                    loading.setVisible()
                     CoroutineScope(Dispatchers.IO).launch {
-                        imageUrl = "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"
+                        // 더미
+//                        imageUrl = "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"
                         val file = viewModel.getFile(imageUrl)
                         val fileName = file.name
                         Log.e("ai file",fileName)
@@ -234,7 +225,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                         // url ?? image file ??
                         Log.e("ai body", body.toString())
                         profileScoping(body)
-                    }, 1000)
+                    }, 2000)
                 }.show()
             }
         }
@@ -251,8 +242,17 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 is SettingState.Loading -> { loading.setVisible() }
                 is SettingState.Success -> {
                     loading.dismiss()
-                    requireContext().toast("AI 프로필 이미지 생성에 성공공습니다.")
+                    requireContext().toast("AI 프로필 이미지 생성에 성공했습니다.")
                     binding.ivMember.load(it.response)
+                    // 다운로드 실패 시 재시도를 위한 url 초기화
+                    imageUrl = it.response
+                    // 갤러리에 저장?
+                    AlertDialog.Builder(requireContext())
+                        .setMessage("저장하시겠습니까?")
+                        .setPositiveButton("예"){_,_ -> downloadPhoto(it.response) }
+                        .setNegativeButton("아니오"){_,_ ->}
+                        .create()
+                        .show()
                 }
                 is SettingState.SuccessGetInfo -> { }
             }
@@ -283,18 +283,14 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                         }
                         is SettingState.Success -> {
                             loading.dismiss()
-                            requireContext().toast("로그인 창으로 돌아갑니다.")
-                            mainActivity.startActivity(LoginActivity.newIntent(requireContext()).apply{
-                                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            })
+                            backToLoginActivity()
                         }
                         is SettingState.SuccessGetInfo -> {}
                     }
                 }
             }
             withdrawUser.setOnClickListener {
-                viewModel.withdrawUser()
+                reallyWithDrawUser()
             }
             deleteProfile.setOnClickListener {
                 viewModel.deleteProfile()
@@ -323,6 +319,29 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
     }
 
+    // 회원탈퇴 로직
+    private fun reallyWithDrawUser() {
+        setWithDrawUser(requireContext()) {
+            viewModel.withdrawUser()
+            viewModel.isSuccess.observe(viewLifecycleOwner) {
+                when(it) {
+                    is SettingState.Error -> {
+                        loading.setError()
+                        requireContext().toast("회원탈퇴 실패")
+                    }
+                    is SettingState.Loading -> {
+                        loading.setVisible()
+                    }
+                    is SettingState.Success -> {
+                        loading.dismiss()
+                        backToLoginActivity()
+                    }
+                    is SettingState.SuccessGetInfo -> {}
+                }
+            }
+        }
+    }
+
     private fun initDialog() {
         // 요청 취소
         loading.cancelButton().setOnClickListener {
@@ -331,18 +350,15 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         // 요청 다시시도
         loading.retryButton().setOnClickListener {
             // ai 프로필일 때 다시요청
-            if(flag == "ai") profileScoping(body)
-            else observeData()
+            when (flag) {
+                "ai" -> profileScoping(body)
+                "retry" -> downloadPhoto(imageUrl)
+                else -> observeData()
+            }
         }
     }
 
-    private fun onLicenseDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Open Source License")
-            .setView(R.layout.view_opensource)
-            .setPositiveButton("확인") { _, _ -> }
-            .show()
-    }
+
 
     private fun initUpdateButton() = with(binding) {
         update.setOnClickListener {
@@ -508,6 +524,95 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
     private fun setOnImageButtonClickListener() =
         setFancyDialog(requireContext(), mainActivity, permissionLauncher, getCameraImageLauncher, getGalleryImageLauncher).show()
+
+    private fun downloadPhoto(photoUrl: String?) {
+        photoUrl ?: return
+        // 글라이드로 로딩 후 로딩 성공시 다운로드 로직 실행
+        Glide.with(this)
+            .asBitmap()
+            .load(photoUrl)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .into(
+                object: CustomTarget<Bitmap>(SIZE_ORIGINAL, SIZE_ORIGINAL) {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        saveBitmapToMediaStore(resource)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) = Unit
+
+                    override fun onLoadStarted(placeholder: Drawable?) {
+                        super.onLoadStarted(placeholder)
+                        binding.root.appearSnackBar(requireContext(), "다운로드 중...")
+                    }
+
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        flag = "retry"
+                        binding.root.appearSnackBar(requireContext(), "다운로드 실패..!")
+                        loading.setError()
+                    }
+                }
+            )
+    }
+    // scope storage로 인한 MediaStore 분기처리가 요구됨 (안드로이드 10 기준)
+    private fun saveBitmapToMediaStore(bitmap: Bitmap) {
+        // 컨텐츠 리졸버를 통하여 미디어스토어의 설정
+        val fileName = "${System.currentTimeMillis()}.jpg"
+        val resolver = requireContext().contentResolver
+        val imageCollectionUrl =
+            //10 이상일 경우 정해진 Volume들이 있음 VOLUME_EXTERNAL_PRIMARY- 읽고 쓰기 가능
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            } else {
+                //10이상이 아닐 경우 그냥 외부 URI 갖고 오면 됨
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            }
+        val imageDetails = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+            // (10이상일때) 이미지 저장시 긴 시간이 걸릴 수 있는데, 이 사이에 그 이미지 파일에 접근할 수도 있다.
+            // 이것을 IS_PENDING 값을 1로 두면 막을 수 있고, 0이 되면 그때부터 접근할 수 있다.
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
+        }
+
+        val imageUri = resolver.insert(imageCollectionUrl, imageDetails)
+        imageUri ?: return
+        // 실제 저장 과정
+        resolver.openOutputStream(imageUri).use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+
+        }
+        // 다시 이미지의 접근 권한을 바꾸고 리졸버의 설정을 업데이트한다.
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            imageDetails.clear()
+            imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0)
+            resolver.update(imageUri, imageDetails, null, null)
+        }
+
+        binding.root.appearSnackBar(requireContext(), "다운로드 완료")
+    }
+
+    private fun onLicenseDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Open Source License")
+            .setView(R.layout.view_opensource)
+            .setPositiveButton("확인") { _, _ -> }
+            .show()
+    }
+
+    private fun backToLoginActivity() {
+        requireContext().toast("로그인 창으로 돌아갑니다.")
+        mainActivity.startActivity(LoginActivity.newIntent(requireContext()).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        })
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -517,7 +622,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         fun newInstance() = SettingFragment().apply {
 
         }
-
         const val TAG = "SETTING_FRAGMENT"
     }
 }

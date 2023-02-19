@@ -45,7 +45,6 @@ class SettingViewModel @Inject constructor(
             // 추후 반환값 수정해야할듯
             val response = userRepository.logout()
             if(response != null) {
-                context.toast("로그아웃 되었습니다. 로그인 화면으로 돌아갑니다.")
                 Application.prefs.clear()
                 _isSuccess.postValue(SettingState.Success(response))
             } else {
