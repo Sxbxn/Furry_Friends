@@ -29,8 +29,8 @@ class ChecklistViewModel @Inject constructor(
     private val calendar = Calendar.getInstance()
     private val session = Application.prefs.session
 
-    //    private var animalId = Application.prefs.animalId   나중에 쓸거
-    var animalId: Int? = null
+    private var animalId = Application.prefs.animalId   //나중에 쓸거
+//    var animalId: Int? = null
     private val _routineLiveData = MutableLiveData<CheckListState>()
     val routineLiveData: LiveData<CheckListState>
         get() = _routineLiveData
@@ -110,8 +110,9 @@ class ChecklistViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             val response = animalRepository.getChecklistDatas(date, weekday)
             if (response == null) {
-                _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.error_response)))
-            } else {
+                _routineLiveData.postValue(CheckListState.Error(context.getString(R.string.no_response)))
+            }
+            else {
                 _routineLiveData.postValue(CheckListState.ReadDone(response))
             }
         }

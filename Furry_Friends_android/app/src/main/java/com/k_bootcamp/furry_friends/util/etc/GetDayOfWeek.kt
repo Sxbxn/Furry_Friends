@@ -26,8 +26,8 @@ fun getDayOfWeekFromDate(mDate:String): String {
     val cal = Calendar.getInstance()
     cal.time = date!!
     return when(cal.get(Calendar.DAY_OF_WEEK)) {
-        1 -> "6"
-        2 -> "0"
+        1 -> "6"  //일
+        2 -> "0"  // 월...
         3 -> "1"
         4 -> "2"
         5 -> "3"

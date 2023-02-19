@@ -32,7 +32,8 @@ class RoutineCheckReadOnlyAdapter(
 
         fun bind(routine: RoutineStatusResponse) {
             binding.routineName.text = routine.routineName
-            binding.chkRoutine.isChecked = routine.status
+            binding.chkRoutine.isEnabled = false
+            binding.chkRoutine.isChecked = routine.status != 0
         }
     }
 }

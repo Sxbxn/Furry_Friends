@@ -99,6 +99,7 @@ class RoutineCheckAdapter(
             else -> context.getString(R.string.error)
         }
 
-        return "$year ${month + 1} $day $dayOfWeek"
+        return "$year-${month + 1}-$day $dayOfWeek"
+//        return "$year-${month + 1}-$day"
     }
 }

@@ -67,7 +67,8 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                 when (it) {
                     is CheckListState.Done -> {
                         context?.toast("등록이 완료되었습니다. 메인화면으로 돌아갑니다.")
-                        mainActivity.showFragment(HomeFragment.newInstance(),"")
+                        loading.dismiss()
+                        mainActivity.showFragment(HomeFragment.newInstance(),HomeFragment.TAG)
                     }
                     is CheckListState.Loading -> {
                         Log.e("loading", "loading")
@@ -75,6 +76,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                     }
                     is CheckListState.Error -> {
                         loading.setError()
+                        binding.recyclerView.toGone()
                         when (it.message) {
                             getString(R.string.not_loged_in) -> {
                                 binding.infoTextView.text = "로그인 되지 않았어요!"
@@ -85,6 +87,12 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                             getString(R.string.exist_routine) -> {
                                 requireContext().toast(it.message)
                             }
+                            getString(R.string.no_response) -> {
+                                binding.noteCardView.toVisible()
+                                binding.editTextAnimalOther.setText("정보 없음")
+                                binding.editTextAnimalEat.setText("정보 없음")
+                                binding.recyclerView.toGone()
+                            }
                             else -> {
                                 binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
                             }
@@ -93,6 +101,8 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                     }
                     is CheckListState.Success -> {
                         loading.dismiss()
+                        binding.recyclerView.toVisible()
+                        binding.shimmerLayout.hideShimmer()
                         // 작성 창에 루틴 체크할 수 있게 보여주는데 해당 요일에만 있는 루틴만 걸러서 보여줌
                         // response 는 mon, tue... 문자열 형식으로 반환됨
                         val todayRoutines = it.routines.filter { r-> r.weekDay == getDayOfWeek() }
@@ -111,32 +121,22 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                     is CheckListState.ReadDone -> {
                         context?.toast("체크리스트 정보 로딩 완료")
                         loading.dismiss()
+                        binding.shimmerLayout.hideShimmer()
                         binding.noteCardView.toVisible()
                         binding.recyclerView.toVisible()
-                        initReadOnlyView(it.response.checklistDefault)
-                        initRecyclerViewReadOnly(it.response.checklistRoutine)
+                        if(it.response.checklistDefault != null && it.response.checklistRoutine != null) {
+                            initReadOnlyView(it.response.checklistDefault)
+                            initRecyclerViewReadOnly(it.response.checklistRoutine)
+                        } else {
+                            binding.noteCardView.toGone()
+                            binding.infoTextView.toVisible()
+                            binding.infoTextView.text = "등록 된 정보가 없어요..!"
+                        }
                     }
                     is CheckListState.Loading -> {
                         loading.setVisible()
                     }
                     is CheckListState.Error -> {
-                        /////////////////////  test용 ---  삭제 예정  --> initReadOnlyView
-//                        val date = args?.get("date") as GregorianCalendar
-//                        Log.e("date",args?.get("date").toString())
-//                        val d = Date(date.timeInMillis)
-//                        val sdf = SimpleDateFormat("yyyy.MM.dd.E")
-//                        val dates = sdf.format(d).toString().split(".")
-//                        binding.yearTextView.text = dates[0] + ". "
-//                        binding.monthTextView.text = dates[1] + ". "
-//                        binding.dayOfMonthTextView.text = dates[2]
-//                        binding.dayofWeekTextView.text = dates[3]+"요일"
-//                        binding.submitButton.toGone()
-//                        binding.eatInputLayout.isEnabled = false
-//                        binding.otherInputLayout.isEnabled = false
-//                        binding.poobStatus.isEnabled = false
-//                        binding.poobStatus.toGone()
-//                        binding.poobStatusTextView.toVisible()
-                        /////////////// test
                         loading.setError()
                         binding.noteCardView.toGone()
                         binding.recyclerView.toGone()
@@ -222,7 +222,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
         monthTextView.text = "${month + 1}."
         dayOfMonthTextView.text = day.toString()
         dayofWeekTextView.text = dayOfWeek
-        date = "$year-${month + 1}-$day"
+        date = "$year-${month + 1}-$day $dayOfWeek"
     }
 
     private fun initButton() = with(binding) {
@@ -239,6 +239,10 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                 // routineStatusList가 백그라운드에서 돌아 여기가 먼저 실행되기에 강제로 딜레이시켜서 초기화된 상태를 받아오게함
                 Handler(Looper.getMainLooper()).postDelayed({
                     Log.e("routineStatusList", routineStatusList.toString())
+//                    val list = date.split("-").toMutableList()
+//                    if(list[1].length == 1)
+//                        list[1] = "0" + list[1]
+//                    date = list.joinToString("-")
                     checkList = CheckList(date, eatQuantityStr, poobStatusStr, other, routineStatusList)
                     submitCheckList(checkList)
                 }, 300)
@@ -246,10 +250,8 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
         }
     }
 
-    private fun submitCheckList(checkList: CheckList) =
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.submitCheckList(checkList)
-        }
+    private fun submitCheckList(checkList: CheckList) = viewModel.submitCheckList(checkList)
+
 
     private fun initDialog() {
         // 요청 취소
@@ -270,8 +272,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
     private fun initSpinner() = with(binding) {
         poobStatus.toVisible()
         poobStatusTextView.toGone()
-        val spinner = poobStatus
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        poobStatus.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 adapterView: AdapterView<*>?,
                 view: View?,
@@ -284,30 +285,29 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 poobStatusStr = "정상"
             }
-
         }
     }
 
     // 체크 가능한 루틴 어댑터
-    private fun initRecyclerView(routines: List<RoutineResponse>) {
+    private fun initRecyclerView(routines: List<RoutineResponse>) = with(binding) {
         adapter = RoutineCheckAdapter(
             routines,
             viewModel,
             ResourcesProviderImpl(requireContext()),
             requireContext(),
         )
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
-
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
     }
-    private fun initRecyclerViewReadOnly(routines: List<RoutineStatusResponse>) {
+
+    //캘린터뷰 접근 리사이클러뷰 설정
+    private fun initRecyclerViewReadOnly(routines: List<RoutineStatusResponse>) = with(binding) {
         val adapter = RoutineCheckReadOnlyAdapter(
             routines,
             requireContext()
         )
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
-
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
     }
 
     private fun initTextState() = with(binding) {
