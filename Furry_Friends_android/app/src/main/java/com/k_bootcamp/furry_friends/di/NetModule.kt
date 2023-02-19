@@ -1,19 +1,14 @@
 package com.k_bootcamp.furry_friends.di
 
-import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.k_bootcamp.furry_friends.data.service.AnimalService
 import com.k_bootcamp.furry_friends.data.service.UserService
 import com.k_bootcamp.furry_friends.data.service.WritingService
 import com.k_bootcamp.furry_friends.data.url.Url
-import com.k_bootcamp.furry_friends.extension.toast
-import com.k_bootcamp.furry_friends.util.network.AuthInterceptor
-import com.k_bootcamp.furry_friends.util.network.NoConnectionInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

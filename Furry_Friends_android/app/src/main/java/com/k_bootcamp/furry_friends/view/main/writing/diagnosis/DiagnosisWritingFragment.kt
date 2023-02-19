@@ -6,7 +6,6 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,15 +25,12 @@ import com.k_bootcamp.furry_friends.extension.load
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
 import com.k_bootcamp.furry_friends.extension.toast
-import com.k_bootcamp.furry_friends.model.writing.Daily
 import com.k_bootcamp.furry_friends.model.writing.Diagnosis
-import com.k_bootcamp.furry_friends.util.dialog.CustomAlertDialog
 import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
 import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
-import com.k_bootcamp.furry_friends.view.main.writing.daily.DailyState
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -82,7 +78,6 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = File(absoluteUri!!)
-                Log.e("gallery", sendFile.name)
             }
         }
     private val getCameraImageLauncher =
@@ -97,7 +92,6 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = file
-                Log.e("camera", sendFile.path)
             }
         }
     override fun getViewBinding(): FragmentDiagnosisWritingBinding = FragmentDiagnosisWritingBinding.inflate(layoutInflater)
@@ -115,13 +109,13 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
     }
     override fun initViews() {
         initShimmer()
-        Log.e("flag", args.toString())
         if (args?.get("flag") == 0) {
             initReadOnlyView()
         } else if(args?.get("flag") == 1){
             initWritableView()
         }
     }
+    @SuppressLint("SetTextI18n")
     private fun initReadOnlyView() = with(binding) {
         val content = args?.get("content")
         val date = args?.get("date")
@@ -168,7 +162,6 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
     private fun initTextState() = with(binding) {
         editTextDescription.doOnTextChanged{ text, _, _, _ ->
             initValidate(descriptionInputLayout)
-//            viewModel.descLiveData = text.toString()
             description = text.toString()
         }
     }
@@ -218,7 +211,6 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
     }
     // 진단 기록 등록 -> 등록하면 서버에서 받고 진단 후 진단 피드백을 반환해야함
     private fun submitDiagnosisWriting(body: MultipartBody.Part, jsonDiagnosisWriting: RequestBody) {
-        Log.e("diagnosis", diagnosisWriting.toString())
         viewModel.submitDiagnosisWriting(body, jsonDiagnosisWriting)
         viewModel.isSuccess.observe(viewLifecycleOwner) { response ->
             when (response) {

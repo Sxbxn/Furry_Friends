@@ -118,21 +118,6 @@ class SignInActivity: BaseActivity<SignInViewModel, ActivitySignInBinding>() {
                     // loading code
                     loading.setVisible()
                 }
-//                is APIResponse.Success -> {
-//                    // success code
-//                    loading.dismiss()
-//                    startActivity(Intent(this, LoginActivity::class.java).apply {
-//                        this@SignInActivity.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-//                    })
-//                }
-//                is APIResponse.Error -> {
-//                    // error code
-//                    loading.setError()
-//                }
-//                is APIResponse.Loading -> {
-//                    // loading code
-//                    loading.setVisible()
-//                }
             }
         }
     }

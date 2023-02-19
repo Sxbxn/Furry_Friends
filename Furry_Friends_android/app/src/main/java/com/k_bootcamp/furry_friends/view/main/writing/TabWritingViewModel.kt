@@ -31,11 +31,6 @@ class TabWritingViewModel @Inject constructor(
     val tabLiveData: LiveData<TabWritingStatus>
         get() = _tabLiveData
 
-//    private val _diagnosisLiveData = MutableLiveData<TabWritingStatus>()
-//    val diagnosisLiveData: LiveData<TabWritingStatus>
-//        get() = _diagnosisLiveData
-
-
     fun getDailyList() {
         if (session == null) {
             _tabLiveData.value = TabWritingStatus.Error(context.getString(R.string.not_loged_in))
@@ -98,7 +93,6 @@ class TabWritingViewModel @Inject constructor(
     fun deleteWriting(model: Model) = viewModelScope.launch(ioDispatcher) {
         _tabLiveData.postValue(TabWritingStatus.Loading)
         if (model is DailyModel) {
-            Log.e("daily 삭제됨", model.toString())
             val response = writingRepository.deleteDailyModel(model.id)
             if(response == null) {
                 _tabLiveData.postValue(TabWritingStatus.Error("삭제 실패"))
@@ -106,7 +100,6 @@ class TabWritingViewModel @Inject constructor(
                 _tabLiveData.postValue(TabWritingStatus.Done(0))
             }
         } else if(model is DiagnosisModel) {
-            Log.e("diagnosis 삭제됨", model.toString())
             val response = writingRepository.deleteDiagnosisModel(model.id)
             if(response == null) {
                 _tabLiveData.postValue(TabWritingStatus.Error("삭제 실패"))

@@ -71,7 +71,6 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         mainActivity.showFragment(HomeFragment.newInstance(),HomeFragment.TAG)
                     }
                     is CheckListState.Loading -> {
-                        Log.e("loading", "loading")
                         loading.setVisible()
                     }
                     is CheckListState.Error -> {
@@ -97,7 +96,6 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                                 binding.infoTextView.text = "알 수 없는 오류가 발생했어요"
                             }
                         }
-                        Log.e("message", it.message)
                     }
                     is CheckListState.Success -> {
                         loading.dismiss()
@@ -106,7 +104,6 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         // 작성 창에 루틴 체크할 수 있게 보여주는데 해당 요일에만 있는 루틴만 걸러서 보여줌
                         // response 는 mon, tue... 문자열 형식으로 반환됨
                         val todayRoutines = it.routines.filter { r-> r.weekDay == getDayOfWeek() }
-//                        initRecyclerView(it.routines)
                         initRecyclerView(todayRoutines)
                     }
                     is CheckListState.ReadDone -> {}
@@ -238,7 +235,6 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                 flag = 1
                 // routineStatusList가 백그라운드에서 돌아 여기가 먼저 실행되기에 강제로 딜레이시켜서 초기화된 상태를 받아오게함
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.e("routineStatusList", routineStatusList.toString())
 //                    val list = date.split("-").toMutableList()
 //                    if(list[1].length == 1)
 //                        list[1] = "0" + list[1]
@@ -251,7 +247,6 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
     }
 
     private fun submitCheckList(checkList: CheckList) = viewModel.submitCheckList(checkList)
-
 
     private fun initDialog() {
         // 요청 취소

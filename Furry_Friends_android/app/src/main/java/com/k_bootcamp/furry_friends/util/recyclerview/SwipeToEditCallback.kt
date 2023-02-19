@@ -17,8 +17,6 @@ abstract class SwipeToEditCallback(val context: Context)
     private val intrinsicWidth = editIcon!!.intrinsicWidth
     private val intrinsicHeight = editIcon!!.intrinsicHeight
     private val background =  GradientDrawable()
-//    private val background = ColorDrawable()
-    private val backgroundColor = Color.parseColor("#24ae05")
     private val clearPaint = Paint().apply{ xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)}
 
     override fun getMovementFlags(
@@ -56,7 +54,6 @@ abstract class SwipeToEditCallback(val context: Context)
             return
         }
         // Draw the green edit background
-//        background.color = backgroundColor
         background.color = ResourcesProviderImpl(context).getColorStateList(R.color.edit_background)
         background.cornerRadius = 20f
         background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)

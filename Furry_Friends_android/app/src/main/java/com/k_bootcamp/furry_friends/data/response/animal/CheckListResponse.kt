@@ -15,6 +15,4 @@ data class CheckListResponse(
     val poobStatus: String,
     @SerializedName("note")
     val note: String
-//    @SerializedName("routines")
-//    val routineList: List<RoutineStatusResponse>
 )

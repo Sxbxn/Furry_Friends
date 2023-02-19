@@ -194,8 +194,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     override fun initViews() {
         loading = LoadingDialog(requireContext())
-        // 더미데이터
-//        dummies()
         initDialog()
         initSettings()
         initUpdateButton()
@@ -204,8 +202,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     private fun initAiProfileImage() = with(binding) {
         // 세션이 있고 동물이 있을 때만 작동
-        Log.e("user_id",session.toString())
-        Log.e("animal_id",animalId.toString())
         if (session != null && animalId != -999) {
             ivMember.setOnClickListener {
                 Log.e("pushed","pushed!")
@@ -382,7 +378,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 setOnImageButtonClickListener()
             }
             CoroutineScope(Dispatchers.Main).launch {
-                sendFile = viewModel.getFile(imageUrl)!!
+                sendFile = viewModel.getFile(imageUrl)
             }
             profileImage.load(imageUrl)
             animalAge.setText(updateBirthday)
@@ -424,7 +420,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                             newInstance(),
                             TAG
                         )
-//                        observeData()
                     }
                 }
                 // 중요 !! 다이얼로그 뷰를 지워주지 않으면 뷰가 중첩되어 에러가 발생함  -> 어쩔 수 없이 findViewById 써야함
@@ -457,31 +452,26 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         animalNames.doOnTextChanged { text, _, _, _ ->
             initValidate(nameInputLayout)
             updateName = text.toString()
-            Log.e("name", updateName)
         }
         animalAge.doOnTextChanged { text, _, _, _ ->
             initValidate(ageInputLayout)
             updateBirthday = text.toString()
-            Log.e("age", updateBirthday)
         }
         animalWeight.doOnTextChanged { text, _, _, _ ->
             initValidate(weightInputLayout)
             updateWeight = text.toString()
-            Log.e("weight", updateWeight)
         }
         animalSex.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radioButtonMale -> updateSex = getString(R.string.male)
                 R.id.radioButtonFemale -> updateSex = getString(R.string.female)
             }
-            Log.e("sex", updateSex)
         }
         animalNeutered.setOnCheckedChangeListener { _, isChecked ->
             updateNeutered = when (isChecked) {
                 true -> true
                 false -> false
             }
-            Log.e("ne", updateNeutered.toString())
         }
     }
 

@@ -42,7 +42,6 @@ class SettingViewModel @Inject constructor(
     fun logout() {
         _isSuccess.value = SettingState.Loading
         viewModelScope.launch(ioDispatcher) {
-            // 추후 반환값 수정해야할듯
             val response = userRepository.logout()
             if(response != null) {
                 Application.prefs.clear()

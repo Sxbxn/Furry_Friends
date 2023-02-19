@@ -25,7 +25,6 @@ abstract class SwipeToDeleteCallback(val context: Context) : ItemTouchHelper.Sim
     private val intrinsicWidth = deleteIcon!!.intrinsicWidth
     private val intrinsicHeight = deleteIcon!!.intrinsicHeight
     private val background = GradientDrawable()
-    private val backgroundColor = Color.parseColor("#f44336")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
 
@@ -60,7 +59,6 @@ abstract class SwipeToDeleteCallback(val context: Context) : ItemTouchHelper.Sim
             return
         }
 
-//        background.color = backgroundColor
         background.color = ResourcesProviderImpl(context).getColorStateList(R.color.delete_background)
         background.cornerRadius = 20f
         background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)

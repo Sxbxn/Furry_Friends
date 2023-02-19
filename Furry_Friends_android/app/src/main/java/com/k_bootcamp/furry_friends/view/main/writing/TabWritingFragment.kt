@@ -14,9 +14,6 @@ import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentTabWritingBinding
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
-import com.k_bootcamp.furry_friends.extension.toast
-import com.k_bootcamp.furry_friends.model.CellType
-import com.k_bootcamp.furry_friends.model.Model
 import com.k_bootcamp.furry_friends.model.writing.DailyModel
 import com.k_bootcamp.furry_friends.model.writing.DiagnosisModel
 import com.k_bootcamp.furry_friends.util.etc.LoadingDialog
@@ -24,7 +21,6 @@ import com.k_bootcamp.furry_friends.util.recyclerview.SwipeToDeleteCallback
 import com.k_bootcamp.furry_friends.util.recyclerview.SwipeToEditCallback
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.adapter.ModelRecyclerAdapter
-import com.k_bootcamp.furry_friends.view.adapter.RoutineAdapter
 import com.k_bootcamp.furry_friends.view.adapter.viewholder.listener.DailyListListener
 import com.k_bootcamp.furry_friends.view.adapter.viewholder.listener.DiagnosisListListener
 import com.k_bootcamp.furry_friends.view.main.writing.daily.DailyWritingFragment
@@ -85,33 +81,11 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
             requireContext()
         )
     }
-    //// 임시 데이터
-    val list = mutableListOf<Model>(
-        DailyModel(1, CellType.DAILY_CELL, "제목1", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-11"),
-        DailyModel(2, CellType.DAILY_CELL, "제목2", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-12"),
-        DailyModel(3, CellType.DAILY_CELL, "제목3", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-13"),
-        DailyModel(4, CellType.DAILY_CELL, "제목4", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-14"),
-        DailyModel(5, CellType.DAILY_CELL, "제목5", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-15"),
-        DailyModel(6, CellType.DAILY_CELL, "제목6", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-16"),
-        DailyModel(7, CellType.DAILY_CELL, "제목7", "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠", "2023-2-17"),
-    )
-    val list2 = mutableListOf<Model>(
-        DiagnosisModel(1, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠1", "2023-2-11","코멘트1","강아지","안구"),
-        DiagnosisModel(2, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠2", "2023-2-12","","강아지","안구"),
-        DiagnosisModel(3, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠3", "2023-2-13","코멘트13","강아지","안구"),
-        DiagnosisModel(4, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠4", "2023-2-14","코멘트14","강아지","안구"),
-        DiagnosisModel(5, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠5", "2023-2-15","","강아지","안구"),
-        DiagnosisModel(6, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠6", "2023-2-16","코멘트16","강아지","안구"),
-        DiagnosisModel(7, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠7", "2023-2-17","","강아지","안구"),
-        DiagnosisModel(8, CellType.DIAGNOSIS_CELL, "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c","컨텐츠8", "2023-2-18","코멘트18","강아지","안구"),
-
-    )
 
     override fun getViewBinding(): FragmentTabWritingBinding =
         FragmentTabWritingBinding.inflate(layoutInflater)
 
     override fun observeData() {
-        Log.e("pos",pos.toString())
         // 현재 탭에 해당되는 데이터를 가져와서 보여주기
         if (pos == 0) {
             Log.e("일상", "일상")
@@ -125,18 +99,9 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         binding.dailyRecyclerView.showShimmer()
                     }
                     is TabWritingStatus.Error -> {
-                        loading.setError()
                         binding.dailyRecyclerView.toGone()
                         binding.infoTextView.toVisible()
                         showErrorMessage(it.message, binding)
-                        // 테스트 코드-----임시 데이터 *************************************** success에 들어갈것
-//                        binding.diagnosisRecyclerView.toGone()
-//                        binding.infoTextView.toGone()
-//                        binding.dailyRecyclerView.toVisible()
-//                        binding.dailyRecyclerView.hideShimmer()
-//                        initRecyclerView(0)
-//                        dailyAdapter.submitList(list)
-                        // ********************************************
                     }
                     is TabWritingStatus.SuccessDiagnosis -> {
                         loading.dismiss()
@@ -169,7 +134,6 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                 }
             }
         } else if (pos == 1) {
-            Log.e("진단", "진단")
             viewModel.getDiagnosisList()
             viewModel.tabLiveData.observe(viewLifecycleOwner) {
                 when (it) {
@@ -182,14 +146,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         binding.diagnosisRecyclerView.toGone()
                         binding.infoTextView.toVisible()
                         showErrorMessage(it.message, binding)
-                        // 테스트 코드-----임시 데이터 ***************************************
-//                        binding.dailyRecyclerView.toGone()
-//                        binding.diagnosisRecyclerView.toVisible()
-//                        binding.infoTextView.toGone()
-//                        binding.diagnosisRecyclerView.hideShimmer()
-//                        initRecyclerView(1)
-//                        diagnosisAdapter.submitList(list2)
-                        // ********************************************
+
                     }
                     is TabWritingStatus.SuccessDaily -> {
                         loading.dismiss()
@@ -329,6 +286,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                 binding.infoTextView.text = getString(R.string.notice)
             }
             else -> {
+                loading.setError()
                 binding.infoTextView.text = getString(R.string.unknown_error)
             }
         }

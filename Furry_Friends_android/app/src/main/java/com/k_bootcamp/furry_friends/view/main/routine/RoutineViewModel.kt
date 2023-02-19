@@ -18,7 +18,6 @@ import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
 import com.k_bootcamp.furry_friends.data.repository.animal.AnimalRepository
-import com.k_bootcamp.furry_friends.data.response.user.Session
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import com.k_bootcamp.furry_friends.notification.AlarmReceiver
 import com.k_bootcamp.furry_friends.util.etc.IoDispatcher
@@ -90,7 +89,7 @@ class RoutineViewModel @Inject constructor(
                     val routines = animalRepository.getRoutinesFromId(animalId)
                     _routineLiveData.postValue(
                         RoutineState.Success(
-                            animalId!!,
+                            animalId,
                             session,
                             routines
                         )
@@ -211,14 +210,11 @@ class RoutineViewModel @Inject constructor(
             cal.set(Calendar.MINUTE, hourMinute[1].toInt())
             cal.set(Calendar.SECOND, 0)
             cal.set(Calendar.MILLISECOND, 0)
-            Log.e("정상",routine.toString())
-            Log.e("time", hourMinute.joinToString(""))
         } else {
             cal.set(Calendar.HOUR_OF_DAY, 12)
             cal.set(Calendar.MINUTE, 0)
             cal.set(Calendar.SECOND, 0)
             cal.set(Calendar.MILLISECOND, 0)
-            Log.e("기본","기본")
         }
         val intervalDay: Long = 24 * 60 * 60 * 1000
         var selectTime: Long = cal.timeInMillis
@@ -229,6 +225,7 @@ class RoutineViewModel @Inject constructor(
             selectTime += intervalDay
         }
 
+        // 다시 조정해보기
 //        cal[Calendar.SECOND] = cal[Calendar.SECOND] + 3 // 10초 뒤
 
 //       fromList.forEach{ from ->

@@ -87,7 +87,6 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = File(absoluteUri!!)
-                Log.e("gallery", sendFile.name)
             }
         }
     private val getCameraImageLauncher =
@@ -102,7 +101,6 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = file
-                Log.e("camera", sendFile.path)
             }
         }
 
@@ -121,7 +119,6 @@ class SubmitAnimalFragment : BaseFragment<SubmitAnimalViewModel, FragmentSubmitA
     }
 
     private fun submitAnimal(body: MultipartBody.Part, json: RequestBody) {
-        Log.e("animal", animal.toString())
         viewModel.submitAnimal(body, json)
         viewModel.isSuccess.observe(viewLifecycleOwner) { response ->
             when (response) {

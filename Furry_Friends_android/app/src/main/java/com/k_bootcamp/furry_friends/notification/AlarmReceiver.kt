@@ -11,7 +11,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.k_bootcamp.furry_friends.model.animal.Routine
 import com.k_bootcamp.furry_friends.view.MainActivity
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 
 
@@ -28,8 +27,6 @@ class AlarmReceiver: BroadcastReceiver() {
         val week = bundle?.getBooleanArray("dayOfWeek")
         val routine = bundle?.getParcelable<Routine>("registerRoutine")
 
-        Log.e("routine", routine.toString())
-        Log.e("week", week.contentToString())
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val cal = Calendar.getInstance()
 

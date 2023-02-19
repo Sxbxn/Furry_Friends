@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -22,26 +20,19 @@ import com.bumptech.glide.load.resource.bitmap.Rotate
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.fc.baeminclone.screen.base.BaseFragment
 import com.google.gson.Gson
-import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentDayWritingBinding
 import com.k_bootcamp.furry_friends.extension.load
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.writing.Daily
-import com.k_bootcamp.furry_friends.util.dialog.CustomAlertDialog
 import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
-import com.k_bootcamp.furry_friends.view.main.home.HomeFragment
 import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalFragment
-import com.k_bootcamp.furry_friends.view.main.home.submitanimal.SubmitAnimalState
 import com.k_bootcamp.furry_friends.view.main.writing.TabWritingFragment
-import com.shashank.sony.fancydialoglib.Animation
-import com.shashank.sony.fancydialoglib.FancyAlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -50,8 +41,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 @AndroidEntryPoint
@@ -90,7 +79,6 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = File(absoluteUri!!)
-                Log.e("gallery", sendFile.name)
             }
         }
     private val getCameraImageLauncher =
@@ -106,7 +94,6 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
                     .into(binding.imageButtonImageSelect)
 
                 sendFile = file
-                Log.e("camera", sendFile.path)
             }
         }
 
@@ -128,7 +115,6 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
 
     override fun initViews() {
         initShimmer()
-        Log.e("flag", args.toString())
         if (args?.get("flag") == 0) {
             initReadOnlyView()
         } else if (args?.get("flag") == 1) {
@@ -143,7 +129,6 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
         val date = args?.get("date")
         val content = args?.get("content")
         val imageUrl = args?.get("url")
-        Log.e("url", imageUrl.toString())
         saveWriting.toGone()
         editTextTitle.apply {
             isEnabled = false
@@ -193,7 +178,7 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
     }
 
     private fun initTextState() = with(binding) {
-        dateTextView.text = date.toString()
+        dateTextView.text = date
         editTextTitle.doOnTextChanged { text, _, _, _ ->
             initValidate(titleInputLayout)
             title = text.toString()
@@ -226,13 +211,9 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
     }
 
     private fun submitDailyWriting(body: MultipartBody.Part, jsonDailyWriting: RequestBody, flag:Int) {
-        Log.e("daily", dailyWriting.toString())
-        Log.e("daily", jsonDailyWriting.toString())
         if(flag == 0)  {
-            Log.e("등록", "등록")
             viewModel.submitDailyWriting(body, jsonDailyWriting)
         } else {
-            Log.e("수정", "수정")
             viewModel.updateDailyWriting(body, jsonDailyWriting, args?.get("index").toString())
         }
         viewModel.isSuccess.observe(viewLifecycleOwner) { response ->

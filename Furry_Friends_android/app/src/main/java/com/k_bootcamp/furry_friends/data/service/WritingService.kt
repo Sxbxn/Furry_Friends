@@ -58,11 +58,4 @@ interface WritingService {
     suspend fun deleteDiagnosisModel(
         @Header("index") id: Int,
     ): Response<String>
-
-
-
-
-
-
-
 }

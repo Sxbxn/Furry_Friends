@@ -26,6 +26,7 @@ interface RoutineDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)   // 충돌나면 무시 (기본 3개는 유지되어야 하므로)
     suspend fun insertRoutine(routine: Routine)
 
+    // 상태 유지를 위한 요일별 업데이트
     @Query("UPDATE routine set mon = :date where animal_id = :animalId AND routineName = :routineName")
     suspend fun updateMonday(date:Boolean, animalId:Int, routineName: String )
 
@@ -50,12 +51,13 @@ interface RoutineDao {
     @Query("UPDATE routine set time = :time where animal_id = :animalId AND routineName = :routineName")
     suspend fun updateTime(time: String, animalId:Int, routineName: String)
 
+    // 특정 시간의 루틴 가져오기
     @Query("SELECT time FROM routine where animal_id = :animalId AND routineName = :routineName")
     suspend fun getTimeRoutine(animalId:Int, routineName: String): String
 
 
 
-    // status 관련
+    // status 관련 (체크리스트에 체크 후 상태 초기화)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoutineStatus(status: RoutineStatus)
 

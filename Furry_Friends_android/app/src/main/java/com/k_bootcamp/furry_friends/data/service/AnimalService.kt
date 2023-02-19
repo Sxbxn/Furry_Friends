@@ -25,19 +25,16 @@ interface AnimalService {
     suspend fun submitDateRoutine(
         @Body routine: SendRoutine
     ): Response<String>
-//    ): Response<RoutineSubmit>
 
     @POST("/routine/weekdaydelete")
     suspend fun deleteDateRoutine(
         @Body routine: SendRoutine
     ): Response<String>
-//    ): Response<RoutineSubmit>
 
     @POST("/routine/routinedelete")
     suspend fun deleteRoutineByServer(
         @Body routine: Routine
     ): Response<String>
-//    ): Response<RoutineSubmit>
 
     // 선택된 동물의 루틴을 모두 가져와서 요일별로 필터링해서 사용한다.
     @GET("/routine/routine")
@@ -60,8 +57,6 @@ interface AnimalService {
     suspend fun submitDailyChecklist(
         @Body checkList: CheckList
     ): Response<String>
-//    ): Response<JsonObject>
-      // 추후 실험 해야함  서버코드 보니까 얘는 json 반환하게 되어있었음
 
 
     @GET("/check/checklist")
@@ -70,7 +65,6 @@ interface AnimalService {
         @Header("currdate") date: String,
         @Header("weekday") weekday: String
     ): Response<ReadOnlyCheckListResponse>
-//    ): Response<CheckList>
 
 
 

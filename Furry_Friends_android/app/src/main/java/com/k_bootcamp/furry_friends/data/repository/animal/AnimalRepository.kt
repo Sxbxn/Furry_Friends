@@ -20,13 +20,13 @@ interface AnimalRepository {
     suspend fun getRoutinesFromIdByServer(): List<SendRoutine>?
     // 루틴 요일 체크박스 활성화시 데이터 보내기
     suspend fun submitDateRoutine(routine: SendRoutine): String?
-//    suspend fun submitDateRoutine(routine: RoutineResponse): RoutineSubmit?
+
     // 루틴 요일체크박스 비활성화시 데이터 보내기
     suspend fun deleteDateRoutine(routine: SendRoutine): String?
-//    suspend fun deleteDateRoutine(routine: RoutineResponse): RoutineSubmit?
+
     // 서버에 있는 특정 루틴 지우기
     suspend fun deleteRoutineByServer(routineName: Routine): String?
-//    suspend fun deleteRoutineByServer(routineName: Routine): RoutineSubmit?
+
     // 현재요일에 기록된 루틴 가져오기
     suspend fun getRoutinesFromDate(): List<SendRoutine>?
     // 서버에서 특정 동물(헤더)의 모든 루틴 가져오기
@@ -34,7 +34,6 @@ interface AnimalRepository {
     // 금일 체크리스트 등록(저장)하기
     suspend fun submitDailyChecklist(checkList: CheckList): String?
     // 캘린더에서 접근하여 해당일자 데이터 가져오기
-//    suspend fun getChecklistDatas(date: String, weekday: String): CheckList?
     suspend fun getChecklistDatas(date: String, weekday: String): ReadOnlyCheckListResponse?
     // 동물 프로필 삭제
     suspend fun deleteAnimalInfo(): AnimalResponse?

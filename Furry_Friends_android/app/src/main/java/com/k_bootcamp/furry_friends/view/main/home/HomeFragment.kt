@@ -1,5 +1,6 @@
 package com.k_bootcamp.furry_friends.view.main.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.View
@@ -19,7 +20,7 @@ import com.k_bootcamp.furry_friends.databinding.FragmentHomeBinding
 import com.k_bootcamp.furry_friends.extension.load
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
-import com.k_bootcamp.furry_friends.util.holidayColor
+import com.k_bootcamp.furry_friends.util.etc.holidayColor
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.adapter.SelectAnimalAdapter
 import com.k_bootcamp.furry_friends.view.adapter.viewholder.listener.SelectAnimalListListener
@@ -53,6 +54,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         "오늘은 토요일이에요 \n한 주의 끝이 다가왔네요~ \n우리 아이와 함께 잘 놀아봐요~"
     )
     override fun getViewBinding(): FragmentHomeBinding = FragmentHomeBinding.inflate(layoutInflater)
+    @SuppressLint("SetTextI18n")
     override fun observeData() {
         // 먼저 홈화면이 실행되면 해당유저의 모든 동물 리스트를 가져온다.
         // 동물 리스트가 비어있으면 (등록 된 동물이 없음) -> 등록하라고 창을 보여준다.
@@ -132,7 +134,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
 
     override fun initViews() = with(binding) {
-        Log.e("session", session.toString())
         holidayColor(calendarView)
         initCalendarView()
         goToSettings.setOnClickListener {
@@ -142,7 +143,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
     private fun initCalendarView() = with(binding) {
         calendarView.setOnDateChangedListener { _, date, _ ->
-            Log.e("date", date.toString())
             val fragment = ChecklistFragment()
             fragment.arguments = bundleOf(Pair("flag", 1), Pair("date", date.calendar))
             mainActivity.supportFragmentManager.beginTransaction()
@@ -198,7 +198,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         adapter = selectAdapter
         selectAdapter.setItemOnClickListener(object: SelectAnimalListListener{
             override fun onClickItem(position: Int) {
-                Log.e("position", infoList[position].toString())
                 d.dismiss()
                 // 누르면 동물아이디가 바뀜
                 Application.prefs.animalId = infoList[position].animalId

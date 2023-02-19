@@ -1,4 +1,4 @@
-package com.k_bootcamp.furry_friends.util
+package com.k_bootcamp.furry_friends.util.etc
 
 import android.graphics.Color
 import android.text.style.ForegroundColorSpan

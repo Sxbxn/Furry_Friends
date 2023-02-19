@@ -1,7 +1,6 @@
 package com.k_bootcamp.furry_friends.view.main.routine
 
 import android.content.Context
-import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
@@ -9,11 +8,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fc.baeminclone.screen.base.BaseFragment
-import com.google.gson.Gson
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
-import com.k_bootcamp.furry_friends.data.db.dao.RoutineDao
-import com.k_bootcamp.furry_friends.databinding.FragmentHomeBinding
 import com.k_bootcamp.furry_friends.databinding.FragmentRoutineBinding
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
@@ -25,10 +21,7 @@ import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.adapter.RoutineAdapter
 import com.k_bootcamp.furry_friends.view.main.home.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>() {
@@ -47,7 +40,6 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
         viewModel.routineLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is RoutineState.Loading -> {
-                    Log.e("loading", "loading")
                     binding.infoTextView.toGone()
                     binding.recyclerView.toVisible()
                     binding.recyclerView.showShimmer()
@@ -73,10 +65,8 @@ class RoutineFragment : BaseFragment<RoutineViewModel, FragmentRoutineBinding>()
                             binding.infoTextView.text = getString(R.string.unknown_error)
                         }
                     }
-                    Log.e("message", it.message)
                 }
                 is RoutineState.Success -> {
-                    Log.e("success", "success")
                     binding.recyclerView.hideShimmer()
                     binding.infoTextView.toGone()
                     binding.recyclerView.toVisible()

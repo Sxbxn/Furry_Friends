@@ -28,8 +28,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
-//        Application.prefs.session = "456"  /////////////////// 임시
-//        Application.prefs.animalId = 1  /////////////////// 임시
     }
 
     private fun initViews() = with(binding) {
@@ -37,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.home -> {
                     showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
-//                    showFragment(SubmitAnimalFragment(),"")
                     true
                 }
                 R.id.routine -> {
