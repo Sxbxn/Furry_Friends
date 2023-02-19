@@ -11,8 +11,9 @@ bp = Blueprint('routine', __name__, url_prefix='/routine')
 
 @bp.route('/routine', methods=['GET','POST']) 
 def routine():
-    
-    animals = Animal.query.filter_by(user_id = session['login']).all()
+    asd = session._get_current_object()
+
+    animals = Animal.query.filter_by(user_id = asd['login']).all()
     animal_id = int(request.headers['animal_id'])
 
     ids = [animal.animal_id for animal in animals]

@@ -21,26 +21,32 @@ s3 = s3_connection()
 
 @bp.route('/records', methods=["GET"])
 def records():
+    asd = session._get_current_object()
 
-    animals = Animal.query.filter_by(user_id = session['login']).all()
-    animal_id = int(request.headers['animal_id'])
+    if 'login' in asd:
 
-    ids = [animal.animal_id for animal in animals]
+        animal_id = int(request.headers['animal_id'])
+        animals = Animal.query.filter_by(user_id = asd['login']).all()
+        ids = [animal.animal_id for animal in animals]
 
-    if animal_id in ids:
-        session['curr_animal'] = animal_id
+        if animal_id in ids:
+            session['curr_animal'] = animal_id
 
-    health_records = Health.query.filter(and_(Health.user_id==session['login'],
-                                      Health.animal_id==session['curr_animal'])).all()
+            health_records = Health.query.filter(and_(Health.user_id==asd['login'],
+                                                Health.animal_id==asd['curr_animal'])).all()
 
-    if health_records != []:
-        health_records = query_to_dict(health_records)
-        for i in range(len(health_records)):
-            health_records[i]['comment'] = str(health_records[i]['comment'])
+            if health_records != []:
+                health_records = query_to_dict(health_records)
+                for i in range(len(health_records)):
+                    health_records[i]['comment'] = str(health_records[i]['comment'])
 
-        return jsonify(health_records)
+                return jsonify(health_records)
+            else:
+                return []
+        else:
+            return "no animal registered"
     else:
-        return []
+        "not logged in"
         
 
 @bp.route('/content', methods=["GET"])
@@ -157,3 +163,53 @@ def xray():
 
     # result = "result"
     return "."
+
+
+@bp.route('/web', methods=["POST"])
+def web():
+
+    asd = session._get_current_object()
+
+    
+
+    if 'login' in asd:
+        user = User.query.filter_by(user_id = asd['login']).first()
+        if user.vet == 1:
+        
+            record = request.form
+            # record = json.loads(record['data'])
+
+            kind = record['kind']
+            affected_area = record['affected_area']
+
+            f = request.files['file']
+
+            if f:
+                return kind, affected_area
+        
+        else:
+            return "not a vet"
+
+    # if f:
+    #     # predict.py 함수로 전처리 후 모델 돌리기
+    #     # f 로 모델 돌려서 나온 값 db에 저장
+
+    #     # 서버 내 모델 저장 경로
+    #     cat_path = ".\\EYE_Model\\고양이_안구질환_DenseNet.h5"
+    #     dog_path = ".\\EYE_Model\\개_안구질환_DenseNet121.h5"
+
+    #     img = Image.open(f)
+
+    #     # 이미지 전처리
+    #     img = mk_img(img)
+        
+    #     # 모델 결과 
+    #     if kind == "고양이":
+    #         result = predict_result(cat_path, img)
+    #     else:
+    #         result = predict_result(dog_path, img)
+
+    #     # 진단 결과
+    #     comment = result
+
+    #     return comment

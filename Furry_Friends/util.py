@@ -46,7 +46,7 @@ def upload_file_to_s3(file):
 
 
 def to_weekday(num):
-    weekdays = ['mon','tue','wed','thu','fri','sat','sun']
+    weekdays = ['월요일','화요일','수요일','목요일','금요일','토요일','일요일']
     num = int(num)
     return weekdays[num]
 

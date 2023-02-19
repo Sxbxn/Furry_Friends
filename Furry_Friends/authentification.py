@@ -95,7 +95,7 @@ def login():
                     animal['neutered'] = True
 
                 resp = make_response(jsonify(animal))
-                resp.set_cookie('login', user_id, secure=True)
+                resp.set_cookie('login', user_id)
 
                 return resp
 
@@ -111,7 +111,7 @@ def login():
                         "image":""}
                 
                 resp = make_response(jsonify(obj))
-                resp.set_cookie('login', user_id, secure=True)
+                resp.set_cookie('login', user_id)
 
                 return resp
             
@@ -123,9 +123,29 @@ def login():
 def logout():
     session.clear()
     resp = make_response("logged out")
-    resp.set_cookie('login','',expires=0, secure=True)
+    resp.set_cookie('login','',expires=0)
     return resp
 
+
+@bp.route('/withdrawal', methods=['DELETE'])
+def withdrawal():
+    
+    asd = session._get_current_object()
+    print(asd)
+
+    if 'login' in asd:
+        user = User.query.filter_by(user_id=asd['login']).first()
+
+        db.session.delete(user)
+        db.session.commit()
+
+        session.clear()
+        resp = make_response("user deleted")
+        resp.set_cookie('login','',expires=0)
+
+        return resp
+    else:
+        return "not authorized"
 
 @bp.route('/registerAnimal', methods=['GET','POST'])
 def register_animal():
@@ -182,6 +202,8 @@ def register_animal():
                curr_animal['neutered'] = False
             else:
                 curr_animal['neutered'] = True
+
+            # session['curr_animal'] = curr_animal.animal_id
 
             return jsonify(curr_animal)
             # 등록된 동물 정보 json 반환, 이 뒤로 header에 animal_id 주고받기

@@ -22,15 +22,19 @@ s3 = s3_connection()
 @bp.route('/management', methods=['GET'])
 def management():
 
-    # asd = session._get_current_object()
-    # req = request.headers['user_id']
+    asd = session._get_current_object()
+    req = request.headers['user_id']
 
     user_id = request.cookies.get('login')
+    test = request.cookies.get('session')
+
+    print(asd)
+    print(req)
 
     # 해당 아이디로 등록한 동물 전부
-    # if asd['login'] == req:
-    if user_id:
-        animal_list = Animal.query.filter(Animal.user_id==user_id).all()
+    if asd['login'] == req:
+    # if user_id:
+        animal_list = Animal.query.filter(Animal.user_id==asd['login']).all()
         animal_list = query_to_dict(animal_list)
 
         if animal_list == []:
@@ -44,7 +48,7 @@ def management():
             #             "weight":0.0,
             #             "image":""}
 
-            return jsonify()    #jsonify(resp)
+            return jsonify([])
         
         else:
             for animal in animal_list:
@@ -64,6 +68,10 @@ def management():
 def profile():
     
     user_id = request.cookies.get('login')
+    test = request.cookies.get('session')
+
+    print(user_id)
+    print(test)
 
     if user_id:
 
@@ -106,7 +114,7 @@ def info_update():
 
         # 동물 정보 수정 페이지 접근
         if request.method == "GET":
-            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+            animal = Animal.query.filter_by(animal_id = asd['curr_animal']).first()
 
             animal = query_to_dict(animal)
             return jsonify(animal)  
@@ -114,7 +122,7 @@ def info_update():
         # 수정 정보 전달 시
         # 수정사항 한번에 전송받음
         else: # PUT
-            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+            animal = Animal.query.filter_by(animal_id = asd['curr_animal']).first()
 
             # 이미지 업로드
             f = request.files['file']
@@ -162,7 +170,7 @@ def pet_delete():
     if asd['curr_animal'] == animal_id:
         
         try:
-            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+            animal = Animal.query.filter_by(animal_id = asd['curr_animal']).first()
             
             # 프로필 이미지 s3에서 삭제
             try:
@@ -207,3 +215,42 @@ def pet_delete():
     
     else:
         return "unauthorized"
+
+
+@bp.route('/AIprofile', methods=["POST"])
+def ai_profile():
+
+    asd = session._get_current_object()
+
+    if 'login' not in asd:
+        return "not logged in"
+    
+    else:
+        animal = Animal.query.filter_by(animal_id = asd['curr_animal']).first()
+
+        f = request.files['file']
+
+        # 전처리
+
+        # s3에서 기존 이미지 삭제
+        s3.delete_object(
+            Bucket = AWS_S3_BUCKET_NAME,
+            Key = (animal.image).split('/')[-1]
+        )
+
+        # 모델 돌리기
+        
+
+        # 생성된 이미지 s3에 저장
+        extension = '.' + f.filename.split('.')[-1]
+
+        newname = session['login'] + '_' + animal.animal_name + "_aiprofile" + extension
+        img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+        f.filename = newname
+
+        upload_file_to_s3(f)
+
+        animal.image = img_url
+
+        db.session.commit()
+

@@ -24,27 +24,32 @@ s3 = s3_connection()
 @bp.route('/journals', methods = ['GET'])
 def journals():
     user = request.cookies.get('login')
-    animal_id = int(request.headers('curr_animal'))
+    asd = session._get_current_object()
 
-    animals = Animal.query.filter_by(user_id = user).all()
-    
-    ids = [animal.animal_id for animal in animals]
+    if 'login' in asd or user:
 
-    if animal_id in ids:
-        session['curr_animal'] = animal_id
+        animal_id = int(request.headers['animal_id'])
+        animals = Animal.query.filter_by(user_id = asd['login']).all()
+        ids = [animal.animal_id for animal in animals]
 
-    # order by도?
-    journals = Journal.query.filter(and_(Journal.user_id==session['login'],
-                                        Journal.animal_id==session['curr_animal'])).all()
-    
-    # 기록 존재시
-    if journals != []:
-        journals = query_to_dict(journals)
-        return jsonify(journals)
+        if animal_id in ids:
+            session['curr_animal'] = animal_id
 
-    # 기록이 없을 시
+            journals = Journal.query.filter(and_(Journal.user_id==asd['login'],
+                                                Journal.animal_id==asd['curr_animal'])).all()
+            
+            # 기록 존재시
+            if journals != []:
+                journals = query_to_dict(journals)
+                return jsonify(journals)
+
+            # 기록이 없을 시
+            else:
+                return []
+        else:
+            return "no animal registered"
     else:
-        return []
+        return "not logged in"
 
 
 # 아이템 클릭 시 기록 열람
