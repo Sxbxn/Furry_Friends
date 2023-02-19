@@ -2,6 +2,8 @@ from flask import url_for, redirect, jsonify, request, session, Blueprint
 from connect_db import db
 from sqlalchemy import and_
 from PIL import Image
+import base64
+import io
 
 import json
 
@@ -165,30 +167,45 @@ def xray():
     return "."
 
 
-@bp.route('/web', methods=["POST"])
-def web():
+@bp.route('/check', methods=["POST"])
+def check():
 
-    asd = session._get_current_object()
+    # asd = session._get_current_object()
 
+    record = request.form['data']
+    file = request.form['file']
+
+    file = file.split(',')[1]
+
+    with open("test.jpg", 'wb') as f:
+        f.write(base64.b64decode(file))
+
+    s3.upload_file(Filename="./test.jpg", Bucket=AWS_S3_BUCKET_NAME, Key="test.jpg")
+    img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/test.jpg"
+    os.remove("./test.jpg")
     
+    print(img_url)
 
-    if 'login' in asd:
-        user = User.query.filter_by(user_id = asd['login']).first()
-        if user.vet == 1:
+    return '.'
+    # if 'login' in asd:
+    #     user = User.query.filter_by(user_id = asd['login']).first()
+    #     if user.vet == 1:
+
+    # record = json.loads(record)
+    # kind = record['kind']
+    # print(kind)
+    # affected_area = record['affected_area']
+    # print(affected_area)
+
+    # f = request.files['file']
+
+    # print(f)
+    # print(kind, affected_area)
+    # if f:
+    #     return "."
         
-            record = request.form
-            # record = json.loads(record['data'])
-
-            kind = record['kind']
-            affected_area = record['affected_area']
-
-            f = request.files['file']
-
-            if f:
-                return kind, affected_area
-        
-        else:
-            return "not a vet"
+        # else:
+            # return "not a vet"
 
     # if f:
     #     # predict.py 함수로 전처리 후 모델 돌리기

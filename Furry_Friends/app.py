@@ -77,5 +77,10 @@ def mypage():
 def ds():
     return render_template('diary-single.html')
 
+@app.route('/check')
+def check():
+    return render_template('check.html')
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
