@@ -230,21 +230,16 @@ def ai_profile():
 
         f = request.files['file']
 
-        # 전처리
+        # 기존 프로필 이미지 넘겨받아 전처리
 
-        # s3에서 기존 이미지 삭제
-        s3.delete_object(
-            Bucket = AWS_S3_BUCKET_NAME,
-            Key = (animal.image).split('/')[-1]
-        )
-
-        # 모델 돌리기
         
+        # 모델 돌리기
+        # model_path = ""
 
-        # 생성된 이미지 s3에 저장
-        extension = '.' + f.filename.split('.')[-1]
+        # 새로 생성된 ai 프로필 이미지 s3에 저장
+        extension = '.' + f.filename.split('.')[-1] # ai 모델 돌리면 나오는 이미지 형식이 고정인지 확인 후 수정
 
-        newname = session['login'] + '_' + animal.animal_name + "_aiprofile" + extension
+        newname = asd['login'] + '_' + animal.animal_name + "_aiprofile" + extension
         img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
         f.filename = newname
 
@@ -253,4 +248,11 @@ def ai_profile():
         animal.image = img_url
 
         db.session.commit()
+
+        # s3에서 기존 이미지 삭제
+        s3.delete_object(
+            Bucket = AWS_S3_BUCKET_NAME,
+            Key = (animal.image).split('/')[-1]
+        )
+
 
