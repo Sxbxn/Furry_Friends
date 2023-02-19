@@ -3,6 +3,13 @@ if (user_id == null) {
 	history.back()
 }
 
+animal_id = sessionStorage.getItem('animal_id');
+
+if (animal_id == -999) {
+	alert('동물 등록이 필요합니다! 어플에서 등록 후 이용 바랍니다.');
+	history.back()
+}
+
 function createProfile(data) {
 	console.log("?");
 	console.log("animal id: ", data.animal_id);
@@ -31,6 +38,8 @@ function createProfile(data) {
 
 	let mb_4 = document.createElement("h3");
 	mb_4.setAttribute('class', 'mb-4')
+	mb_4.setAttribute('style', 'cursor: pointer');
+	mb_4.setAttribute('id', 'mb' + idx);
 	mb_4.textContent = "Pet Profile " + idx;
 	document.getElementById('cw' + idx).append(mb_4);
 
@@ -64,6 +73,7 @@ function createProfile(data) {
 
 	let name_div = document.createElement("div");
 	name_div.setAttribute('id', 'puppy-name' + idx);
+	name_div.setAttribute('class', 'cont');
 	name_div.textContent = name;
 	document.getElementById('name_form' + idx).append(name_div);
 
@@ -86,6 +96,7 @@ function createProfile(data) {
 
 	let sex_div = document.createElement("div");
 	sex_div.setAttribute('id', 'puppy-sex' + idx);
+	sex_div.setAttribute('class', 'cont');
 	sex_div.textContent = sex;
 	document.getElementById('sex_form' + idx).append(sex_div);
 
@@ -108,6 +119,7 @@ function createProfile(data) {
 
 	let birth_div = document.createElement("div");
 	birth_div.setAttribute('id', 'puppy-birth' + idx);
+	birth_div.setAttribute('class', 'cont');
 	birth_div.textContent = birth;
 	document.getElementById('birth_form' + idx).append(birth_div);
 
@@ -130,7 +142,8 @@ function createProfile(data) {
 
 	let weight_div = document.createElement("div");
 	weight_div.setAttribute('id', 'puppy-weight' + idx);
-	weight_div.textContent = weight;
+	weight_div.setAttribute('class', 'cont');
+	weight_div.textContent = weight + 'kg';
 	document.getElementById('weight_form' + idx).append(weight_div);
 
 	// neutering
@@ -152,6 +165,7 @@ function createProfile(data) {
 
 	let neutering_div = document.createElement("div");
 	neutering_div.setAttribute('id', 'puppy-neutering' + idx);
+	neutering_div.setAttribute('class', 'cont');
 	neutering_div.textContent = neutering;
 	document.getElementById('neutering_form' + idx).append(neutering_div);
 
@@ -179,10 +193,24 @@ function showProfile() {
 }
 
 function callcreateProfile(data) {
-	for(let i = 0; i < data.length; i++) {
+	for (let i = 0; i < data.length; i++) {
 		console.log(data[i]);
 		createProfile(data[i]);
 	}
 }
 
 showProfile();
+
+
+// 동물 선택 기능
+document.addEventListener('click', function (e) {
+	const targetStr = String(e.target.id);
+	const imgStr = 'mb'
+	const idx = targetStr.substring(2);
+	console.log(idx);
+	
+	if (targetStr.indexOf(imgStr) != -1) {
+		alert("Pet number " + idx + " has been selected")
+		sessionStorage.setItem('animal_id', idx);
+	}
+});

@@ -35,7 +35,6 @@ function DropFile(dropAreaId, fileListId) {
         files = [...files];
         // files.forEach(uploadFile);
         files.forEach(previewFile);
-        console.log("~~~~");
         showResult();
     }
 
@@ -88,36 +87,52 @@ function DropFile(dropAreaId, fileListId) {
 
 const dropFile = new DropFile("drop-file", "files");
 
-
-
-
-
-
-
-
 // 시작 버튼
-const signInForm = document.querySelector('#sign-in-form');
+const startBtn = document.getElementById('start-btn');
 
-signInForm.addEventListener("submit", event => {
-  event.preventDefault();
+startBtn.addEventListener("click", event => {
+    event.preventDefault();
 
-  const formData = new FormData(signInForm);
-  const data = Object.fromEntries(formData);
-  // console.log(data);
+    const imgDiv = document.getElementById('upload-img');
 
-  fetch('/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
+    const imgData = imgDiv.getAttribute('src');
+    const opt1 = document.querySelector('input[name="options1"]:checked').value; 
+    const opt2 = document.querySelector('input[name="options2"]:checked').value; 
+
+    var dataObj = new Object();
+
+    dataObj['species'] = opt1;
+    dataObj['parts'] = opt2;
+
+    const json = JSON.stringify(dataObj);
+	console.log(json); // {"species":"cat","parts":"op3"}
+
+    let formData = new FormData();
+    formData.append('data', dataObj);
+    formData.append('file', imgData);
+
+    // key
+    for (let key of formData.keys()) {
+        console.log(key);
+    }
+
+    // value
+    for (let value of formData.values()) {
+    console.log(value);
+    }
+
+    fetch('/', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: formData
+    })
   // .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(error => console.log(error))
-		.then(localStorage.setItem('test', 1)) // 세션 아이디 설정
-    .then(history.back()); // 이전 페이지로 이동
-
+    // .then(data => console.log(data))
+    // .catch(error => console.log(error))
+	// 	.then(localStorage.setItem('test', 1)) // 세션 아이디 설정
+    // .then(history.back()); // 이전 페이지로 이동
 });
 
 

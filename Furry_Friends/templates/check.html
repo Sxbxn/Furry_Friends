@@ -70,7 +70,7 @@
                         the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
                         of type and scrambled it to make a type specimen book.
                     </div>
-                    <form>
+                    <form id="analyze-form">
                         <h2 class="title">Step 1. Upload your images</h2>
                         <div class="contents">
                             <div class="upload-box">
@@ -83,7 +83,7 @@
                                 <label class="file-label" for="chooseFile">Choose File</label>
                                 <input class="file" id="chooseFile" type="file"
                                     onchange="dropFile.handleFiles(this.files)"
-                                    accept="image/png, image/jpeg, image/gif">
+                                    accept="image/png, image/jpeg, image/jpg, image/gif">
                             </div>
                         </div>
                         <h2 class="title">Step 2. Select the options</h2>
@@ -91,12 +91,12 @@
                             <div class="swappy-radios" role="radiogroup" aria-labelledby="swappy-radios-label">
                                 <h3 id="swappy-radios-label">Species</h3>
                                 <label>
-                                    <input type="radio" name="options" checked />
+                                    <input type="radio" name="options1" value="dog" checked />
                                     <span class="radio"></span>
                                     <span>Dog</span>
                                 </label>
                                 <label>
-                                    <input type="radio" name="options" />
+                                    <input type="radio" name="options1" value="cat"/>
                                     <span class="radio"></span>
                                     <span>Cat</span>
                                 </label>
@@ -104,17 +104,17 @@
                             <div class="swappy-radios" role="radiogroup" aria-labelledby="swappy-radios-label">
                                 <h3 id="swappy-radios-label">Parts</h3>
                                 <label>
-                                    <input type="radio" name="options" checked />
+                                    <input type="radio" name="options2" value="op1" checked />
                                     <span class="radio"></span>
                                     <span>1</span>
                                 </label>
                                 <label>
-                                    <input type="radio" name="options" />
+                                    <input type="radio" name="options2" value="op2" />
                                     <span class="radio"></span>
                                     <span>2</span>
                                 </label>
                                 <label>
-                                    <input type="radio" name="options" />
+                                    <input type="radio" name="options2" value="op3"/>
                                     <span class="radio"></span>
                                     <span>3</span>
                                 </label>
@@ -123,7 +123,7 @@
 
                         <h2 class="title">Step 3. Press the start button !</h2>
                         <div class="button_container">
-                            <button class="btn" type="submit"><span>Start !</span></button>
+                            <button class="btn" type="submit" id="start-btn"><span>Start !</span></button>
                         </div>
                     </form>
                 </div>

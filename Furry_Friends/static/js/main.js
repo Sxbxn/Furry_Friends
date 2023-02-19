@@ -182,8 +182,7 @@
 
 })(jQuery);
 
-// try {
-const user_id = localStorage.getItem('user_id');
+const user_id = sessionStorage.getItem('user_id');
 
 if (user_id !== null) {
 	const login_li = document.getElementById('l6');
@@ -202,5 +201,5 @@ logout_li.addEventListener("click", event => {
 	fetch('/auth/logout', {
 		method: 'GET',
 	})
-	localStorage.clear();
+	sessionStorage.clear();
 });

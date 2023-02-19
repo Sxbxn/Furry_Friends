@@ -26,6 +26,7 @@ def journals():
     user = request.cookies.get('login')
     asd = session._get_current_object()
 
+
     if 'login' in asd or user:
 
         animal_id = int(request.headers['animal_id'])
