@@ -11,8 +11,6 @@ if (animal_id == -999) {
 }
 
 function createProfile(data) {
-	console.log("?");
-	console.log("animal id: ", data.animal_id);
 	const idx = data.animal_id;
 	const name = data.animal_name;
 	const sex = data.sex;
@@ -191,26 +189,23 @@ function showProfile() {
 	})
 		.catch(error => console.log(error))
 		.then((response) => response.json())
-		// .then((data) => console.log(data))
 		.then((data) => callcreateProfile(data))
 }
 
 function callcreateProfile(data) {
 	for (let i = 0; i < data.length; i++) {
-		console.log(data[i]);
 		createProfile(data[i]);
 	}
 }
 
 showProfile();
 
-
 // 동물 선택 기능
 document.addEventListener('click', function (e) {
 	const targetStr = String(e.target.id);
 	const imgStr = 'mb'
 	const idx = targetStr.substring(2);
-	console.log(idx);
+	// console.log(idx);
 	
 	if (targetStr.indexOf(imgStr) != -1) {
 		alert("Pet number " + idx + " has been selected")

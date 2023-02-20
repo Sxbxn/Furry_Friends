@@ -1,11 +1,3 @@
-// "animal_id": int,
-// "content": str,
-// "currdate": str,
-// "image": str,
-// "index": int,
-// "title": str,
-// "user_id": str
-
 if (user_id == null) {
 	alert('로그인이 필요합니다!');
 	history.back()
@@ -21,41 +13,11 @@ fetch('/journal/content', {
 })
 	.then((response) => response.json())
 	.then((data) => {
-		console.log(data);
 		createDiaryDetail(data)
 	}
 	);
 
-
-
-
-// // fetch('/journal/content', {
-// fetch('https://jsonplaceholder.typicode.com/photos/', {
-// 	method: 'GET',
-// 	// headers: { 'Content-Type': 'application/json' },
-// 	// body: JSON.stringify(obj),
-// })
-// 	// .then(console.log(JSON.stringify(obj)))
-// 	.then(response => response.json())
-// 	.then((data) => callCreateDiary(data))
-// // .then((data) => createDiaryDetail(data))
-
-// function callCreateDiary(data) {
-// 	for (let i = 0; i < 1; i++) {
-// 		console.log(data);
-// 		createDiaryDetail(data[i]);
-
-// 	}
-// }
-
 function createDiaryDetail(data) {
-	// const image = data.image;
-	// const date = data.currdate;
-	// const title = data.title;
-	// const content = data.content;
-
-	console.log(data);
-
 	const image = data.image;
 	const title = data.title;
 	const content = data.content;
@@ -71,7 +33,6 @@ function createDiaryDetail(data) {
 	document.getElementById('img_p').append(img);
 
 	let date_p = document.createElement("p");
-	// date_p.textContent(date);
 	date_p.textContent = date;
 	document.getElementById('col-lg-div').append(date_p);
 
@@ -84,6 +45,3 @@ function createDiaryDetail(data) {
 	content_p.textContent = content;
 	document.getElementById('col-lg-div').append(content_p);
 }
-
-// https://jsonplaceholder.typicode.com/photos
-// https://www.objgen.com/json/local/T3trUbCRX

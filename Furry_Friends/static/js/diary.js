@@ -63,7 +63,6 @@ function showDiary() {
 	})
 		.then((response) => response.json())
 		.then((data) => {
-			console.log(data)
 			callCreateDiary(data)
 		});
 }
@@ -86,7 +85,7 @@ document.addEventListener('click', function (e) {
 
 	sessionStorage.setItem('d_content_idx', idx);
 
-	console.log(e.target.id);
+	// console.log(e.target.id);
 	if (targetStr.indexOf(imgStr) != -1) {
 		location.href = "/diary-single"
 	}
