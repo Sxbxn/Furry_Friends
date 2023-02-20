@@ -184,7 +184,10 @@ function createProfile(data) {
 
 function showProfile() {
 	fetch('/pet/management', {
-		method: 'GET'
+		method: 'GET',
+		headers: {
+			'user_id': user_id
+		}
 	})
 		.catch(error => console.log(error))
 		.then((response) => response.json())
