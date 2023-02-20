@@ -22,23 +22,23 @@
             android:gravity="top|end">
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/add"
-                android:layout_width="30dp"
-                android:layout_height="20dp"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/button_style"
                 android:text="@string/add_animal"
-                android:layout_marginEnd="10dp"
-                android:textSize="10sp"
+                android:layout_marginEnd="15dp"
+                android:textSize="15sp"
                 android:textColor="@color/white" />
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/change"
-                android:layout_width="30dp"
-                android:layout_height="20dp"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/button_style"
                 android:text="@string/change"
                 android:layout_marginEnd="10dp"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:textColor="@color/white" />
         </LinearLayout>
         <LinearLayout
@@ -52,11 +52,12 @@
                 android:layout_gravity="center"
                 android:elevation="6dp"
                 app:cardCornerRadius="100dp">
+
                 <ImageView
                     android:id="@+id/iv_member"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
                     tools:srcCompat="@tools:sample/avatars" />
             </androidx.cardview.widget.CardView>
 
@@ -77,7 +78,7 @@
                         android:id="@+id/animal_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="멍멍이"
+                        tools:text="멍멍이"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -93,7 +94,7 @@
                         android:id="@+id/animal_sex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="남"
+                        tools:text="남"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -109,7 +110,7 @@
                         android:id="@+id/animal_age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5세"
+                        tools:text="5세"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -143,7 +144,7 @@
                             android:layout_margin="8dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+                            tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
                             android:ellipsize="end"
                             />
 

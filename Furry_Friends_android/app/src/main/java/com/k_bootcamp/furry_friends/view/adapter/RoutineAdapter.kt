@@ -101,6 +101,8 @@ class RoutineAdapter(
             CoroutineScope(Dispatchers.Main).launch {
                 // 로컬에서도 삭제하고
                 routineList.removeAt(position)
+                // 알람도 취소하고
+                viewModel.cancelAlarm(routineList[position].routineId)
                 // 새로고침한다.
                 notifyItemRemoved(position)
             }
@@ -109,7 +111,6 @@ class RoutineAdapter(
 
     private fun deleteDateRoutine(routine: SendRoutine) {
         CoroutineScope(Dispatchers.IO).launch {
-//            val response = animalRepository.deleteDateRoutine(routine)
             val response = viewModel.animalRepo.deleteDateRoutine(routine)
             response?.let {
                 // 보내고 받으면 뭐 할지?
@@ -123,6 +124,7 @@ class RoutineAdapter(
             val response = viewModel.animalRepo.submitDateRoutine(routine)
             response?.let {
                 // 보내고 받으면 뭐 할지?
+                
             }
         }
     }
