@@ -87,11 +87,11 @@
                             </div>
                         </div>
                         <h2 class="title">Step 2. Select the options</h2>
-                        <div class="opt">
+                        <div class="opt" id="opt">
                             <div class="swappy-radios" role="radiogroup" aria-labelledby="swappy-radios-label">
-                                <h3 id="swappy-radios-label">Species</h3>
+                                <h3 id="swappy-radios-label">Kind</h3>
                                 <label>
-                                    <input type="radio" name="options1" value="dog" checked />
+                                    <input type="radio" name="options1" value="dog" checked/>
                                     <span class="radio"></span>
                                     <span>Dog</span>
                                 </label>
@@ -102,21 +102,39 @@
                                 </label>
                             </div>
                             <div class="swappy-radios" role="radiogroup" aria-labelledby="swappy-radios-label">
-                                <h3 id="swappy-radios-label">Parts</h3>
+                                <h3 id="swappy-radios-label">Affected area</h3>
                                 <label>
-                                    <input type="radio" name="options2" value="op1" checked />
+                                    <input type="radio" name="options2" value="ab"/>
                                     <span class="radio"></span>
-                                    <span>1</span>
+                                    <span>ab, 복부</span>
                                 </label>
                                 <label>
-                                    <input type="radio" name="options2" value="op2" />
+                                    <input type="radio" name="options2" value="ch"/>
                                     <span class="radio"></span>
-                                    <span>2</span>
+                                    <span>ch, 흉부</span>
                                 </label>
-                                <label>
-                                    <input type="radio" name="options2" value="op3"/>
+                                <label id="a_mu">
+                                    <input type="radio" name="options2" value="mu"/>
                                     <span class="radio"></span>
-                                    <span>3</span>
+                                    <span>mu, 근골격</span>
+                                </label>
+                            </div>
+                            <div class="swappy-radios" role="radiogroup" aria-labelledby="swappy-radios-label">
+                                <h3 id="swappy-radios-label">Posture</h3>
+                                <label id="p_lateral">
+                                    <input type="radio" name="options3" value="lateral"/>
+                                    <span class="radio"></span>
+                                    <span>Lateral</span>
+                                </label>
+                                <label id="p_VD">
+                                    <input type="radio" name="options3" value="vd"/>
+                                    <span class="radio"></span>
+                                    <span>VD</span>
+                                </label>
+                                <label id="p_AP">
+                                    <input type="radio" name="options3" value="ap"/>
+                                    <span class="radio"></span>
+                                    <span>AP</span>
                                 </label>
                             </div>
                         </div>

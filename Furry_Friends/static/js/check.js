@@ -72,6 +72,57 @@ function DropFile(dropAreaId, fileListId) {
 
 const dropFile = new DropFile("drop-file", "files");
 
+// 옵션 제한 기능
+const optionBox = document.getElementById('opt');
+
+optionBox.addEventListener("click", event => {
+    // event.preventDefault();
+
+    const opt1 = document.querySelector('input[name="options1"]:checked').value;
+    const opt2 = document.querySelector('input[name="options2"]:checked').value;
+
+    // 위치
+    const optMu = document.getElementById('a_mu') // mu
+
+    // 자세
+    const optLateral = document.getElementById('p_lateral') // lateral
+    const optVD = document.getElementById('p_VD') // VD
+    const optAP = document.getElementById('p_AP') // AP
+
+
+    // 고양이 선택 시
+    if (opt1 == "cat") {
+        optMu.setAttribute('style', 'display: none') //근골격 옵션 제거
+        optAP.setAttribute('style', 'display: none') // 근골격 옵션 제거 시, AP 옵션도 같이 제거
+
+        optVD.setAttribute('style', 'display: none') //VD 옵션 제거        
+
+    } else { // 강아지 선택 시,
+        optMu.removeAttribute('style')
+        optAP.removeAttribute('style')
+        optVD.removeAttribute('style')
+    }
+
+    // 복부, 흉부 선택 시
+    if (opt2 == "ab" || opt2 == "ch") {
+        optAP.setAttribute('style', 'display: none'); // AP 옵션 제거
+        optLateral.removeAttribute('style');
+        optVD.removeAttribute('style');
+
+        // 고양이 & 흉부 선택 시
+        if (opt1 == "cat" && opt2 == "ch") {
+            optVD.setAttribute('style', 'display: none'); // VD 옵션 제거
+        } else {
+            optVD.removeAttribute('style');
+        }
+
+    } else {
+        optLateral.setAttribute('style', 'display: none'); // lateral 옵션 제거
+        optVD.setAttribute('style', 'display: none'); // VD 옵션 제거
+        optAP.removeAttribute('style');
+    }
+})
+
 // 시작 버튼
 const startBtn = document.getElementById('start-btn');
 
@@ -83,11 +134,13 @@ startBtn.addEventListener("click", event => {
     const imgData = imgDiv.getAttribute('src');
     const opt1 = document.querySelector('input[name="options1"]:checked').value;
     const opt2 = document.querySelector('input[name="options2"]:checked').value;
+    const opt3 = document.querySelector('input[name="options3"]:checked').value;
 
     var dataObj = new Object();
 
     dataObj['kind'] = opt1;
     dataObj['affected_area'] = opt2;
+    dataObj['posture'] = opt3;
     const dataJson = JSON.stringify(dataObj);
 
     let formData = new FormData();
