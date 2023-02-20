@@ -1,6 +1,7 @@
 package com.k_bootcamp.furry_friends.data.service
 
 import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
+import com.k_bootcamp.furry_friends.data.response.user.LoginResponse
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.model.user.SignInUser
 import retrofit2.Response
@@ -11,7 +12,8 @@ interface UserService {
     @POST("/auth/login")
     suspend fun loginUser(
         @Body user: LoginUser
-    ): Response<AnimalResponse>
+//    ): Response<AnimalResponse>
+    ):Response<LoginResponse>
 
     // 정보가져오기---- 안 쓸 듯
     @GET("/{sessionId}")  //// session 객체로 교환 필요
