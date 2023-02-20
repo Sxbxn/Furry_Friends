@@ -84,7 +84,7 @@ document.addEventListener('click', function (e) {
 
 	const idx = targetStr.substring(7);
 
-	sessionStorage.setItem('content_idx', idx);
+	sessionStorage.setItem('d_content_idx', idx);
 
 	console.log(e.target.id);
 	if (targetStr.indexOf(imgStr) != -1) {

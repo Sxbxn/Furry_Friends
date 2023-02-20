@@ -183,6 +183,7 @@
 })(jQuery);
 
 const user_id = sessionStorage.getItem('user_id');
+const vet = sessionStorage.getItem('vet');
 
 if (user_id !== null) {
 	const login_li = document.getElementById('l6');
@@ -193,6 +194,21 @@ if (user_id !== null) {
 
 	const logout_li = document.getElementById('l8');
 	logout_li.style.display = 'none';
+}
+
+// 일반 사용자와 의료 관계자 구분
+if (vet == 1) {
+	const diary_li = document.getElementById('l3');
+	diary_li.style.display = 'none';
+	const medical_record_li = document.getElementById('l4');
+	medical_record_li.style.display = 'none';
+	const calendar_li = document.getElementById('l5');
+	calendar_li.style.display = 'none';
+	const mypage_li = document.getElementById('l7');
+	mypage_li.style.display = 'none';
+} else {
+	const analyze_li = document.getElementById('l9');
+	analyze_li.style.display = 'none';
 }
 
 // 로그아웃

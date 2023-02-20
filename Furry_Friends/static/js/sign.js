@@ -57,6 +57,7 @@ signInForm.addEventListener("submit", event => {
       } else {
         sessionStorage.setItem('user_id', user_id)
         sessionStorage.setItem('animal_id', data.animal_id)
+        sessionStorage.setItem('vet', data.vet);
         console.log(data)
         location.href = "/"
       }
