@@ -1,3 +1,8 @@
+if (vet != 1) {
+	alert('의료 관계자만 이용 가능합니다.');
+	history.back()
+}
+
 function DropFile(dropAreaId, fileListId) {
     let dropArea = document.getElementById(dropAreaId);
     let fileList = document.getElementById(fileListId);
