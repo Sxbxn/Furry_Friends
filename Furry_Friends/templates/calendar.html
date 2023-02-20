@@ -6,37 +6,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
-
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500&display=swap" rel="stylesheet">
 
-
-    <link rel="stylesheet" href="../fonts/icomoon/style.css">
+    <!-- <link rel="stylesheet" href="../static/fonts/icomoon/style.css"> -->
 
     <link href='../static/fullcalendar/packages/core/main.css' rel='stylesheet' />
     <link href='../static/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
-
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
 
     <!-- Style -->
     <link rel="stylesheet" href="../static/css/style.css">
-
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
         rel="stylesheet">
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <link rel="stylesheet" href="../static/css/animate.css">
-
     <link rel="stylesheet" href="../static/css/owl.carousel.min.css">
     <link rel="stylesheet" href="../static/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="../static/css/magnific-popup.css">
-
-
     <link rel="stylesheet" href="../static/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="../static/css/jquery.timepicker.css">
-
     <link rel="stylesheet" href="../static/css/flaticon.css">
     <link rel="stylesheet" href="../static/css/style.css">
 
@@ -206,14 +196,16 @@
 
 
     <script>
+        if (user_id == null) {
+            alert('로그인이 필요합니다!');
+            history.back()
+        }
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
+            const animal_id = sessionStorage.getItem('animal_id');
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 plugins: ['interaction', 'dayGrid'],
-                // defaultDate: '2023-02-12',
-                // editable: true,
-                // navlink: true, ??
 
                 headerToolbar: {
                     left: 'prev,next',
@@ -225,46 +217,30 @@
                 eventColor: '#00BD56',
                 events: [
                     $.ajax({
-                        url: 'https://jsonplaceholder.typicode.com/photos/',
+                        url: '/check/checklist/all',
                         type: 'GET',
                         dataType: 'json',
+                        headers: { 'animal_id': animal_id },
 
                         success: function (data) {
-                            console.log(data);
-                            for (let i = 0; i < 1; i++) {
-                                data = data[i];
+                            default_data = data.default;
+                            for (let i = 0; i < default_data.length; i++) {
+                                const data = default_data[i]
+                                const memo = "State: " + data.bowels + "\nFood: " + data.food + "\nCmt: " + data.note
                                 calendar.addEvent({
-                                    id: data.id,
-                                    title: data.albumId,
-                                    start: '2023-02-10'
+                                    id: data.index,
+                                    title: memo,
+                                    start: data.currdate
                                 })
                             }
-
                         }
                     }),
-                    {
-                        id: 1,
-                        title: '애견카페 방문!',
-                        start: '2023-02-02'
-                    },
-                    {
-                        id: 2,
-                        title: '미용한 날~~',
-                        start: '2023-02-13'
-                    },
-                
                 ]
             });
 
             calendar.render();
         });
-
     </script>
-
-    <script src="../static/js/main.js"></script>
-    <script src="../static/js/calendar.js"></script>
-
-
 </body>
 
 </html>
