@@ -113,3 +113,35 @@ def checklist():
         return "no animal registered"
         
     return "not logged in"
+
+
+@bp.route('/checklist/all', methods=["GET"])
+def checklistAll():
+
+    asd = session._get_current_object()
+
+    if 'login' in asd:
+
+        animal_id = int(request.headers['animal_id'])
+        animals = Animal.query.filter_by(user_id = asd['login']).all()
+        ids = [animal.animal_id for animal in animals]
+
+        if animal_id in ids:
+            session['curr_animal'] = animal_id
+
+            if request.method=="GET":
+
+                checklist_default = ChecklistDefault.query.filter(and_(ChecklistDefault.animal_id == asd['curr_animal'])).all()
+
+                checklist_default = query_to_dict(checklist_default)
+
+                if checklist_default == []:
+                    checklist_default = None
+
+                dictionary = {"default":checklist_default}
+
+                return jsonify(dictionary)
+
+        return "no animal registered"
+
+    return "not logged in"

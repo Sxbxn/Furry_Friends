@@ -4,6 +4,7 @@ from sqlalchemy import and_
 from PIL import Image
 import base64
 import datetime
+import os
 
 import json
 
@@ -67,6 +68,8 @@ def record_content():
 @bp.route('/factory', methods=["GET","POST"])
 def record_factory():
 
+    asd = session._get_current_object()
+
     if request.method=="GET":
         return "health record entry form"
 
@@ -76,8 +79,8 @@ def record_factory():
             record = request.form
             record = json.loads(record['data'])
 
-            user = User.query.filter_by(user_id = session['login']).first()
-            animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+            user = User.query.filter_by(user_id = asd['login']).first()
+            animal = Animal.query.filter_by(animal_id = asd['curr_animal']).first()
 
             currdate = record['currdate']
             currdate = currdate.split(" ")[0]
@@ -118,7 +121,7 @@ def record_factory():
                 # 진단 결과
                 comment = result
 
-                content = record['content'] # 결과에 따른 피드백
+                content = record['content'] # 사용자 입력 사항
                 
                 new_record = Health(animal=animal, user=user, content=content, image=image, currdate=currdate, kind=kind, comment=comment, affected_area=affected_area)  
 
@@ -146,28 +149,6 @@ def record_delete():
     return "record successfully removed"
 
 
-# 웹에 x-ray 분석 결과 반환
-@bp.route('/xray',methods=["POST"])
-def xray():
-    xray_record = request.form
-    xray_record = json.loads(xray_record)
-
-    kind = xray_record['kind']
-    affected_area = xray_record['affected_area']
-
-    f = request.files['file']
-
-    # 동물별, 부위별로 6 종류 모델
-    xray_path = [] # config에 경로 다 모아 놓고 import
-    
-
-    if kind == "고양이":
-        result = "."
-
-    # result = "result"
-    return "."
-
-
 @bp.route('/check', methods=["POST"])
 def check():
 
@@ -181,7 +162,16 @@ def check():
     # 이미지 파일 form서 request
     file = request.form['file']
     record = request.form['data']
+    record = json.loads(record)
 
+    # 정보
+    kind = record['kind']
+    affected_area = record['affected_area']
+    posture = record['posture']
+
+    print(kind,affected_area, posture)  
+
+    # 이미지
     imgfile = file.split(',')[1] # base64 string
 
     extension = '.' + ((file.split(',')[0]).split('/')[1]).split(';')[0] # .png, .jpeg, ...
@@ -194,15 +184,155 @@ def check():
     with open(newname, 'wb') as f:
         f.write(base64.b64decode(imgfile))
 
-    # 전처리는 local에 생성된 파일을 PIL로 open하고 그대로 진행해도 될 것 같음, 어차피 전처리에 PIL을 사용하기 때문에... 
-    # 인공지능 전처리 함수 전달받아 확인할 것
-
-    # s3에 올리기 (결과 창에 출력용)
+    # s3에 업로드 (결과 창에 출력용)
     s3.upload_file(Filename=newname, Bucket=AWS_S3_BUCKET_NAME, Key=newname)
     img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
     os.remove(f"./{newname}")
 
-    return '.'
+    obj = s3.get_object(Bucket=AWS_S3_BUCKET_NAME,
+                                Key=newname)
+    response = obj['Body']
+    img = Image.open(response)
+
+    # 이미지 전처리
+    img = mk_img(img)
+    
+    # 모델 결과 
+    if kind == "dog": # 반려견
+
+        if affected_area == "ab": # 복부
+
+            if posture == "vd": # vd, 모델 5개
+
+                # dog_ab_vd 디렉토리 안에 있는 경로 리스트화
+                dog_ab_vd = os.listdir("")
+                
+                results = [predict_result(i, img) for i in dog_ab_vd]
+
+                str_results = []
+                for result in results:
+                    if result > 0.5:
+                        str_results.append("abnormal")                        
+                    else:
+                        str_results.append("normal")                        
+                return str_results
+
+# ------------------------------------------------------------- 테스트 ---------------------------------------------
+            else: # lateral, 모델 8개
+                
+                print(kind,affected_area, posture)
+
+                dog_ab_lt = os.listdir(".\XRAY_Model\dog_ab_lateral")
+
+                model_path = [".\XRAY_Model\dog_ab_lateral\\" + path for path in dog_ab_lt]
+                
+                results = [predict_result(i, img) for i in model_path]
+
+                print(results)
+                return results
+
+# ------------------------------------------------------------- 테스트 ---------------------------------------------
+
+        elif affected_area == "ch": # 흉부
+
+            if posture == "vd": # vd, 모델 1개
+
+                dog_ch_vd = os.listdir("")
+                
+                results = [predict_result(i, img) for i in dog_ch_vd]
+
+                str_results = []
+                for result in results:
+                    if result > 0.5:
+                        str_results.append("abnormal")                        
+                    else:
+                        str_results.append("normal")                        
+                return str_results
+
+            else: # lateral, 모델 2개
+                dog_ch_lt = os.listdir("")
+                
+                results = [predict_result(i, img) for i in dog_ch_lt]
+
+                str_results = []
+                for result in results:
+                    if result > 0.5:
+                        str_results.append("abnormal")                        
+                    else:
+                        str_results.append("normal")                        
+                return str_results
+
+        else: # 근골격
+            # ap, 모델 3개
+            dog_mu_ap = os.listdir("")
+                
+            results = [predict_result(i, img) for i in dog_mu_ap]
+
+            str_results = []
+            for result in results:
+                if result > 0.5:
+                    str_results.append("abnormal")
+                else:
+                    str_results.append("normal") 
+            return str_results
+
+    else: # cat
+
+        if affected_area == "ab": # 복부
+
+            if posture == "vd": # vd, 모델 5개
+                
+                cat_ab_vd = os.listdir("")
+                
+                results = [predict_result(i, img) for i in cat_ab_vd]
+
+                str_results = []
+                for result in results:
+                    if result > 0.5:
+                        str_results.append("abnormal")                       
+                    else:
+                        str_results.append("normal")                        
+                return str_results
+
+            else:               # lateral, 모델 8개
+                cat_ab_lt = os.listdir("")
+                
+                results = [predict_result(i, img) for i in cat_ab_lt]
+
+                str_results = []
+                for result in results:
+                    if result > 0.5:
+                        str_results.append("abnormal")                       
+                    else:
+                        str_results.append("normal")                        
+                return str_results
+
+        elif affected_area == "ch": # 흉부, lateral 모델 1개
+                cat_ch_lt = os.listdir("")
+                
+                results = [predict_result(i, img) for i in cat_ch_lt]
+
+                str_results = []
+                for result in results:
+                    if result > 0.5:
+                        str_results.append("abnormal")                       
+                    else:
+                        str_results.append("normal")                        
+                return str_results
+
+        else:                       # 근골격
+                cat_mu_ = os.listdir("")
+                
+                results = [predict_result(i, img) for i in cat_mu_]
+
+                str_results = []
+                for result in results:
+                    if result > 0.5:
+                        str_results.append("abnormal")                       
+                    else:
+                        str_results.append("normal")                        
+                return str_results
+
 
     # record = json.loads(record)
     # kind = record['kind']

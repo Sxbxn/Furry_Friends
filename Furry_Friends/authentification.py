@@ -89,6 +89,10 @@ def login():
 
                 session['curr_animal'] = animal['animal_id']
 
+                animal['vet'] = user.vet
+
+                print(animal['vet'])
+
                 if animal['neutered'] == 0:
                     animal['neutered'] = False
                 else:
@@ -108,7 +112,8 @@ def login():
                         "sex":"",
                         "neutered":"",
                         "weight":0.0,
-                        "image":""}
+                        "image":"",
+                        "vet": user.vet}
                 
                 resp = make_response(jsonify(obj))
                 resp.set_cookie('login', user_id)
@@ -193,7 +198,7 @@ def register_animal():
             db.session.add(animal)
             db.session.commit()
 
-            curr_animal = Animal.query.filter(and_(Animal.user_id == session['login'],
+            curr_animal = Animal.query.filter(and_(Animal.user_id == asd['login'],
                                                 Animal.animal_name == animal_name)).first()
 
             curr_animal = query_to_dict(curr_animal)
@@ -203,7 +208,11 @@ def register_animal():
             else:
                 curr_animal['neutered'] = True
 
-            # session['curr_animal'] = curr_animal.animal_id
+            if len(Animal.query.filter(Animal.user_id == asd['login']).all()) == 1:
+                session['curr_animal'] = curr_animal.animal_id
+            
+            else:
+                pass
 
             return jsonify(curr_animal)
             # 등록된 동물 정보 json 반환, 이 뒤로 header에 animal_id 주고받기

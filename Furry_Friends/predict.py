@@ -32,9 +32,13 @@ def mk_img(img_path):
     return np_img
 
 def predict_result(model_path, img):
-    model = tf.keras.models.load_model(model_path)
+    model = tf.keras.models.load_model(model_path, compile = False)
     result = model.predict(img)
-    return result
+    if result > 0.5:
+        str_result = "abnormal"
+    else:
+        str_result = "normal"
+    return str_result
 
     """path_list = []
         img_path = "C:/venvs/testproject/Scripts/png"

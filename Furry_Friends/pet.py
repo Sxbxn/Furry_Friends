@@ -25,11 +25,9 @@ def management():
     asd = session._get_current_object()
     req = request.headers['user_id']
 
+    print(asd)
     user_id = request.cookies.get('login')
     test = request.cookies.get('session')
-
-    print(asd)
-    print(req)
 
     # 해당 아이디로 등록한 동물 전부
     if asd['login'] == req:
