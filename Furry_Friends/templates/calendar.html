@@ -45,6 +45,7 @@
                 <ul class="navbar-nav ml-auto" id="nnma">
                     <li class="nav-item" id="l1"><a href="/" class="nav-link">Home</a></li>
                     <li class="nav-item" id="l2"><a href="/about" class="nav-link">About</a></li>
+                    <li class="nav-item" id="l9"><a href="/check" class="nav-link">Analyze</a></li>
                     <li class="nav-item" id="l3"><a href="/diary" class="nav-link">Diary</a></li>
                     <li class="nav-item" id="l4"><a href="/medical-record" class="nav-link">Medical Record</a></li>
                     <li class="nav-item active" id="l5"><a href="/calendar" class="nav-link">Calendar</a></li>
@@ -63,10 +64,15 @@
         <div class="container">
             <div class="row no-gutters slider-text align-items-end">
                 <div class="col-md-9 ftco-animate pb-5">
-                    <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
-                                    class="ion-ios-arrow-forward"></i></a></span> <span>Calendar <i
-                                class="ion-ios-arrow-forward"></i></span></p>
-                    <h1 class="mb-0 bread">Calendar</h1>
+                    <p class="breadcrumbs mb-2">
+                        <span class="mr-2">
+                            <a href="/">Home <i class="ion-ios-arrow-forward"></i></a>
+                        </span>
+                        <span class="mr-2">
+                            <a href="/calendar">Calendar <i class="ion-ios-arrow-forward"></i></a>
+                        </span>
+                    </p>
+					<h1 class="mb-0 bread">Calendar</h1>
                 </div>
             </div>
         </div>
@@ -75,9 +81,9 @@
     <section class="ftco-section bg-light">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-6 text-center mb-5">
+                <!-- <div class="col-md-6 text-center mb-5">
                     <h2 class="heading-section">Calendar</h2>
-                </div>
+                </div> -->
                 <div class="content">
                     <div id='calendar'></div>
                 </div>
@@ -194,13 +200,13 @@
     <script src="../static/js/scrollax.min.js"></script>
     <script src="../static/js/main.js"></script>
 
-
     <script>
         if (user_id == null) {
             alert('로그인이 필요합니다!');
             history.back()
         }
         document.addEventListener('DOMContentLoaded', function () {
+            event.preventDefault();
             var calendarEl = document.getElementById('calendar');
             const animal_id = sessionStorage.getItem('animal_id');
 
