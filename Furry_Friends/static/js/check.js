@@ -60,29 +60,14 @@ function DropFile(dropAreaId, fileListId) {
     dropArea.addEventListener("dragleave", unhighlight, false);
     dropArea.addEventListener("drop", handleDrop, false);
 
-    // dropArea.addEventListener(uploadEvent)
-
-    // function uploadEvent() {
-    //     const uploadImg = document.getElementById('upload-img');
-    //     const state = uploadImg.getAttribute('src');
-    //     console.log(state);
-    //     if (state !== " ") {
-    //         console.log('hi');
-    //     }
-    // }
-
     function showResult() {
         const about = document.querySelector('.about');
         about.setAttribute('style', 'display: none');
     }
 
-
     return {
         handleFiles
     };
-
-
-
 }
 
 const dropFile = new DropFile("drop-file", "files");
@@ -96,46 +81,27 @@ startBtn.addEventListener("click", event => {
     const imgDiv = document.getElementById('upload-img');
 
     const imgData = imgDiv.getAttribute('src');
-    const opt1 = document.querySelector('input[name="options1"]:checked').value; 
-    const opt2 = document.querySelector('input[name="options2"]:checked').value; 
+    const opt1 = document.querySelector('input[name="options1"]:checked').value;
+    const opt2 = document.querySelector('input[name="options2"]:checked').value;
 
     var dataObj = new Object();
 
-    dataObj['species'] = opt1;
-    dataObj['parts'] = opt2;
-
-    const json = JSON.stringify(dataObj);
-	console.log(json); // {"species":"cat","parts":"op3"}
+    dataObj['kind'] = opt1;
+    dataObj['affected_area'] = opt2;
+    const dataJson = JSON.stringify(dataObj);
 
     let formData = new FormData();
-    formData.append('data', dataObj);
     formData.append('file', imgData);
+    formData.append('data', dataJson);
 
-    // key
-    for (let key of formData.keys()) {
-        console.log(key);
-    }
-
-    // value
-    for (let value of formData.values()) {
-    console.log(value);
-    }
-
-    fetch('/', {
+    fetch('/health/check', {
         method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
+        // headers: {
+        // 'Content-Type': 'application/x-www-form-urlencoded'
+        // },
         body: formData
     })
-  // .then(res => res.json())
+    // .then(res => res.json())
     // .then(data => console.log(data))
-    // .catch(error => console.log(error))
-	// 	.then(localStorage.setItem('test', 1)) // 세션 아이디 설정
     // .then(history.back()); // 이전 페이지로 이동
 });
-
-
-
-
-
