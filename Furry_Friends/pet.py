@@ -6,7 +6,7 @@ import boto3
 import json
 
 
-from util import s3_connection, query_to_dict, upload_file_to_s3
+from util import s3_connection, query_to_dict, upload_file_to_s3, int_to_bool
 from connect_session import sess
 from connect_db import db
 from models import User, Animal
@@ -50,10 +50,7 @@ def management():
         
         else:
             for animal in animal_list:
-                if animal['neutered'] == 0:
-                    animal['neutered'] = False
-                else:
-                    animal['neutered'] = True
+                int_to_bool(animal)
 
             return jsonify(animal_list) 
 
@@ -85,10 +82,7 @@ def profile():
             curr_animal = Animal.query.get(animal_id)
             curr_animal = query_to_dict(curr_animal)
 
-            if  curr_animal['neutered'] == 0:
-                curr_animal['neutered'] = False
-            else:
-                curr_animal['neutered'] = True
+            int_to_bool(curr_animal)
 
             return jsonify(curr_animal)
 
@@ -201,10 +195,7 @@ def pet_delete():
             else:
                 animal = query_to_dict(animal)
 
-                if  animal['neutered'] == 0:
-                    animal['neutered'] = False
-                else:
-                    animal['neutered'] = True
+                int_to_bool(animal)
                 
                 return jsonify(animal)
 

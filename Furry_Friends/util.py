@@ -1,7 +1,9 @@
 from flask import request, session
 import boto3
+import os
 
 from werkzeug.utils import secure_filename
+from predict import predict_result
 from config import AWS_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, AWS_SECRET_ACCESS_KEY, ALLOWED_EXTENSIONS
 
 
@@ -51,7 +53,7 @@ def to_weekday(num):
     return weekdays[num]
 
 
-def to_bool(animal):
+def int_to_bool(animal):
     if animal['neutered'] == 0:
         animal['neutered'] = False
     else:
@@ -68,3 +70,11 @@ def get_user_info():
     except:
         animal_id = request.headers['animal_id']
         return user_id, animal_id
+
+
+def get_xray(path, img):
+    models_lst = os.listdir(path)
+    model_paths = [path + '\\' + model for model in models_lst]
+    results = [predict_result(path, img) for path in model_paths]
+
+    return results

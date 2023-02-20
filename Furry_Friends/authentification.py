@@ -6,7 +6,7 @@ import json
 from sqlalchemy import and_
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from util import s3_connection, query_to_dict, upload_file_to_s3
+from util import s3_connection, query_to_dict, upload_file_to_s3, int_to_bool
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, ALLOWED_EXTENSIONS
 
 
@@ -91,12 +91,7 @@ def login():
 
                 animal['vet'] = user.vet
 
-                print(animal['vet'])
-
-                if animal['neutered'] == 0:
-                    animal['neutered'] = False
-                else:
-                    animal['neutered'] = True
+                animal = int_to_bool(animal)
 
                 resp = make_response(jsonify(animal))
                 resp.set_cookie('login', user_id)
@@ -202,17 +197,7 @@ def register_animal():
                                                 Animal.animal_name == animal_name)).first()
 
             curr_animal = query_to_dict(curr_animal)
-
-            if curr_animal['neutered'] == 0:
-               curr_animal['neutered'] = False
-            else:
-                curr_animal['neutered'] = True
-
-            if len(Animal.query.filter(Animal.user_id == asd['login']).all()) == 1:
-                session['curr_animal'] = curr_animal.animal_id
-            
-            else:
-                pass
-
+            curr_animal = int_to_bool(curr_animal)
+           
             return jsonify(curr_animal)
             # 등록된 동물 정보 json 반환, 이 뒤로 header에 animal_id 주고받기
