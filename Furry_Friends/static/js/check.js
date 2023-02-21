@@ -159,7 +159,55 @@ startBtn.addEventListener("click", event => {
         // },
         body: formData
     })
+    .then((response) => response.json())
+	.then((data) => {
+        console.log(data);
+		// createCheckResult(data)
+	}
+	);
     // .then(res => res.json())
     // .then(data => console.log(data))
     // .then(history.back()); // 이전 페이지로 이동
 });
+
+// 결과 출력
+function createCheckResult(data) {
+	const image = data.image;
+	const disease = data.disease;
+
+    // checkNormal(disease);
+
+    d_name = disease.keys();
+    console.log(d_name);
+    
+    for (let i = 0; i < d_name.length; i++) {
+        const tmp = disease.d_name[i];
+        if (tmp == "abnormal") {
+            console.log(d_name[i]);
+        }
+    }
+
+	let img_p = document.createElement("p");
+	img_p.setAttribute('id', 'img_p');
+	document.getElementById('col-lg-div').append(img_p);
+
+	let img = document.createElement("img");
+	img.setAttribute('class', 'img-fluid')
+	img.setAttribute('src', image);
+	document.getElementById('img_p').append(img);
+
+	let title_h2 = document.createElement("h2");
+	title_h2.setAttribute('class', 'mb-3');
+	title_h2.textContent = 'Result';
+	document.getElementById('col-lg-div').append(title_h2);
+
+	let content_p = document.createElement("p");
+	content_p.textContent = content;
+	document.getElementById('col-lg-div').append(content_p);
+}
+
+function checkNormal(disease) {
+    for (let i = 0; i < disease.length; i++) {
+
+    }
+}
