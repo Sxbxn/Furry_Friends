@@ -1,10 +1,11 @@
 from flask import request, session
 import boto3
 import os
-
 from werkzeug.utils import secure_filename
-from predict import predict_result
-from config import AWS_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, AWS_SECRET_ACCESS_KEY, ALLOWED_EXTENSIONS
+
+
+from Furry_Friends.predict import predict_result
+from config import AWS_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, AWS_SECRET_ACCESS_KEY
 
 
 

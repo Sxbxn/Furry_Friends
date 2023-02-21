@@ -4,3 +4,5 @@ flask-session
 boto3
 PIL
 tensorflow
+torch
+torchvision
