@@ -1,6 +1,6 @@
 if (vet != 1) {
-	alert('의료 관계자만 이용 가능합니다.');
-	history.back()
+    alert('의료 관계자만 이용 가능합니다.');
+    history.back()
 }
 
 function DropFile(dropAreaId, fileListId) {
@@ -159,55 +159,82 @@ startBtn.addEventListener("click", event => {
         // },
         body: formData
     })
-    .then((response) => response.json())
-	.then((data) => {
-        console.log(data);
-		// createCheckResult(data)
-	}
-	);
-    // .then(res => res.json())
-    // .then(data => console.log(data))
-    // .then(history.back()); // 이전 페이지로 이동
+        .then((response) => response.json())
+        .then((data) => {
+            cycle(data);
+        }
+        )
+        // .then(result())
+        // .then(setTimeout(() => {
+        //     result();
+        //     reload();
+        //     console.log("??");
+        // }, 40000));
 });
 
-// 결과 출력
-function createCheckResult(data) {
-	const image = data.image;
-	const disease = data.disease;
+async function cycle(data) {
+    saveCheckResult(data);
+    await callResultPage();
 
-    // checkNormal(disease);
-
-    d_name = disease.keys();
-    console.log(d_name);
-    
-    for (let i = 0; i < d_name.length; i++) {
-        const tmp = disease.d_name[i];
-        if (tmp == "abnormal") {
-            console.log(d_name[i]);
-        }
-    }
-
-	let img_p = document.createElement("p");
-	img_p.setAttribute('id', 'img_p');
-	document.getElementById('col-lg-div').append(img_p);
-
-	let img = document.createElement("img");
-	img.setAttribute('class', 'img-fluid')
-	img.setAttribute('src', image);
-	document.getElementById('img_p').append(img);
-
-	let title_h2 = document.createElement("h2");
-	title_h2.setAttribute('class', 'mb-3');
-	title_h2.textContent = 'Result';
-	document.getElementById('col-lg-div').append(title_h2);
-
-	let content_p = document.createElement("p");
-	content_p.textContent = content;
-	document.getElementById('col-lg-div').append(content_p);
 }
 
-function checkNormal(disease) {
-    for (let i = 0; i < disease.length; i++) {
+// function result() {
+//     const dl = sessionStorage.getItem('d_list');
 
+//     if (dl === undefined || dl === null) {
+//         const c2 = document.getElementById('c2');
+//         c2.style.display = 'none';
+
+//         const rc = document.getElementById('result-content');
+//         rc.style.display = 'none';
+
+//     } else {
+//         const c1 = document.getElementById('c1');
+//         c1.style.display = 'none';
+
+//         const cld = document.getElementById('col-lg-div');
+//         cld.style.display = 'none';
+//     }
+
+//     // reload();
+// }
+
+// function reload() {
+//     // window.location.reload();
+//     sessionStorage.removeItem('image');
+//     sessionStorage.removeItem('d_list');
+//     sessionStorage.removeItem('ab_list');
+// }
+
+function callResultPage() {
+    return new Promise(function(resolve, reject) {
+        location.href = "/check-result";
+        resolve();
+    })
+}
+
+// 결과 저장
+function saveCheckResult(data) {
+    const image = data.image;
+    const diseases = data.diseases;
+
+    d_name = Object.keys(diseases);
+    // console.log(d_name);
+
+    abnormal_list = [];
+    for (let i = 0; i < d_name.length; i++) {
+        // console.log(d_name[i]);
+        // console.log(diseases[d_name[i]]);
+        const tmp = diseases[d_name[i]];
+
+        if (tmp == "abnormal") {
+            abnormal_list.push(d_name[i]);
+        }
     }
+    console.log(diseases);
+    console.log(abnormal_list);
+
+    sessionStorage.setItem('image', image);
+	sessionStorage.setItem('d_list', d_name);
+	sessionStorage.setItem('ab_list', abnormal_list);
 }
