@@ -44,6 +44,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
     private val calendar = Calendar.getInstance()
     private lateinit var loading: LoadingDialog
     private var session = Application.prefs.session
+    private var animalId = Application.prefs.animalId
     private lateinit var poobStatusStr: String
     private lateinit var checkList: CheckList
     private lateinit var adapter: RoutineCheckAdapter
@@ -81,6 +82,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                                 binding.infoTextView.text = "로그인 되지 않았어요!"
                             }
                             getString(R.string.not_register_animal) -> {
+                                binding.submitButton.isEnabled = false
                                 binding.infoTextView.text = "반려동물 등록이 되지 않았어요!"
                             }
                             getString(R.string.exist_routine) -> {
@@ -101,6 +103,7 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         loading.dismiss()
                         binding.recyclerView.toVisible()
                         binding.shimmerLayout.hideShimmer()
+                        binding.submitButton.isEnabled = true
                         // 작성 창에 루틴 체크할 수 있게 보여주는데 해당 요일에만 있는 루틴만 걸러서 보여줌
                         // response 는 mon, tue... 문자열 형식으로 반환됨
                         val todayRoutines = it.routines.filter { r-> r.weekDay == getDayOfWeek() }

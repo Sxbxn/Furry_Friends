@@ -41,6 +41,8 @@ class ChecklistViewModel @Inject constructor(
         _routineLiveData.value = CheckListState.Loading
         if (session == null) {
             _routineLiveData.value = CheckListState.Error(context.getString(R.string.not_loged_in))
+        } else if(animalId == -999) {
+            _routineLiveData.value = CheckListState.Error(context.getString(R.string.not_register_animal))
         } else {
             viewModelScope.launch(ioDispatcher) {
                 // 현재 요일의 루틴을 가져옴
