@@ -31,7 +31,7 @@ class SettingViewModel @Inject constructor(
     private val userRepository: UserRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context
-): BaseViewModel() {
+) : BaseViewModel() {
     private val _isSuccess = MutableLiveData<SettingState>()
     val isSuccess: LiveData<SettingState>
         get() = _isSuccess
@@ -43,7 +43,7 @@ class SettingViewModel @Inject constructor(
         _isSuccess.value = SettingState.Loading
         viewModelScope.launch(ioDispatcher) {
             val response = userRepository.logout()
-            if(response != null) {
+            if (response != null) {
                 Application.prefs.clear()
                 _isSuccess.postValue(SettingState.Success(response))
             } else {
@@ -57,7 +57,7 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             // 추후 추가
             val response = userRepository.withdrawUser()
-            if(response != null) {
+            if (response != null) {
                 context.toast("회원 탈퇴되었습니다.")
                 Application.prefs.clear()
                 _isSuccess.postValue(SettingState.Success(response))
@@ -72,7 +72,7 @@ class SettingViewModel @Inject constructor(
         _isSuccess.value = SettingState.Loading
         viewModelScope.launch(ioDispatcher) {
             val response = animalRepository.deleteAnimalInfo()
-            if(response == null) {
+            if (response == null) {
                 _isSuccess.postValue(SettingState.Error(context.getString(R.string.error)))
             } else {
                 _isSuccess.postValue(SettingState.Success(response.animalId.toString()))
@@ -83,20 +83,25 @@ class SettingViewModel @Inject constructor(
     fun getAnimalInfo() {
         _isSuccess.value = SettingState.Loading
         viewModelScope.launch(ioDispatcher) {
-            val info = animalRepository.getAnimalInfo()
-            info?.let {
-                _animalInfoLiveData.postValue(
-                    SettingState.SuccessGetInfo(
-                    it.animalId,
-                    it.userId,
-                    it.name,
-                    it.birthDay,
-                    it.weight,
-                    it.sex,
-                    it.isNeutered,
-                    it.imageUrl
-                ))
-            } ?: kotlin.run {
+            try {
+                val info = animalRepository.getAnimalInfo()
+                info?.let {
+                    _animalInfoLiveData.postValue(
+                        SettingState.SuccessGetInfo(
+                            it.animalId,
+                            it.userId,
+                            it.name,
+                            it.birthDay,
+                            it.weight,
+                            it.sex,
+                            it.isNeutered,
+                            it.imageUrl
+                        )
+                    )
+                } ?: kotlin.run {
+                    _animalInfoLiveData.postValue(SettingState.Error(context.getString(R.string.error_response)))
+                }
+            } catch(e: Exception) {
                 _animalInfoLiveData.postValue(SettingState.Error(context.getString(R.string.error_response)))
             }
         }
@@ -106,13 +111,14 @@ class SettingViewModel @Inject constructor(
         _isSuccess.value = SettingState.Loading
         viewModelScope.launch(ioDispatcher) {
             val response = animalRepository.updateAnimalProfile(body, jsonUpdateProfile)
-            if(response == null) {
+            if (response == null) {
                 _isSuccess.postValue(SettingState.Error(context.getString(R.string.error)))
             } else {
                 _isSuccess.postValue(SettingState.Success(response))
             }
         }
     }
+
     // url에서 이미지 가져오기 (수정 전 이미지를 위해)
     suspend fun getFile(url: String): File {
         val deffered = CoroutineScope(ioDispatcher).async {
@@ -130,7 +136,7 @@ class SettingViewModel @Inject constructor(
         _isSuccess.value = SettingState.Loading
         viewModelScope.launch(ioDispatcher) {
             val response = animalRepository.runAiProfile(image)
-            if(response == null) {
+            if (response == null) {
                 _isSuccess.postValue(SettingState.Error(context.getString(R.string.error)))
             } else {
                 _isSuccess.postValue(SettingState.Success(response))

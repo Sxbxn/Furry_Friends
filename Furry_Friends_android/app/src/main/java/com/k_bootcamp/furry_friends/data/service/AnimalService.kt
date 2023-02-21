@@ -91,7 +91,7 @@ interface AnimalService {
 
 
     @Multipart
-    @POST("/ai_profile")
+    @POST("/pet/AIprofile")
     suspend fun runAiProfile(
         @Part body: MultipartBody.Part
     ): Response<String>

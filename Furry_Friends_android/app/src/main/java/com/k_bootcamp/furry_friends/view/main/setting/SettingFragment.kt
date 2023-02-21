@@ -7,6 +7,7 @@ import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -100,7 +101,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             if (it) {
                 ActivityCompat.requestPermissions(
                     mainActivity,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     SubmitAnimalFragment.REQ_STORAGE_PERMISSION
                 )
             }
@@ -204,25 +205,32 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         // 세션이 있고 동물이 있을 때만 작동
         if (session != null && animalId != -999) {
             ivMember.setOnClickListener {
-                Log.e("pushed","pushed!")
-                flag = "ai"
-                setAiFancyDialog(requireContext()) {
-                    loading.setVisible()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        // 더미
-//                        imageUrl = "https://fastly.picsum.photos/id/544/200/200.jpg?hmac=iIsE7MkJ1i0DzyQjD7hXFjiVpz8uukzJTk9XCNuWS8c"
-                        val file = viewModel.getFile(imageUrl)
-                        val fileName = file.name
-                        Log.e("ai file",fileName)
-                        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-                        body = MultipartBody.Part.createFormData("file", fileName, requestFile)
-                    }
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        // url ?? image file ??
-                        Log.e("ai body", body.toString())
-                        profileScoping(body)
-                    }, 2000)
-                }.show()
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_DENIED
+                ) {
+                    permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                } else {
+                    Log.e("pushed","pushed!")
+                    flag = "ai"
+                    setAiFancyDialog(requireContext()) {
+                        loading.setVisible()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            Log.e("imageUrl", imageUrl.toString())
+                            val file = viewModel.getFile(imageUrl)
+                            val fileName = file.name
+                            Log.e("ai file",fileName)
+                            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                            body = MultipartBody.Part.createFormData("file", fileName, requestFile)
+                        }
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            // url ?? image file ??
+                            Log.e("ai body", body.toString())
+                            profileScoping(body)
+                        }, 4000)
+                    }.show()
+                }
             }
         }
     }
