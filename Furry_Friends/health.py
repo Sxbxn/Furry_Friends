@@ -9,7 +9,7 @@ import os
 import json
 
 from models import User, Animal, Health
-from util import s3_connection, query_to_dict, upload_file_to_s3
+from util import s3_connection, query_to_dict, upload_file_to_s3, get_xray
 from werkzeug.utils import secure_filename
 from predict import padding, mk_img, predict_result
 
@@ -161,15 +161,12 @@ def check():
 
     # 이미지 파일 form서 request
     file = request.form['file']
-    record = request.form['data']
-    record = json.loads(record)
+    record = json.loads(request.form['data'])
 
     # 정보
     kind = record['kind']
     affected_area = record['affected_area']
-    posture = record['posture']
-
-    print(kind,affected_area, posture)  
+    posture = record['posture'] 
 
     # 이미지
     imgfile = file.split(',')[1] # base64 string
@@ -193,88 +190,61 @@ def check():
                                 Key=newname)
     response = obj['Body']
     img = Image.open(response)
-
-    # 이미지 전처리
     img = mk_img(img)
     
     # 모델 결과 
     if kind == "dog": # 반려견
-
         if affected_area == "ab": # 복부
-
             if posture == "vd": # vd, 모델 5개
 
-                # dog_ab_vd 디렉토리 안에 있는 경로 리스트화
-                dog_ab_vd = os.listdir("")
-                
-                results = [predict_result(i, img) for i in dog_ab_vd]
+                dog_ab_vd_diseases = [""]
 
-                str_results = []
-                for result in results:
-                    if result > 0.5:
-                        str_results.append("abnormal")                        
-                    else:
-                        str_results.append("normal")                        
-                return str_results
+                results = get_xray(".\XRAY_Model\dog_ab_vd", img)
+                json_results = dict(zip(dog_ab_vd_diseases, results))
+                json_results['image'] = img_url
 
-# ------------------------------------------------------------- 테스트 ---------------------------------------------
+                return jsonify(json_results)
+
             else: # lateral, 모델 8개
-                
-                print(kind,affected_area, posture)
 
-                dog_ab_lt = os.listdir(".\XRAY_Model\dog_ab_lateral")
+                dog_ab_lt_diseases = ["a", 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
-                model_path = [".\XRAY_Model\dog_ab_lateral\\" + path for path in dog_ab_lt]
-                
-                results = [predict_result(i, img) for i in model_path]
+                results = get_xray(".\XRAY_Model\dog_ab_lateral", img)
+                json_results = dict(zip(dog_ab_lt_diseases, results))
+                json_results['image'] = img_url
 
-                print(results)
-                return results
-
-# ------------------------------------------------------------- 테스트 ---------------------------------------------
+                return jsonify(json_results)
 
         elif affected_area == "ch": # 흉부
-
             if posture == "vd": # vd, 모델 1개
-
-                dog_ch_vd = os.listdir("")
                 
-                results = [predict_result(i, img) for i in dog_ch_vd]
+                dog_ch_vd_diseases = [""]
 
-                str_results = []
-                for result in results:
-                    if result > 0.5:
-                        str_results.append("abnormal")                        
-                    else:
-                        str_results.append("normal")                        
-                return str_results
+                results = get_xray(".\XRAY_Model\dog_ch_vd", img)
+                json_results = dict(zip(dog_ch_vd_diseases, results))
+                json_results['image'] = img_url
+                      
+                return jsonify(json_results)
 
             else: # lateral, 모델 2개
-                dog_ch_lt = os.listdir("")
                 
-                results = [predict_result(i, img) for i in dog_ch_lt]
+                dog_ch_lt_diseases = [""]
 
-                str_results = []
-                for result in results:
-                    if result > 0.5:
-                        str_results.append("abnormal")                        
-                    else:
-                        str_results.append("normal")                        
-                return str_results
+                results = get_xray(".\XRAY_Model\dog_ch_lt", img)
+                json_results = dict(zip(dog_ch_lt_diseases, results))
+                json_results['image'] = img_url
+                      
+                return jsonify(json_results)
 
         else: # 근골격
             # ap, 모델 3개
-            dog_mu_ap = os.listdir("")
-                
-            results = [predict_result(i, img) for i in dog_mu_ap]
+            dog_mu_ap_diseases = [""]
 
-            str_results = []
-            for result in results:
-                if result > 0.5:
-                    str_results.append("abnormal")
-                else:
-                    str_results.append("normal") 
-            return str_results
+            results = get_xray(".\XRAY_Model\dog_mu_ap", img)
+            json_results = dict(zip(dog_mu_ap_diseases, results))
+            json_results['image'] = img_url
+                    
+            return jsonify(json_results)
 
     else: # cat
 
@@ -282,65 +252,50 @@ def check():
 
             if posture == "vd": # vd, 모델 5개
                 
-                cat_ab_vd = os.listdir("")
-                
-                results = [predict_result(i, img) for i in cat_ab_vd]
+                cat_ab_vd_diseases = [""]
 
-                str_results = []
-                for result in results:
-                    if result > 0.5:
-                        str_results.append("abnormal")                       
-                    else:
-                        str_results.append("normal")                        
-                return str_results
+
+                cat_ab_vd = os.listdir(".\XRAY_Model\cat_ab_vd")
+                model_path = [".\XRAY_Model\cat_ab_vd\\" + model for model in cat_ab_vd]
+                results = [predict_result(i, img) for i in model_path]
+
+
+                json_results = dict(zip(cat_ab_vd_diseases, results))
+                        
+                return jsonify(json_results)
+                
 
             else:               # lateral, 모델 8개
-                cat_ab_lt = os.listdir("")
                 
-                results = [predict_result(i, img) for i in cat_ab_lt]
+                cat_ab_lt_diseases = [""]
 
-                str_results = []
-                for result in results:
-                    if result > 0.5:
-                        str_results.append("abnormal")                       
-                    else:
-                        str_results.append("normal")                        
-                return str_results
+
+                cat_ab_lt = os.listdir(".\XRAY_Model\cat_ab_lateral")
+                model_path = [".\XRAY_Model\cat_ab_lateral\\" + model for model in cat_ab_lt]
+                results = [predict_result(i, img) for i in model_path]
+                
+
+                json_results = dict(zip(cat_ab_lt_diseases, results))
+                return jsonify(json_results)
 
         elif affected_area == "ch": # 흉부, lateral 모델 1개
-                cat_ch_lt = os.listdir("")
                 
-                results = [predict_result(i, img) for i in cat_ch_lt]
+                cat_ch_lt_diseases = [""]
 
-                str_results = []
-                for result in results:
-                    if result > 0.5:
-                        str_results.append("abnormal")                       
-                    else:
-                        str_results.append("normal")                        
-                return str_results
+
+                cat_ch_lt = os.listdir(".\XRAY_Model\cat_ch_lateral")
+                model_path = [".\XRAY_Model\cat_ab_lateral\\" + model for model in cat_ch_lt]
+                results = [predict_result(i, img) for i in model_path]
+                        
+                
+                json_results = dict(zip(cat_ch_lt_diseases, results))
+                return jsonify(json_results)
 
         else:                       # 근골격
-                cat_mu_ = os.listdir("")
-                
-                results = [predict_result(i, img) for i in cat_mu_]
+            results = []    
+            return jsonify(json_results)
 
-                str_results = []
-                for result in results:
-                    if result > 0.5:
-                        str_results.append("abnormal")                       
-                    else:
-                        str_results.append("normal")                        
-                return str_results
-
-
-    # record = json.loads(record)
-    # kind = record['kind']
-    # affected_area = record['affected_area']
-
-    # if f:
-    #     return "."
-        
-        # else:
-            # return "not a vet"
+     
+    # else:
+        # return "not a vet"
 
