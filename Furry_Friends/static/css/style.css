@@ -9286,7 +9286,7 @@ button.bg-dark:focus {
 
 .pb-5,
 .py-5 {
-  padding-bottom: 3rem !important;
+  padding-bottom: 14.7rem !important;
 }
 
 .pl-5,
@@ -11902,7 +11902,7 @@ h5,
 }
 
 .hero-wrap.hero-wrap-2 {
-  height: 400px;
+  height: 180px;
 }
 
 .hero-wrap.hero-wrap-2 .overlay {
@@ -11941,7 +11941,7 @@ h5,
 }
 
 .hero-wrap .slider-text h1 span {
-  color: #00bd56;
+  color: #00bd56;overlay
 }
 
 .hero-wrap .slider-text .subheading {
