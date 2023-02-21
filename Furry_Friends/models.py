@@ -1,4 +1,4 @@
-from connect_db import db
+from Furry_Friends.connect_db import db
 # from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -69,7 +69,7 @@ class Routine(db.Model):
 class ChecklistDefault(db.Model):
     __tablename__ = 'checklist_default'
 
-    index = db.Column(db.Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)
+    index = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     currdate = db.Column(db.String, nullable=False)
     animal_id = db.Column(db.ForeignKey('animals.animal_id', ondelete='CASCADE'), nullable=False)
 

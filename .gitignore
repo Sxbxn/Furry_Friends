@@ -219,4 +219,5 @@ $RECYCLE.BIN/
 
 flaskenv/
 flask_session/
-config.py
+# config.py
+migrations/

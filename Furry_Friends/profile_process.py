@@ -59,17 +59,17 @@ if __name__ == '__main__':
     parser.add_argument(
         '--checkpoint',
         type=str,
-        default='./weights/paprika.pt',
+        default='./Furry_Friends/weights/paprika.pt',
     )
     parser.add_argument(
         '--input_dir', 
         type=str, 
-        default='./samples/inputs',
+        default='./Furry_Friends/samples/inputs',
     )
     parser.add_argument(
         '--output_dir', 
         type=str, 
-        default='./samples/results',
+        default='./Furry_Friends/samples/results',
     )
     parser.add_argument(
         '--device',
