@@ -69,7 +69,7 @@ def ds():
 def medical_record():
     return render_template('medical-record.html')
 
-@app.route('//medical-single')
+@app.route('/medical-single')
 def ms():
     return render_template('medical-single.html')
 

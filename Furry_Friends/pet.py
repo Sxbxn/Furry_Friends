@@ -219,29 +219,24 @@ def ai_profile():
 
         f = request.files['file']
 
-        # 기존 프로필 이미지 넘겨받아 전처리
-
-        
-        # 모델 돌리기
-        # model_path = ""
-
-        # 새로 생성된 ai 프로필 이미지 s3에 저장
         extension = '.' + f.filename.split('.')[-1] # ai 모델 돌리면 나오는 이미지 형식이 고정인지 확인 후 수정
-
         newname = asd['login'] + '_' + animal.animal_name + "_aiprofile" + extension
-        img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
         f.filename = newname
+        f.save(f'.\samples\inputs\{newname}')
 
-        upload_file_to_s3(f)
+        os.system("python profile_process.py --checkpoint ./weights/generator_celeba_distill.pt --device cpu")
+
+        s3.upload_file(Filename=f"./samples/results/{newname}", Bucket=AWS_S3_BUCKET_NAME, Key=newname)
+        img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
+
+        os.remove(f".\samples\inputs\{newname}")
+        os.remove(f".\samples\\results\{newname}")
 
         animal.image = img_url
 
         db.session.commit()
 
-        # s3에서 기존 이미지 삭제
-        s3.delete_object(
-            Bucket = AWS_S3_BUCKET_NAME,
-            Key = (animal.image).split('/')[-1]
-        )
+        return img_url
+
 
 
