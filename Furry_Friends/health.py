@@ -197,7 +197,7 @@ def check():
         if affected_area == "ab": # 복부
             if posture == "vd": # vd, 모델 5개
 
-                dog_ab_vd_diseases = [""]
+                dog_ab_vd_diseases = ["거대신장","복부종양","비뇨기결석","탈장","복수"]
 
                 results = get_xray(".\XRAY_Model\dog_ab_vd", img)
                 json_results = dict(zip(dog_ab_vd_diseases, results))
@@ -207,7 +207,7 @@ def check():
 
             else: # lateral, 모델 8개
 
-                dog_ab_lt_diseases = ["a", 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+                dog_ab_lt_diseases = ["간비대", '소간증', '복부종양', '비뇨기결석', '장폐색', '거대결장', '탈장', '복수']
 
                 results = get_xray(".\XRAY_Model\dog_ab_lateral", img)
                 json_results = dict(zip(dog_ab_lt_diseases, results))
@@ -218,7 +218,7 @@ def check():
         elif affected_area == "ch": # 흉부
             if posture == "vd": # vd, 모델 1개
                 
-                dog_ch_vd_diseases = [""]
+                dog_ch_vd_diseases = ["종격동변위"]
 
                 results = get_xray(".\XRAY_Model\dog_ch_vd", img)
                 json_results = dict(zip(dog_ch_vd_diseases, results))
@@ -228,7 +228,7 @@ def check():
 
             else: # lateral, 모델 2개
                 
-                dog_ch_lt_diseases = [""]
+                dog_ch_lt_diseases = ["심비대","기관허탈"]
 
                 results = get_xray(".\XRAY_Model\dog_ch_lt", img)
                 json_results = dict(zip(dog_ch_lt_diseases, results))
@@ -238,7 +238,7 @@ def check():
 
         else: # 근골격
             # ap, 모델 3개
-            dog_mu_ap_diseases = [""]
+            dog_mu_ap_diseases = ["사지골절","엉덩관절탈구","슬개골탈구"]
 
             results = get_xray(".\XRAY_Model\dog_mu_ap", img)
             json_results = dict(zip(dog_mu_ap_diseases, results))
