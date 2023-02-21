@@ -22,13 +22,12 @@ class CustomAlertDialog(context: Context) : AlertDialog(context) {
         dialog.setCancelable(true)
         dialog.show()
     }
-    fun initWithView(title: String, viewId: View, positiveText: String, negativeText: String){
+    fun initWithView(title: String, viewId: Int){
 
         dialog = Builder(context, R.style.dialog)
             .setMessage(title)
             .setView(viewId)
-            .setPositiveButton(positiveText) { _, _ -> }
-            .setNegativeButton(negativeText) { _, _ -> }
+            .setPositiveButton("확인") { _, _ -> }
             .create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCancelable(true)

@@ -242,33 +242,40 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:textSize="15sp"
-                            android:textColor="@color/black"
-                            android:text="@string/similar"/>
-                        <ImageView
-                            android:id="@+id/feedbackImageView"
-                            android:layout_width="match_parent"
-                            android:layout_height="300dp"
-                            android:src="@drawable/add_screen_image_placeholder"
-                            />
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_margin="10dp"-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:textColor="@color/black"-->
+<!--                            android:text="@string/similar"/>-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/feedbackImageView"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="300dp"-->
+<!--                            android:src="@drawable/add_screen_image_placeholder"-->
+<!--                            />-->
                         <TextView
                             android:id="@+id/feedbackTextView"
                             android:layout_width="match_parent"
-                            android:layout_height="180dp"
+                            android:layout_height="wrap_content"
                             android:layout_margin="20dp"
-                            tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s" />
+                            tools:text="ext ever since the 1500s" />
+                        <include
+                            android:id="@+id/diagnosisListDog"
+                            layout="@layout/diagnosis_list_dog"
+                            android:visibility="gone"
+                            tools:visibility="visible"/>
+                        <include
+                            android:id="@+id/diagnosisListCat"
+                            layout="@layout/diagnosis_list_cat"
+                            android:visibility="gone"
+                            tools:visibility="visible"/>
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.facebook.shimmer.ShimmerFrameLayout>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

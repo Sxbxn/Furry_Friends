@@ -10,7 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
@@ -20,12 +24,14 @@ import com.bumptech.glide.load.resource.bitmap.Rotate
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.fc.baeminclone.screen.base.BaseFragment
 import com.google.gson.Gson
+import com.k_bootcamp.furry_friends.R
 import com.k_bootcamp.furry_friends.databinding.FragmentDiagnosisWritingBinding
 import com.k_bootcamp.furry_friends.extension.load
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.writing.Diagnosis
+import com.k_bootcamp.furry_friends.util.dialog.CustomAlertDialog
 import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity
@@ -46,6 +52,7 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
     override val viewModel: DiagnosisWritingViewModel by viewModels()
     private var args: Bundle? = null
     private lateinit var loading: LoadingDialog
+    private lateinit var dialog: CustomAlertDialog
     private lateinit var mainActivity: MainActivity
     private lateinit var sendFile: File
     private lateinit var body: MultipartBody.Part
@@ -123,6 +130,7 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         val kind = args?.get("kind")
         val affectedArea = args?.get("affectedArea")
         val comment = args?.get("comment") as String
+        dialog = CustomAlertDialog(requireContext())
         saveWriting.toGone()
         // read only에선 스피너 없애고 텍스트만 보여주기
         animalKind.toGone()
@@ -143,10 +151,56 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         animalKindTextView.text = kind.toString()+", "
         animalAffectedAreaTextView.text = affectedArea.toString()
         imageButtonImageSelect.load(imageUrl.toString())
-        if(comment.isNotEmpty()) {
-            shimmerLayout2.toVisible()
+        if(comment.isEmpty()) {
+            shimmerLayout2.toGone()
             shimmerLayout2.hideShimmer()
-            feedbackTextView.text = comment
+            feedbackTextView.toGone()
+        } else {
+            shimmerLayout2.toVisible()
+            shimmerLayout2.showShimmer(true)
+            feedbackTextView.toVisible()
+            shimmerLayout2.hideShimmer()
+            // 정상 비정상 별 분기처리
+            when(comment) {
+                // 비정상
+                "abnormal" -> {
+                    // 동물 분류
+                    when(kind) {
+                        "강아지" -> {
+                            diagnosisListDog.root.toVisible()
+                            feedbackTextView.text = getString(R.string.abnormal_dog)
+                            diagnosisListDog.abnormalList.toVisible()
+                            setDogTextViewClickListener()
+                        }
+                        "고양이" -> {
+                            diagnosisListCat.root.toVisible()
+                            feedbackTextView.text = getString(R.string.abnormal_cat)
+                            diagnosisListCat.abnormalList.toVisible()
+                            setCatTextViewClickListener()
+                        }
+                    }
+                }
+                // 정상
+                "normal" -> {
+                    // 동물 분류
+                    when(kind) {
+                        "강아지" -> {
+                            diagnosisListDog.root.toVisible()
+                            feedbackTextView.text = getString(R.string.normal_dog)
+                            diagnosisListDog.abnormalList.toGone()
+                            setDogTextViewClickListener()
+                        }
+                        "고양이" -> {
+                            diagnosisListCat.root.toVisible()
+                            feedbackTextView.text = getString(R.string.normal_cat)
+                            diagnosisListCat.abnormalList.toGone()
+                            setCatTextViewClickListener()
+                        }
+                    }
+                }
+            }
+
+            shimmerLayout2.hideShimmer()
         }
 
     }
@@ -264,6 +318,61 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         val cal = Calendar.getInstance().time
         date = sdf.format(cal).toString()
     }
+    private fun setDogTextViewClickListener() = with(binding) {
+        diagnosisListDog.cornealUlcer.setOnClickListener {
+            setDialogView(diagnosisListDog.cornealUlcer.text.toString(), R.drawable.dog_cornealulcer, R.string.cornealUlcerd)
+        }
+        diagnosisListDog.blepharitis.setOnClickListener {
+            setDialogView(diagnosisListDog.blepharitis.text.toString(), R.drawable.dog_blepharitis, R.string.blepharitisd)
+        }
+        diagnosisListDog.Cataract.setOnClickListener {
+            setDialogView(diagnosisListDog.Cataract.text.toString(), R.drawable.dog_cataract, R.string.Cataract)
+        }
+        diagnosisListDog.conjunctivitis.setOnClickListener {
+            setDialogView(diagnosisListDog.conjunctivitis.text.toString(), R.drawable.dog_conjunctivitis, R.string.conjunctivitisd)
+        }
+        diagnosisListDog.eyelidTumor.setOnClickListener {
+            setDialogView(diagnosisListDog.eyelidTumor.text.toString(), R.drawable.dog_eyelidtumor, R.string.eyelidTumor)
+        }
+        diagnosisListDog.nuclearSclerosis.setOnClickListener {
+            setDialogView(diagnosisListDog.nuclearSclerosis.text.toString(), R.drawable.dog_nuclearsclerosis, R.string.nuclearSclerosis)
+        }
+        diagnosisListDog.entropionOfTheEyelid.setOnClickListener {
+            setDialogView(diagnosisListDog.entropionOfTheEyelid.text.toString(), R.drawable.dog_entropionoftheeyelid, R.string.entropionOfTheEyelid)
+        }
+        diagnosisListDog.vitreousDuctility.setOnClickListener {
+            setDialogView(diagnosisListDog.vitreousDuctility.text.toString(), R.drawable.dog_vitreousductility, R.string.vitreousDuctility)
+        }
+        diagnosisListDog.mastopathy.setOnClickListener {
+            setDialogView(diagnosisListDog.mastopathy.text.toString(), R.drawable.dog_mastopathy, R.string.mastopathy)
+        }
+        diagnosisListDog.pigmentedKeratitis.setOnClickListener {
+            setDialogView(diagnosisListDog.pigmentedKeratitis.text.toString(), R.drawable.dog_pigmentedkeratitis, R.string.pigmentedKeratitis)
+        }
+    }
+
+    private fun setCatTextViewClickListener() = with(binding) {
+        diagnosisListCat.cornealUlcer.setOnClickListener {
+            setDialogView(diagnosisListCat.cornealUlcer.text.toString(), R.drawable.cat_cornealulcer, R.string.cornealUlcerc)
+        }
+        diagnosisListCat.blepharitis.setOnClickListener {
+            setDialogView(diagnosisListCat.blepharitis.text.toString(), R.drawable.cat_blepharitis, R.string.blepharitisc)
+        }
+        diagnosisListCat.conjunctivitis.setOnClickListener {
+            setDialogView(diagnosisListCat.conjunctivitis.text.toString(), R.drawable.cat_conjunctivitis, R.string.conjunctivitisc)
+        }
+        diagnosisListCat.felineCornealSequesration.setOnClickListener {
+            setDialogView(diagnosisListCat.felineCornealSequesration.text.toString(), R.drawable.cat_felinecornealsequesration, R.string.felineCornealSequesration)
+        }
+    }
+
+
+    private fun setDialogView(message: String, @DrawableRes id: Int, @StringRes sId: Int) = with(binding){
+        dialog.initWithView(message, R.layout.dialog_diagnosis_info)
+        dialog.findViewById<ImageView>(R.id.diagnosisImageView).setImageResource(id)
+        dialog.findViewById<TextView>(R.id.diagnosisTextView).text = getString(sId)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
