@@ -61,30 +61,33 @@ def about():
 def diary():
     return render_template('diary.html')
 
-@app.route('/medical-record')
-def medical_record():
-    return render_template('medical-record.html')
-
-@app.route('/sign')
-def sign():
-    return render_template('sign.html')
-
-@app.route('/mypage')
-def mypage():
-    return render_template('mypage.html')
-
 @app.route('/diary-single')
 def ds():
     return render_template('diary-single.html')
 
-@app.route('/check')
-def check():
-    return render_template('check.html')
+@app.route('/medical-record')
+def medical_record():
+    return render_template('medical-record.html')
+
+@app.route('//medical-single')
+def ms():
+    return render_template('medical-single.html')
 
 @app.route('/calendar')
 def calendar():
     return render_template('calendar.html')
 
+@app.route('/mypage')
+def mypage():
+    return render_template('mypage.html')
+
+@app.route('/sign')
+def sign():
+    return render_template('sign.html')
+
+@app.route('/check')
+def check():
+    return render_template('check.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
