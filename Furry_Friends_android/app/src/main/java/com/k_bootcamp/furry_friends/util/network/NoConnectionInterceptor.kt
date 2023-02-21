@@ -23,10 +23,7 @@ class NoConnectionInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val handler = Handler(Looper.getMainLooper())
         return if (!isConnectionOn()) {
-            handler.postDelayed({
-                NoConnectivityException(context).toast()
-            }, 0)
-            chain.proceed(chain.request())
+            throw NoConnectivityException(context)
         } else {
             chain.proceed(chain.request())
         }
@@ -70,6 +67,9 @@ class NoConnectionInterceptor(
     class NoConnectivityException(val context: Context) : IOException() {
         override val message: String
             get() = "인터넷 연결이 끊겼습니다. WIFI나 데이터 연결을 확인해주세요"
+        init{
+            context.toast("인터넷 연결이 끊겼습니다. WIFI나 데이터 연결을 확인해주세요")
+        }
         fun toast() = context.toast("인터넷 연결이 끊겼습니다. WIFI나 데이터 연결을 확인해주세요")
     }
 

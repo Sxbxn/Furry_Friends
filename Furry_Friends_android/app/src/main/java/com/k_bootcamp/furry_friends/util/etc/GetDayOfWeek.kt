@@ -7,14 +7,14 @@ import java.util.*
 fun getDayOfWeek(): String {
     val calendar = Calendar.getInstance()
     return when (calendar.get(Calendar.DAY_OF_WEEK)) {
-        1 -> "sun"
-        2 -> "mon"
-        3 -> "tue"
-        4 -> "wed"
-        5 -> "thu"
-        6 -> "fri"
-        7 -> "sat"
-        else -> "err"
+        1 -> "일요일"
+        2 -> "월요일"
+        3 -> "화요일"
+        4 -> "수요일"
+        5 -> "목요일"
+        6 -> "금요일"
+        7 -> "토요일"
+        else -> "에러"
     }
 }
 
