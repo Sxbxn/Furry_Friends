@@ -26,7 +26,7 @@
                 android:id="@+id/thumbnail_day_diagnosis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="fitCenter"
+                android:scaleType="fitXY"
                 android:adjustViewBounds="true"
                 tools:srcCompat="@tools:sample/avatars" />
 
