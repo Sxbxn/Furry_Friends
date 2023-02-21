@@ -152,13 +152,6 @@ def record_delete():
 @bp.route('/check', methods=["POST"])
 def check():
 
-    # 로그인 확인
-    # asd = session._get_current_object()
-
-    # if 'login' in asd:
-    #     user = User.query.filter_by(user_id = asd['login']).first()
-    #     if user.vet == 1:
-
     # 이미지 파일 form서 request
     file = request.form['file']
     record = json.loads(request.form['data'])
@@ -201,9 +194,12 @@ def check():
 
                 results = get_xray(".\XRAY_Model\dog_ab_vd", img)
                 json_results = dict(zip(dog_ab_vd_diseases, results))
-                json_results['image'] = img_url
+                
+                final_results = {}
+                final_results['diseases'] = json_results
+                final_results['image'] = img_url
 
-                return jsonify(json_results)
+                return jsonify(final_results)
 
             else: # lateral, 모델 8개
 
@@ -211,9 +207,13 @@ def check():
 
                 results = get_xray(".\XRAY_Model\dog_ab_lateral", img)
                 json_results = dict(zip(dog_ab_lt_diseases, results))
-                json_results['image'] = img_url
 
-                return jsonify(json_results)
+                final_results = {}
+                final_results['diseases'] = json_results
+                final_results['image'] = img_url
+
+                print(final_results)
+                return jsonify(final_results)
 
         elif affected_area == "ch": # 흉부
             if posture == "vd": # vd, 모델 1개
@@ -222,9 +222,12 @@ def check():
 
                 results = get_xray(".\XRAY_Model\dog_ch_vd", img)
                 json_results = dict(zip(dog_ch_vd_diseases, results))
-                json_results['image'] = img_url
-                      
-                return jsonify(json_results)
+                
+                final_results = {}
+                final_results['diseases'] = json_results
+                final_results['image'] = img_url
+
+                return jsonify(final_results)
 
             else: # lateral, 모델 2개
                 
@@ -232,9 +235,12 @@ def check():
 
                 results = get_xray(".\XRAY_Model\dog_ch_lt", img)
                 json_results = dict(zip(dog_ch_lt_diseases, results))
-                json_results['image'] = img_url
-                      
-                return jsonify(json_results)
+                
+                final_results = {}
+                final_results['diseases'] = json_results
+                final_results['image'] = img_url
+
+                return jsonify(final_results)
 
         else: # 근골격
             # ap, 모델 3개
@@ -242,9 +248,12 @@ def check():
 
             results = get_xray(".\XRAY_Model\dog_mu_ap", img)
             json_results = dict(zip(dog_mu_ap_diseases, results))
-            json_results['image'] = img_url
-                    
-            return jsonify(json_results)
+
+            final_results = {}
+            final_results['diseases'] = json_results
+            final_results['image'] = img_url
+
+            return jsonify(final_results)
 
     else: # cat
 
@@ -252,50 +261,44 @@ def check():
 
             if posture == "vd": # vd, 모델 5개
                 
-                cat_ab_vd_diseases = [""]
+                cat_ab_vd_diseases = ["거대신장", "복부종양","비뇨기결석", "탈장", "복수"]
 
-
-                cat_ab_vd = os.listdir(".\XRAY_Model\cat_ab_vd")
-                model_path = [".\XRAY_Model\cat_ab_vd\\" + model for model in cat_ab_vd]
-                results = [predict_result(i, img) for i in model_path]
-
-
+                results = get_xray(".\XRAY_Model\cat_ab_vd", img)
                 json_results = dict(zip(cat_ab_vd_diseases, results))
-                        
-                return jsonify(json_results)
+
+                final_results = {}
+                final_results['diseases'] = json_results
+                final_results['image'] = img_url
+
+                return jsonify(final_results)
                 
 
             else:               # lateral, 모델 8개
                 
-                cat_ab_lt_diseases = [""]
+                cat_ab_lt_diseases = ["간비대", "소간증", "복부종양", "비뇨기결석", "장폐색", "거대결장", "탈장", "복수"]
 
-
-                cat_ab_lt = os.listdir(".\XRAY_Model\cat_ab_lateral")
-                model_path = [".\XRAY_Model\cat_ab_lateral\\" + model for model in cat_ab_lt]
-                results = [predict_result(i, img) for i in model_path]
-                
-
+                results = get_xray(".\XRAY_Model\cat_ab_lateral", img)
                 json_results = dict(zip(cat_ab_lt_diseases, results))
-                return jsonify(json_results)
 
-        elif affected_area == "ch": # 흉부, lateral 모델 1개
+                final_results = {}
+                final_results['diseases'] = json_results
+                final_results['image'] = img_url
+
+                return jsonify(final_results)
+
+        else: # 흉부, lateral 모델 1개
                 
-                cat_ch_lt_diseases = [""]
+                cat_ch_lt_diseases = ["심비대"]
 
-
-                cat_ch_lt = os.listdir(".\XRAY_Model\cat_ch_lateral")
-                model_path = [".\XRAY_Model\cat_ab_lateral\\" + model for model in cat_ch_lt]
-                results = [predict_result(i, img) for i in model_path]
-                        
-                
+                results = get_xray(".\XRAY_Model\cat_ch_lateral", img)
                 json_results = dict(zip(cat_ch_lt_diseases, results))
-                return jsonify(json_results)
 
-        else:                       # 근골격
-            results = []    
-            return jsonify(json_results)
+                final_results = {}
+                final_results['diseases'] = json_results
+                final_results['image'] = img_url
 
-     
-    # else:
-        # return "not a vet"
+                return jsonify(final_results)
 
+        # else:                       # 근골격 # DROP
+        #     results = []    
+        #     return jsonify(json_results)
