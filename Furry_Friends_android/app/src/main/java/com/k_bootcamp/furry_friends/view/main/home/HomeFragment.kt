@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.fc.baeminclone.screen.base.BaseFragment
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.R
@@ -20,7 +21,9 @@ import com.k_bootcamp.furry_friends.databinding.FragmentHomeBinding
 import com.k_bootcamp.furry_friends.extension.load
 import com.k_bootcamp.furry_friends.extension.toGone
 import com.k_bootcamp.furry_friends.extension.toVisible
+import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.util.etc.holidayColor
+import com.k_bootcamp.furry_friends.util.network.NetworkStatus
 import com.k_bootcamp.furry_friends.view.MainActivity
 import com.k_bootcamp.furry_friends.view.adapter.SelectAnimalAdapter
 import com.k_bootcamp.furry_friends.view.adapter.viewholder.listener.SelectAnimalListListener
@@ -37,99 +40,104 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     private lateinit var mainActivity: MainActivity
     private var session = Application.prefs.session
     private var animalId = Application.prefs.animalId
+    // hilt를 통한 viewModel 주입
     override val viewModel: HomeViewModel by viewModels()
-
     private lateinit var dialogViewGroup: ViewGroup
     private lateinit var dialogView: View
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var selectAdapter: SelectAnimalAdapter
-    private val writing = listOf(
-        "오늘은 일요일이에요 \n이번 주 잘 마무리 하셨나요?\n오늘은 푹 쉬어요~",
-        "오늘은 월요일이에요 \n한 주를 즐겁게 시작해봐요!! \n이번 주도 화이팅!" ,
-        "오늘은 화요일이에요 \n이번 주 계획은 잘 세우셨나요? \n오늘도 화이팅!",
-        "오늘은 수요일이에요 \n벌써 수요일이네요~ 시간이 참 빠른거같아요 \n오늘도 화이팅!",
-        "오늘은 목요일이에요 \n이번 주의 절반이 지나가는군요! \n남은 날도 화이팅!",
-        "오늘은 금요일이에요 \n신나는 금요일이에요 \n내일부턴 주말이니 오늘도 화이팅해봐요!",
-        "오늘은 토요일이에요 \n한 주의 끝이 다가왔네요~ \n우리 아이와 함께 잘 놀아봐요~"
-    )
+    private val writing by lazy{
+        listOf(
+            getString(R.string.sun_writing),
+            getString(R.string.mon_writing),
+            getString(R.string.tue_writing),
+            getString(R.string.wed_writing),
+            getString(R.string.thu_writing),
+            getString(R.string.fri_writing),
+            getString(R.string.sat_writing),
+        )
+    }
     override fun getViewBinding(): FragmentHomeBinding = FragmentHomeBinding.inflate(layoutInflater)
     @SuppressLint("SetTextI18n")
     override fun observeData() {
-        // 먼저 홈화면이 실행되면 해당유저의 모든 동물 리스트를 가져온다.
-        // 동물 리스트가 비어있으면 (등록 된 동물이 없음) -> 등록하라고 창을 보여준다.
-        Log.e("animalId", animalId.toString())
-        viewModel.getAllAnimalInfo()
-        viewModel.animalInfoListLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is HomeState.Success -> {}
-                is HomeState.Error -> {
-                    if (session == null) {
-                        cardViewText(binding, R.string.require_login, R.string.log_in_text)
-                        binding.userTextView.text = getString(R.string.hello_null)
-                        binding.submit.submitButton.setOnClickListener {
-                            initLoginButton()
-                        }
-                    } else {
-                        // 진짜 데이터
-                        when(it.message) {
-                            getString(R.string.not_register_animal) -> {
-                                binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
-                                cardViewText(binding, R.string.submit_animal, R.string.submit)
-                                binding.submit.submitButton.setOnClickListener {
-                                    // 등록 페이지로 넘어가기
-                                    mainActivity.showFragment(
-                                        SubmitAnimalFragment.newInstance(),
-                                        SubmitAnimalFragment.TAG
-                                    )
+//        if(NetworkStatus(requireContext()).getConnectivityStatus()){
+            // 먼저 홈화면이 실행되면 해당유저의 모든 동물 리스트를 가져온다.
+            // 동물 리스트가 비어있으면 (등록 된 동물이 없음) -> 등록하라고 창을 보여준다.
+            viewModel.getAllAnimalInfo()
+            viewModel.animalInfoListLiveData.observe(viewLifecycleOwner) {
+                when (it) {
+                    is HomeState.Success -> {}
+                    is HomeState.Error -> {
+                        if (session == null) {
+                            cardViewText(binding, R.string.require_login, R.string.log_in_text)
+                            binding.userTextView.text = getString(R.string.hello_null)
+                            binding.submit.submitButton.setOnClickListener {
+                                initLoginButton()
+                            }
+                        } else {
+                            when(it.message) {
+                                getString(R.string.not_register_animal) -> {
+                                    binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
+                                    cardViewText(binding, R.string.submit_animal, R.string.submit)
+                                    binding.submit.submitButton.setOnClickListener {
+                                        // 등록 페이지로 넘어가기
+                                        mainActivity.showFragment(
+                                            SubmitAnimalFragment.newInstance(),
+                                            SubmitAnimalFragment.TAG
+                                        )
+                                    }
+                                }
+                                else -> {
+                                    binding.progressbar.toGone()
+                                    binding.submit.root.toVisible()
+                                    binding.submit.topicTextView.text =
+                                        getString(R.string.load_fail_animal_info)
+                                    binding.submit.submitButton.text = getString(R.string.retry)
+                                    binding.userTextView.text = String.format(resources.getString(R.string.hello), session ?: "Unknown")
+                                    binding.submit.submitButton.setOnClickListener {
+                                        requireContext().toast("재시도가 되지 않는다면 재로그인을 해주세요!")
+                                        observeData()
+                                    }
                                 }
                             }
+                        }
+                    }
+                    is HomeState.Loading -> {
+                        binding.progressbar.toVisible()
+                        binding.submit.root.toGone()
+                        binding.animalInfo.root.toGone()
+                    }
+                    is HomeState.SuccessList -> {
+                        val month = Calendar.getInstance().get(Calendar.YEAR)
+                        val mainAnimal = it.infoList.first { animal -> animal.animalId == animalId }
+                        val animalMonth = mainAnimal.birthDay.split(".")[0].toInt()
+                        // 한 마리 일때는 변경 불가능
+                        when(it.infoList.size) {
+                            1 -> binding.animalInfo.change.isEnabled = false
                             else -> {
-                                binding.progressbar.toGone()
-                                binding.submit.root.toVisible()
-                                binding.submit.topicTextView.text =
-                                    getString(R.string.load_fail_animal_info)
-                                binding.submit.submitButton.text = getString(R.string.retry)
-                                binding.userTextView.text = String.format(resources.getString(R.string.hello), session ?: "Unknown")
-                                binding.submit.submitButton.setOnClickListener {
-                                    observeData()
-                                }
+                                // 변경버튼 활성화하고, 리사이클러뷰에 데이터를 줌
+                                binding.animalInfo.change.isEnabled = true
+                                initAnimalCardViewButton(it.infoList)
                             }
                         }
-                    }
-                }
-                is HomeState.Loading -> {
-                    binding.progressbar.toVisible()
-                    binding.submit.root.toGone()
-                    binding.animalInfo.root.toGone()
-                }
-                is HomeState.SuccessList -> {
-                    val month = Calendar.getInstance().get(Calendar.YEAR)
-                    val mainAnimal = it.infoList.first { animal -> animal.animalId == animalId }
-                    val animalMonth = mainAnimal.birthDay.split(".")[0].toInt()
-                    // 한 마리 일때는 변경 불가능
-                    when(it.infoList.size) {
-                        1 -> binding.animalInfo.change.isEnabled = false
-                        else -> {
-                            // 변경버튼 활성화하고, 리사이클러뷰에 데이터를 줌
-                            binding.animalInfo.change.isEnabled = true
-                            initAnimalCardViewButton(it.infoList)
+                        binding.progressbar.toGone()
+                        binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
+                        binding.animalInfo.root.toVisible()
+                        binding.animalInfo.animalName.text = mainAnimal.name
+                        binding.animalInfo.animalAge.text = (month - animalMonth).toString() + "살"
+                        binding.animalInfo.animalSex.text = mainAnimal.sex
+                        binding.animalInfo.writing.text = writing[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1]
+//                        binding.animalInfo.ivMember.load(mainAnimal.imageUrl)
+                        Glide.with(binding.animalInfo.ivMember).load(mainAnimal.imageUrl)
+                            .placeholder(R.drawable.add_screen_image_placeholder).into(binding.animalInfo.ivMember)
+                        binding.animalInfo.add.setOnClickListener {
+                            mainActivity.showFragment(SubmitAnimalFragment(), SubmitAnimalFragment.TAG)
                         }
-                    }
-                    binding.progressbar.toGone()
-                    binding.userTextView.text = String.format(resources.getString(R.string.hello), session)
-                    binding.animalInfo.root.toVisible()
-                    binding.animalInfo.animalName.text = mainAnimal.name
-                    binding.animalInfo.animalAge.text = (month - animalMonth).toString() + "살"
-                    binding.animalInfo.animalSex.text = mainAnimal.sex
-                    binding.animalInfo.writing.text = writing[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1]
-                    binding.animalInfo.ivMember.load(mainAnimal.imageUrl)
-                    binding.animalInfo.add.setOnClickListener {
-                        mainActivity.showFragment(SubmitAnimalFragment(), SubmitAnimalFragment.TAG)
                     }
                 }
             }
-        }
+//        }
     }
 
 
@@ -202,7 +210,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 // 누르면 동물아이디가 바뀜
                 Application.prefs.animalId = infoList[position].animalId
                 // 바뀐 화면으로 대체
-               mainActivity.showFragment(newInstance(), TAG)
+                mainActivity.showFragment(newInstance(), TAG)
             }
         })
     }
