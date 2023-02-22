@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +49,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, FragmentDiagnosisWritingBinding>() {
+class DiagnosisWritingFragment :
+    BaseFragment<DiagnosisWritingViewModel, FragmentDiagnosisWritingBinding>() {
     override val viewModel: DiagnosisWritingViewModel by viewModels()
     private var args: Bundle? = null
     private lateinit var loading: LoadingDialog
@@ -91,7 +93,8 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val bitmap = result.data?.extras?.get("data") as Bitmap
-                val file = bitmapToFile(bitmap, mainActivity.applicationContext.filesDir.path.toString())
+                val file =
+                    bitmapToFile(bitmap, mainActivity.applicationContext.filesDir.path.toString())
 
                 Glide.with(requireContext())
                     .load(bitmap)
@@ -101,11 +104,14 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
                 sendFile = file
             }
         }
-    override fun getViewBinding(): FragmentDiagnosisWritingBinding = FragmentDiagnosisWritingBinding.inflate(layoutInflater)
+
+    override fun getViewBinding(): FragmentDiagnosisWritingBinding =
+        FragmentDiagnosisWritingBinding.inflate(layoutInflater)
 
     override fun observeData() {
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -114,14 +120,16 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         args = arguments
         return super.onCreateView(inflater, container, savedInstanceState)
     }
+
     override fun initViews() {
         initShimmer()
         if (args?.get("flag") == 0) {
             initReadOnlyView()
-        } else if(args?.get("flag") == 1){
+        } else if (args?.get("flag") == 1) {
             initWritableView()
         }
     }
+
     @SuppressLint("SetTextI18n")
     private fun initReadOnlyView() = with(binding) {
         val content = args?.get("content")
@@ -148,10 +156,10 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
             isEnabled = false
             setText(content.toString())
         }
-        animalKindTextView.text = kind.toString()+", "
+        animalKindTextView.text = kind.toString() + ", "
         animalAffectedAreaTextView.text = affectedArea.toString()
         imageButtonImageSelect.load(imageUrl.toString())
-        if(comment.isEmpty()) {
+        if (comment.isEmpty()) {
             shimmerLayout2.toGone()
             shimmerLayout2.hideShimmer()
             feedbackTextView.toGone()
@@ -161,11 +169,11 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
             feedbackTextView.toVisible()
             shimmerLayout2.hideShimmer()
             // 정상 비정상 별 분기처리
-            when(comment) {
+            when (comment) {
                 // 비정상
                 "abnormal" -> {
                     // 동물 분류
-                    when(kind) {
+                    when (kind) {
                         "강아지" -> {
                             diagnosisListDog.root.toVisible()
                             feedbackTextView.text = getString(R.string.abnormal_dog)
@@ -183,7 +191,7 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
                 // 정상
                 "normal" -> {
                     // 동물 분류
-                    when(kind) {
+                    when (kind) {
                         "강아지" -> {
                             diagnosisListDog.root.toVisible()
                             feedbackTextView.text = getString(R.string.normal_dog)
@@ -213,31 +221,35 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         initSpinner()
         getToday()
     }
+
     private fun initTextState() = with(binding) {
-        editTextDescription.doOnTextChanged{ text, _, _, _ ->
+        editTextDescription.doOnTextChanged { text, _, _, _ ->
             initValidate(descriptionInputLayout)
             description = text.toString()
         }
     }
+
     private fun initButton() = with(binding) {
         imageButtonImageSelect.setOnClickListener {
             setOnImageButtonClickListener()
         }
         saveWriting.setOnClickListener {
-            if(checkValidation()) {
+            if (checkValidation()) {
                 diagnosisWriting = Diagnosis(description, date, "", kind, affectedArea)
-                if(!::sendFile.isInitialized) {
+                if (!::sendFile.isInitialized) {
                     requireContext().toast("이미지를 불러와 주십시오")
                 } else {
                     val fileName = sendFile.name
                     val requestFile = sendFile.asRequestBody("image/*".toMediaTypeOrNull())
-                    jsonDiagnosisWriting = Gson().toJson(diagnosisWriting).toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+                    jsonDiagnosisWriting = Gson().toJson(diagnosisWriting).toString()
+                        .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
                     body = MultipartBody.Part.createFormData("file", fileName, requestFile)
                     submitDiagnosisWriting(body, jsonDiagnosisWriting)
                 }
             }
         }
     }
+
     private fun initSpinner() = with(binding) {
         animalKind.toVisible()
         animalAffectedArea.toVisible()
@@ -246,32 +258,51 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         val spinnerKind = animalKind
         val spinnerAffectedArea = animalAffectedArea
         spinnerKind.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 kind = adapterView?.getItemAtPosition(position).toString()
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 kind = "강아지"
             }
         }
         spinnerAffectedArea.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 affectedArea = adapterView?.getItemAtPosition(position).toString()
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 affectedArea = "안구"
             }
         }
 
     }
+
     // 진단 기록 등록 -> 등록하면 서버에서 받고 진단 후 진단 피드백을 반환해야함
-    private fun submitDiagnosisWriting(body: MultipartBody.Part, jsonDiagnosisWriting: RequestBody) {
+    private fun submitDiagnosisWriting(
+        body: MultipartBody.Part,
+        jsonDiagnosisWriting: RequestBody
+    ) {
         viewModel.submitDiagnosisWriting(body, jsonDiagnosisWriting)
         viewModel.isSuccess.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is DiagnosisState.Success -> {
                     loading.dismiss()
                     requireContext().toast("진단 기록 등록이 완료되었습니다. 잠시 후에 결과를 확인해주세요.")
-                    mainActivity.showFragment(TabWritingFragment.newInstance(), TabWritingFragment.TAG)
+                    mainActivity.showFragment(
+                        TabWritingFragment.newInstance(),
+                        TabWritingFragment.TAG
+                    )
                 }
                 is DiagnosisState.Error -> {
                     // error code
@@ -285,8 +316,15 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
         }
 
     }
+
     private fun setOnImageButtonClickListener() =
-        setFancyDialog(requireContext(), mainActivity, permissionLauncher, getCameraImageLauncher, getGalleryImageLauncher).show()
+        setFancyDialog(
+            requireContext(),
+            mainActivity,
+            permissionLauncher,
+            getCameraImageLauncher,
+            getGalleryImageLauncher
+        ).show()
 
     private fun checkValidation(): Boolean {
         var check = true
@@ -298,6 +336,7 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
             return check
         }
     }
+
     private fun initDialog() {
         // 요청 취소
         loading.cancelButton().setOnClickListener {
@@ -309,78 +348,144 @@ class DiagnosisWritingFragment: BaseFragment<DiagnosisWritingViewModel, Fragment
             submitDiagnosisWriting(body, jsonDiagnosisWriting)
         }
     }
+
     private fun initShimmer() = with(binding) {
         shimmerLayout.hideShimmer()
     }
+
     @SuppressLint("SimpleDateFormat")
     private fun getToday() {
         val sdf = SimpleDateFormat("yyyy-MM-dd E요일")
         val cal = Calendar.getInstance().time
         date = sdf.format(cal).toString()
     }
+
     private fun setDogTextViewClickListener() = with(binding) {
         diagnosisListDog.cornealUlcer.setOnClickListener {
-            setDialogView(diagnosisListDog.cornealUlcer.text.toString(), R.drawable.dog_cornealulcer, R.string.cornealUlcerd)
+            setDialogView(
+                diagnosisListDog.cornealUlcer.text.toString(),
+                R.drawable.dog_cornealulcer,
+                R.string.cornealUlcerd
+            )
         }
         diagnosisListDog.blepharitis.setOnClickListener {
-            setDialogView(diagnosisListDog.blepharitis.text.toString(), R.drawable.dog_blepharitis, R.string.blepharitisd)
+            setDialogView(
+                diagnosisListDog.blepharitis.text.toString(),
+                R.drawable.dog_blepharitis,
+                R.string.blepharitisd
+            )
         }
         diagnosisListDog.Cataract.setOnClickListener {
-            setDialogView(diagnosisListDog.Cataract.text.toString(), R.drawable.dog_cataract, R.string.Cataract)
+            setDialogView(
+                diagnosisListDog.Cataract.text.toString(),
+                R.drawable.dog_cataract,
+                R.string.Cataract
+            )
         }
         diagnosisListDog.conjunctivitis.setOnClickListener {
-            setDialogView(diagnosisListDog.conjunctivitis.text.toString(), R.drawable.dog_conjunctivitis, R.string.conjunctivitisd)
+            setDialogView(
+                diagnosisListDog.conjunctivitis.text.toString(),
+                R.drawable.dog_conjunctivitis,
+                R.string.conjunctivitisd
+            )
         }
         diagnosisListDog.eyelidTumor.setOnClickListener {
-            setDialogView(diagnosisListDog.eyelidTumor.text.toString(), R.drawable.dog_eyelidtumor, R.string.eyelidTumor)
+            setDialogView(
+                diagnosisListDog.eyelidTumor.text.toString(),
+                R.drawable.dog_eyelidtumor,
+                R.string.eyelidTumor
+            )
         }
         diagnosisListDog.nuclearSclerosis.setOnClickListener {
-            setDialogView(diagnosisListDog.nuclearSclerosis.text.toString(), R.drawable.dog_nuclearsclerosis, R.string.nuclearSclerosis)
+            setDialogView(
+                diagnosisListDog.nuclearSclerosis.text.toString(),
+                R.drawable.dog_nuclearsclerosis,
+                R.string.nuclearSclerosis
+            )
         }
         diagnosisListDog.entropionOfTheEyelid.setOnClickListener {
-            setDialogView(diagnosisListDog.entropionOfTheEyelid.text.toString(), R.drawable.dog_entropionoftheeyelid, R.string.entropionOfTheEyelid)
+            setDialogView(
+                diagnosisListDog.entropionOfTheEyelid.text.toString(),
+                R.drawable.dog_entropionoftheeyelid,
+                R.string.entropionOfTheEyelid
+            )
         }
         diagnosisListDog.vitreousDuctility.setOnClickListener {
-            setDialogView(diagnosisListDog.vitreousDuctility.text.toString(), R.drawable.dog_vitreousductility, R.string.vitreousDuctility)
+            setDialogView(
+                diagnosisListDog.vitreousDuctility.text.toString(),
+                R.drawable.dog_vitreousductility,
+                R.string.vitreousDuctility
+            )
         }
         diagnosisListDog.mastopathy.setOnClickListener {
-            setDialogView(diagnosisListDog.mastopathy.text.toString(), R.drawable.dog_mastopathy, R.string.mastopathy)
+            setDialogView(
+                diagnosisListDog.mastopathy.text.toString(),
+                R.drawable.dog_mastopathy,
+                R.string.mastopathy
+            )
         }
         diagnosisListDog.pigmentedKeratitis.setOnClickListener {
-            setDialogView(diagnosisListDog.pigmentedKeratitis.text.toString(), R.drawable.dog_pigmentedkeratitis, R.string.pigmentedKeratitis)
+            setDialogView(
+                diagnosisListDog.pigmentedKeratitis.text.toString(),
+                R.drawable.dog_pigmentedkeratitis,
+                R.string.pigmentedKeratitis
+            )
         }
     }
 
     private fun setCatTextViewClickListener() = with(binding) {
         diagnosisListCat.cornealUlcer.setOnClickListener {
-            setDialogView(diagnosisListCat.cornealUlcer.text.toString(), R.drawable.cat_cornealulcer, R.string.cornealUlcerc)
+            setDialogView(
+                diagnosisListCat.cornealUlcer.text.toString(),
+                R.drawable.cat_cornealulcer,
+                R.string.cornealUlcerc
+            )
         }
         diagnosisListCat.blepharitis.setOnClickListener {
-            setDialogView(diagnosisListCat.blepharitis.text.toString(), R.drawable.cat_blepharitis, R.string.blepharitisc)
+            setDialogView(
+                diagnosisListCat.blepharitis.text.toString(),
+                R.drawable.cat_blepharitis,
+                R.string.blepharitisc
+            )
         }
         diagnosisListCat.conjunctivitis.setOnClickListener {
-            setDialogView(diagnosisListCat.conjunctivitis.text.toString(), R.drawable.cat_conjunctivitis, R.string.conjunctivitisc)
+            setDialogView(
+                diagnosisListCat.conjunctivitis.text.toString(),
+                R.drawable.cat_conjunctivitis,
+                R.string.conjunctivitisc
+            )
         }
         diagnosisListCat.felineCornealSequesration.setOnClickListener {
-            setDialogView(diagnosisListCat.felineCornealSequesration.text.toString(), R.drawable.cat_felinecornealsequesration, R.string.felineCornealSequesration)
+            setDialogView(
+                diagnosisListCat.felineCornealSequesration.text.toString(),
+                R.drawable.cat_felinecornealsequesration,
+                R.string.felineCornealSequesration
+            )
         }
     }
 
 
-    private fun setDialogView(message: String, @DrawableRes id: Int, @StringRes sId: Int) = with(binding){
-        dialog.initWithView(message, R.layout.dialog_diagnosis_info)
-        dialog.findViewById<ImageView>(R.id.diagnosisImageView).setImageResource(id)
-        dialog.findViewById<TextView>(R.id.diagnosisTextView).text = getString(sId)
-    }
+    private fun setDialogView(message: String, @DrawableRes id: Int, @StringRes sId: Int) =
+        with(binding) {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_diagnosis_info, null, false)
+//            val dialogGroup = dialogView as ViewGroup
+            dialog.initWithView(message, dialogView)
+            val imageView = dialogView.findViewById<ImageView>(R.id.diagnosisImageView)
+            val textView = dialogView.findViewById<TextView>(R.id.diagnosisInfoTextView)
+            imageView.setImageResource(id)
+            textView.setText(sId)
+        }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
+
     companion object {
         fun newInstance() = DiagnosisWritingFragment().apply {
 
         }
+
         const val TAG = "DIAGNOSIS_WRITING_FRAGMENT"
     }
 

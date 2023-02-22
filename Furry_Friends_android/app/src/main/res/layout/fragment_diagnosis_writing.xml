@@ -77,14 +77,16 @@
                         android:layout_margin="16dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp">
+
                         <ImageButton
                             android:id="@+id/imageButtonImageSelect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:contentDescription="uploadFile"
-                            android:background="@drawable/dash_line"
-                            android:src="@drawable/add_screen_image_placeholder"
                             android:scaleType="fitXY"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/dash_line"
+                            android:contentDescription="uploadFile"
+                            android:src="@drawable/add_screen_image_placeholder"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
@@ -259,7 +261,7 @@
                             android:id="@+id/feedbackTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="20dp"
+                            android:layout_margin="10dp"
                             tools:text="ext ever since the 1500s" />
                         <include
                             android:id="@+id/diagnosisListDog"

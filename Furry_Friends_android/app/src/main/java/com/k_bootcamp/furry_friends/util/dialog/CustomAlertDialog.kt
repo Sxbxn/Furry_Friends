@@ -22,7 +22,7 @@ class CustomAlertDialog(context: Context) : AlertDialog(context) {
         dialog.setCancelable(true)
         dialog.show()
     }
-    fun initWithView(title: String, viewId: Int){
+    fun initWithView(title: String, viewId: View){
 
         dialog = Builder(context, R.style.dialog)
             .setMessage(title)

@@ -99,6 +99,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         binding.dailyRecyclerView.showShimmer()
                     }
                     is TabWritingStatus.Error -> {
+                        loading.dismiss()
                         binding.dailyRecyclerView.toGone()
                         binding.infoTextView.toVisible()
                         showErrorMessage(it.message, binding)
@@ -142,7 +143,7 @@ class TabWritingFragment : BaseFragment<TabWritingViewModel, FragmentTabWritingB
                         binding.diagnosisRecyclerView.showShimmer()
                     }
                     is TabWritingStatus.Error -> {
-                        loading.setError()
+                        loading.dismiss()
                         binding.diagnosisRecyclerView.toGone()
                         binding.infoTextView.toVisible()
                         showErrorMessage(it.message, binding)
