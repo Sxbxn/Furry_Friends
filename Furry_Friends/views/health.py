@@ -13,7 +13,7 @@ from Furry_Friends.models import User, Animal, Health
 from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3
 from Furry_Friends.predict import padding, mk_img, predict_result
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
-from Furry_Friends.connect_xray import *
+from Furry_Friends.tf_loader import *
 
 bp = Blueprint('health', __name__, url_prefix='/health')
 
@@ -91,10 +91,6 @@ def record_factory():
                 # predict.py 함수로 전처리 후 모델 돌리기
                 # f 로 모델 돌려서 나온 값 db에 저장
 
-                # 서버 내 모델 저장 경로
-                cat_path = ".\Furry_Friends\\EYE_Model\\고양이_안구질환_DenseNet.h5"
-                dog_path = ".\Furry_Friends\\EYE_Model\\개_안구질환_DenseNet121.h5"
-
                 # s3에 이미지 업로드
                 filename = secure_filename(f.filename)
                 img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{filename}"
@@ -112,9 +108,9 @@ def record_factory():
                 
                 # 모델 결과 
                 if kind == "고양이":
-                    result = predict_result(cat_path, img)
+                    result = predict_result(m_cat_eye, img)
                 else:
-                    result = predict_result(dog_path, img)
+                    result = predict_result(m_dog_eye, img)
 
                 # 진단 결과
                 comment = result

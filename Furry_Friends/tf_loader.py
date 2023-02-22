@@ -1,5 +1,8 @@
 import tensorflow as tf
 
+m_dog_eye = tf.keras.models.load_model("Furry_Friends/EYE_Model/개_안구질환_DenseNet121.h5", compile = False)
+m_cat_eye = tf.keras.models.load_model("Furry_Friends/EYE_Model/고양이_안구질환_DenseNet.h5", compile = False)
+
 m_dog_ab01_lateral = tf.keras.models.load_model("Furry_Friends/XRAY_Model/dog_ab_lateral/dog_ab01_lateral.h5", compile = False)
 m_dog_ab02_lateral = tf.keras.models.load_model("Furry_Friends/XRAY_Model/dog_ab_lateral/dog_ab02_lateral.h5", compile = False)
 m_dog_ab04_lateral = tf.keras.models.load_model("Furry_Friends/XRAY_Model/dog_ab_lateral/dog_ab04_lateral.h5", compile = False)
