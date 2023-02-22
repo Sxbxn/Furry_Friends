@@ -10,10 +10,10 @@ import json
 
 from Furry_Friends.connect_db import db
 from Furry_Friends.models import User, Animal, Health
-from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3, get_xray
+from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3
 from Furry_Friends.predict import padding, mk_img, predict_result
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
-
+from Furry_Friends.connect_xray import *
 
 bp = Blueprint('health', __name__, url_prefix='/health')
 
@@ -190,7 +190,7 @@ def check():
 
                 dog_ab_vd_diseases = ["거대신장","복부종양","비뇨기결석","탈장","복수"]
 
-                results = get_xray(".\Furry_Friends\XRAY_Model\dog_ab_vd", img)
+                results = [predict_result(model, img) for model in m_dog_ab_VD]
                 json_results = dict(zip(dog_ab_vd_diseases, results))
                 
                 final_results = {}
@@ -203,7 +203,7 @@ def check():
 
                 dog_ab_lt_diseases = ["간비대", '소간증', '복부종양', '비뇨기결석', '장폐색', '거대결장', '탈장', '복수']
 
-                results = get_xray(".\Furry_Friends\XRAY_Model\dog_ab_lateral", img)
+                results = [predict_result(model, img) for model in m_dog_ab_lateral]
                 json_results = dict(zip(dog_ab_lt_diseases, results))
 
                 final_results = {}
@@ -218,7 +218,7 @@ def check():
                 
                 dog_ch_vd_diseases = ["종격동변위"]
 
-                results = get_xray(".\Furry_Friends\XRAY_Model\dog_ch_vd", img)
+                results = [predict_result(model, img) for model in m_dog_ch_VD]
                 json_results = dict(zip(dog_ch_vd_diseases, results))
                 
                 final_results = {}
@@ -231,7 +231,7 @@ def check():
                 
                 dog_ch_lt_diseases = ["심비대","기관허탈"]
 
-                results = get_xray(".\Furry_Friends\XRAY_Model\dog_ch_lt", img)
+                results = [predict_result(model, img) for model in m_dog_ch_lateral]
                 json_results = dict(zip(dog_ch_lt_diseases, results))
                 
                 final_results = {}
@@ -244,7 +244,7 @@ def check():
             # ap, 모델 3개
             dog_mu_ap_diseases = ["사지골절","엉덩관절탈구","슬개골탈구"]
 
-            results = get_xray(".\Furry_Friends\XRAY_Model\dog_mu_ap", img)
+            results = [predict_result(model, img) for model in m_dog_mu_ap]
             json_results = dict(zip(dog_mu_ap_diseases, results))
 
             final_results = {}
@@ -261,7 +261,7 @@ def check():
                 
                 cat_ab_vd_diseases = ["거대신장", "복부종양","비뇨기결석", "탈장", "복수"]
 
-                results = get_xray(".\Furry_Friends\XRAY_Model\cat_ab_vd", img)
+                results = [predict_result(model, img) for model in m_cat_ab_VD]
                 json_results = dict(zip(cat_ab_vd_diseases, results))
 
                 final_results = {}
@@ -275,7 +275,7 @@ def check():
                 
                 cat_ab_lt_diseases = ["간비대", "소간증", "복부종양", "비뇨기결석", "장폐색", "거대결장", "탈장", "복수"]
 
-                results = get_xray(".\Furry_Friends\XRAY_Model\cat_ab_lateral", img)
+                results = [predict_result(model, img) for model in m_cat_ab_lateral]
                 json_results = dict(zip(cat_ab_lt_diseases, results))
 
                 final_results = {}
@@ -288,7 +288,7 @@ def check():
                 
                 cat_ch_lt_diseases = ["심비대"]
 
-                results = get_xray(".\Furry_Friends\XRAY_Model\cat_ch_lateral", img)
+                results = [predict_result(model, img) for model in m_cat_ch_lateral]
                 json_results = dict(zip(cat_ch_lt_diseases, results))
 
                 final_results = {}

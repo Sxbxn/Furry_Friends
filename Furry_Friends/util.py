@@ -73,9 +73,9 @@ def get_user_info():
         return user_id, animal_id
 
 
-def get_xray(path, img):
-    models_lst = os.listdir(path)
-    model_paths = [path + '\\' + model for model in models_lst]
-    results = [predict_result(path, img) for path in model_paths]
+# def get_xray(path, img):
+#     models_lst = os.listdir(path)
+#     model_paths = [path + '\\' + model for model in models_lst]
+#     results = [predict_result(path, img) for path in model_paths]
 
-    return results
+#     return results

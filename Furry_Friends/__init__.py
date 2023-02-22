@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, session, g, request
+from flask import Flask, render_template
 from Furry_Friends.connect_db import db
 from Furry_Friends.connect_session import sess
 from flask_migrate import Migrate

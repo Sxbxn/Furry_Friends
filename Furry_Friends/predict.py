@@ -31,6 +31,7 @@ def mk_img(img_path):
     np_img = np.expand_dims(np_img, axis = 0)
     return np_img
 
+"""
 def predict_result(model_path, img):
     model = tf.keras.models.load_model(model_path, compile = False)
     result = model.predict(img)
@@ -39,6 +40,17 @@ def predict_result(model_path, img):
     else:
         str_result = "normal"
     return str_result
+"""
+
+def predict_result(model, img):
+    # model = tf.keras.models.load_model(model_path, compile = False)
+    result = model.predict(img)
+    if result > 0.5:
+        str_result = "abnormal"
+    else:
+        str_result = "normal"
+    return str_result
+
 
     """path_list = []
         img_path = "C:/venvs/testproject/Scripts/png"
