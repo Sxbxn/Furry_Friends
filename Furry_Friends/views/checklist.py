@@ -1,9 +1,9 @@
-from flask import session, request, jsonify, redirect, Blueprint, url_for
+from flask import session, request, jsonify, Blueprint
 from sqlalchemy import and_
 
 from Furry_Friends.util import query_to_dict
 from Furry_Friends.models import Animal, Routine, ChecklistDefault, ChecklistRoutine
-from Furry_Friends.connect_db import db
+from Furry_Friends.connector import db
 
 
 bp = Blueprint('checklist', __name__, url_prefix='/check')

@@ -1,14 +1,13 @@
-from flask import request, jsonify, session, Blueprint, url_for, redirect, g
+from flask import request, jsonify, session, Blueprint
 from werkzeug.utils import secure_filename
 import os
 from sqlalchemy import and_
-import boto3
 import json
 
 
 from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3, int_to_bool
-from Furry_Friends.connect_session import sess
-from Furry_Friends.connect_db import db
+from Furry_Friends.connector import sess
+from Furry_Friends.connector import db
 from Furry_Friends.models import User, Animal
 from config import AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY
 
@@ -27,7 +26,6 @@ def management():
 
     print(asd)
     user_id = request.cookies.get('login')
-    test = request.cookies.get('session')
 
     # 해당 아이디로 등록한 동물 전부
     if asd['login'] == req:
@@ -36,16 +34,6 @@ def management():
         animal_list = query_to_dict(animal_list)
 
         if animal_list == []:
-
-            # resp = {"user_id":session['login'],
-            #             "animal_id":-999,
-            #             "animal_name":"",
-            #             "bday":"",
-            #             "sex":"",
-            #             "neutered":"",
-            #             "weight":0.0,
-            #             "image":""}
-
             return jsonify([])
         
         else:
@@ -63,10 +51,8 @@ def management():
 def profile():
     
     user_id = request.cookies.get('login')
-    test = request.cookies.get('session')
 
     print(user_id)
-    print(test)
 
     if user_id:
 
@@ -177,10 +163,10 @@ def pet_delete():
 
             # db에서 animal 삭제
             db.session.delete(animal)
-            
             db.session.commit()
 
             animal = Animal.query.filter_by(user_id = asd['login']).first()
+
             if animal is None:
                 resp = {"user_id": asd['login'],
                         "animal_id":-999,
@@ -194,9 +180,8 @@ def pet_delete():
                 return jsonify(resp)
             else:
                 animal = query_to_dict(animal)
-
                 int_to_bool(animal)
-                
+
                 return jsonify(animal)
 
         except:

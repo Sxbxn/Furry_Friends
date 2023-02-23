@@ -1,6 +1,5 @@
 from flask import Flask, render_template
-from Furry_Friends.connect_db import db
-from Furry_Friends.connect_session import sess
+from Furry_Friends.connector import db, sess
 from flask_migrate import Migrate
 from flask_session import Session
 import config

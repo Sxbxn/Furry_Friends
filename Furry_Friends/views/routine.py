@@ -3,7 +3,7 @@ from sqlalchemy import and_
 
 from Furry_Friends.util import query_to_dict, to_weekday
 from Furry_Friends.models import User, Animal, Routine
-from Furry_Friends.connect_db import db
+from Furry_Friends.connector import db
 
 
 bp = Blueprint('routine', __name__, url_prefix='/routine')
