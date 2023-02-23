@@ -1,9 +1,6 @@
 package com.k_bootcamp.furry_friends.data.repository.user
 
-import com.k_bootcamp.furry_friends.data.response.animal.AnimalResponse
 import com.k_bootcamp.furry_friends.data.response.user.LoginResponse
-import com.k_bootcamp.furry_friends.data.response.user.Session
-import com.k_bootcamp.furry_friends.data.response.user.SignInResponse
 import com.k_bootcamp.furry_friends.data.service.UserService
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.model.user.SignInUser
