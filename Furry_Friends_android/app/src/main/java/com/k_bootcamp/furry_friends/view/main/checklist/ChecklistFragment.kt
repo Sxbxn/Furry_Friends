@@ -124,10 +124,16 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         binding.shimmerLayout.hideShimmer()
                         binding.noteCardView.toVisible()
                         binding.recyclerView.toVisible()
-                        if(it.response.checklistDefault != null) {
-                            initReadOnlyView(it.response.checklistDefault)
-                            if(it.response.checklistRoutine != null)
-                                initRecyclerViewReadOnly(it.response.checklistRoutine)
+                        val default = it.response.checklistDefault
+                        val routines = it.response.checklistRoutine
+                        if(default != null) {
+                            initReadOnlyView(default)
+                            if(routines != null) {
+                                initRecyclerViewReadOnly(routines)
+                            } else {
+                                binding.infoTextView.toVisible()
+                                binding.infoTextView.text = "오늘은 설정된 루틴이 없어요 :)"
+                            }
                         } else {
                             binding.noteCardView.toGone()
                             binding.infoTextView.toVisible()

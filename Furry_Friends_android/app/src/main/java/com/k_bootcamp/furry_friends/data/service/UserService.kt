@@ -8,11 +8,10 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface UserService {
-    // 로그인  -- 추후 반환값 확인 *****
+    // 로그인
     @POST("/auth/login")
     suspend fun loginUser(
         @Body user: LoginUser
-//    ): Response<AnimalResponse>
     ):Response<LoginResponse>
 
     // 정보가져오기---- 안 쓸 듯
