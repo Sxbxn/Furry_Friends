@@ -94,8 +94,10 @@ class RoutineViewModel @Inject constructor(
                             routines
                         )
                     )
-                    // 할 필요가 있나?  동기화해야하나??
-//                    getRoutinesFromId()
+                    // 할 필요가 있나?  동기화해야하나?? --> 로그아웃만 잘해주면됨
+//                    if (existRoutines.isNotEmpty()) {
+//                        getRoutinesFromId()
+//                    }
                 }
             }
         }
@@ -106,35 +108,92 @@ class RoutineViewModel @Inject constructor(
         _routineLiveData.postValue(RoutineState.Loading)
         viewModelScope.launch(ioDispatcher) {
             // 전부 가져와서 id로 필터링한 다음에 동기화
-            val routines = animalRepository.getAllRoutinesByAnimalId()?.filter { it.animalId == animalId }
+            val routines =
+                animalRepository.getAllRoutinesByAnimalId()?.filter { it.animalId == animalId }
             routines?.forEach {
-                when(it.weekDay) {
-                    "mon"-> {
+                when (it.weekDay) {
+                    "월요일" -> {
+                        val routine = Routine(
+                            animal_id = it.animalId,
+                            routineName = it.routineName,
+                            session = session!!,
+                            isOn = false,
+                            mon = true
+                        )
                         routineDao.updateMonday(true, animalId, it.routineName)
-                        // 알람 재설정?
+                        animalRepository.insertRoutine(routine)
                     }
-                    "tue"-> { routineDao.updateTuesday(true, animalId, it.routineName) }
-                    "wed"-> { routineDao.updateWednesday(true, animalId, it.routineName) }
-                    "thu"-> { routineDao.updateThursday(true, animalId, it.routineName) }
-                    "fri"-> { routineDao.updateFriday(true, animalId, it.routineName) }
-                    "sat"-> { routineDao.updateSaturday(true, animalId, it.routineName) }
-                    "sun"-> { routineDao.updateSunday(true, animalId, it.routineName) }
+
+                    "화요일" -> {
+                        val routine = Routine(
+                            animal_id = it.animalId,
+                            routineName = it.routineName,
+                            session = session!!,
+                            isOn = false,
+                            tue = true
+                        )
+                        routineDao.updateTuesday(true, animalId, it.routineName)
+                        animalRepository.insertRoutine(routine)
+                    }
+                    "수요일" -> {
+                        val routine = Routine(
+                            animal_id = it.animalId,
+                            routineName = it.routineName,
+                            session = session!!,
+                            isOn = false,
+                            wed = true
+                        )
+                        routineDao.updateWednesday(true, animalId, it.routineName)
+                        animalRepository.insertRoutine(routine)
+                    }
+                    "목요일" -> {
+                        val routine = Routine(
+                            animal_id = it.animalId,
+                            routineName = it.routineName,
+                            session = session!!,
+                            isOn = false,
+                            thu = true
+                        )
+                        routineDao.updateThursday(true, animalId, it.routineName)
+                        animalRepository.insertRoutine(routine)
+                    }
+                    "금요일" -> {
+                        val routine = Routine(
+                            animal_id = it.animalId,
+                            routineName = it.routineName,
+                            session = session!!,
+                            isOn = false,
+                            fri = true
+                        )
+                        routineDao.updateFriday(true, animalId, it.routineName)
+                        animalRepository.insertRoutine(routine)
+                    }
+                    "토요일" -> {
+                        val routine = Routine(
+                            animal_id = it.animalId,
+                            routineName = it.routineName,
+                            session = session!!,
+                            isOn = false,
+                            sat = true
+                        )
+                        routineDao.updateSaturday(true, animalId, it.routineName)
+                        animalRepository.insertRoutine(routine)
+                    }
+                    "일요일" -> {
+                        val routine = Routine(
+                            animal_id = it.animalId,
+                            routineName = it.routineName,
+                            session = session!!,
+                            isOn = false,
+                            sun = true
+                        )
+                        routineDao.updateSunday(true, animalId, it.routineName)
+                        animalRepository.insertRoutine(routine)
+                    }
                 }
             }
-
-//            val routines = animalRepository.getRoutinesFromIdByServer()
-//            routines?.forEach {
-//                animalRepository.insertRoutine(
-//                    Routine(
-//                        animalId = it.animalId,
-//                        routineName = it.routineName,
-//                        session = session!!,
-//                        isOn = false
-//                    )
-//                )
-//            }
-//            val updatedRoutines = animalRepository.getRoutinesFromId(animalId)
-//            _routineLiveData.postValue(RoutineState.Success(animalId, session!!, updatedRoutines))
+            val updatedRoutines = animalRepository.getRoutinesFromId(animalId)
+            _routineLiveData.postValue(RoutineState.Success(animalId, session!!, updatedRoutines))
         }
     }
 
@@ -147,13 +206,13 @@ class RoutineViewModel @Inject constructor(
                 var flag = true
                 // 추가 할 때 루틴이 존재하는 지 확인하고 없으면 넣음  to-do
                 val routines = routineDao.getRoutineFromId(animalId)
-                for(i in routines.indices) {
-                    if(routines[i].routineName == routineName) {
+                for (i in routines.indices) {
+                    if (routines[i].routineName == routineName) {
                         flag = false
                         break
                     }
                 }
-                if(flag) {
+                if (flag) {
                     animalRepository.insertRoutine(
                         Routine(
                             animal_id = animalId,
@@ -178,7 +237,7 @@ class RoutineViewModel @Inject constructor(
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun setAlarm(routine:Routine, time: String?){
+    fun setAlarm(routine: Routine, time: String?) {
         initManager()
         cancelAlarm(routine.routineId)
         val mon = routine.mon
@@ -198,13 +257,18 @@ class RoutineViewModel @Inject constructor(
         val bundle = Bundle()
         bundle.putParcelable("registerRoutine", routine)
         bundle.putBooleanArray("dayOfWeek", weekStatus)
-        receiverIntent.putExtra("bundle",bundle)
+        receiverIntent.putExtra("bundle", bundle)
 
-        val pendingIntent = PendingIntent.getBroadcast(context, routine.routineId, receiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            routine.routineId,
+            receiverIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
         // 특정 시간
         val cal = Calendar.getInstance()
-        if(time != "00:00" && time != null) {
+        if (time != "00:00" && time != null) {
             val hourMinute = time.split(":")
             cal.set(Calendar.HOUR_OF_DAY, hourMinute[0].toInt())
             cal.set(Calendar.MINUTE, hourMinute[1].toInt())
@@ -221,31 +285,12 @@ class RoutineViewModel @Inject constructor(
         val currentTime: Long = System.currentTimeMillis()
 
         //만약 설정한 시간이, 현재 시간보다 작다면 알람이 부정확하게 울리기 때문에 다음주 울리게 설정
-        if(currentTime > selectTime){
+        if (currentTime > selectTime) {
             selectTime += intervalDay
         }
 
-        // 다시 조정해보기
-//        cal[Calendar.SECOND] = cal[Calendar.SECOND] + 3 // 10초 뒤
-
-//       fromList.forEach{ from ->
-//            try {
-//                datetime = dateFormat.parse(from)
-//            } catch (e: ParseException) {
-//                e.printStackTrace()
-//            }
-//
-//            val calendar: Calendar = Calendar.getInstance()
-//
-//
-//            calendar.time = datetime
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, selectTime, intervalDay, pendingIntent)
-//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, selectTime, intervalDay, pendingIntent)
         Log.e("selectTime", selectTime.toString())
-
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pendingIntent)
-//        alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, selectTime, pendingIntent)
-//        }
     }
 
     fun cancelAlarm(routineId: Int) {

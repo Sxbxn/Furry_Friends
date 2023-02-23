@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.viewModels
 import androidx.core.widget.doOnTextChanged
-import com.fc.baeminclone.screen.base.BaseActivity
+import com.k_bootcamp.furry_friends.view.base.BaseActivity
 import com.k_bootcamp.Application
 import com.k_bootcamp.furry_friends.databinding.ActivityLogInBinding
 import com.k_bootcamp.furry_friends.extension.appearSnackBar
-import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.user.LoginUser
 import com.k_bootcamp.furry_friends.util.etc.*
 import com.k_bootcamp.furry_friends.view.MainActivity

@@ -212,15 +212,12 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 ) {
                     permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 } else {
-                    Log.e("pushed","pushed!")
                     flag = "ai"
                     setAiFancyDialog(requireContext()) {
                         loading.setVisible()
                         CoroutineScope(Dispatchers.IO).launch {
-                            Log.e("imageUrl", imageUrl.toString())
                             val file = viewModel.getFile(imageUrl)
                             val fileName = file.name
-                            Log.e("ai file",fileName)
                             val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
                             body = MultipartBody.Part.createFormData("file", fileName, requestFile)
                         }
@@ -228,7 +225,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                             // url ?? image file ??
                             Log.e("ai body", body.toString())
                             profileScoping(body)
-                        }, 4000)
+                        }, 2000)
                     }.show()
                 }
             }
@@ -423,11 +420,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                         body = MultipartBody.Part.createFormData("file", fileName, requestFile)
                         updateAnimalProfile(body, jsonUpdateProfile)
                         d.dismiss()
-                        // 둘 중 하나 - 다시 프래그먼트 띄우던지, 데이터만 다시 보던지
-                        mainActivity.showFragment(
-                            newInstance(),
-                            TAG
-                        )
                     }
                 }
                 // 중요 !! 다이얼로그 뷰를 지워주지 않으면 뷰가 중첩되어 에러가 발생함  -> 어쩔 수 없이 findViewById 써야함
@@ -441,6 +433,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         viewModel.isSuccess.observe(viewLifecycleOwner) {
             when(it) {
                 is SettingState.Error -> {
+                    loading.dismiss()
                     loading.setError()
                 }
                 is SettingState.Loading -> {
@@ -449,8 +442,9 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 is SettingState.Success -> {
                     loading.dismiss()
                     requireContext().toast("수정이 완료되었습니다.")
+                    observeData()
                 }
-                is SettingState.SuccessGetInfo -> {}
+                is SettingState.SuccessGetInfo -> { loading.dismiss() }
             }
         }
     }
@@ -604,7 +598,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     private fun backToLoginActivity() {
-        requireContext().toast("로그인 창으로 돌아갑니다.")
+        requireContext().toast("로그인 화면으로 돌아갑니다.")
         mainActivity.startActivity(LoginActivity.newIntent(requireContext()).apply {
             addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

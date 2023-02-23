@@ -230,6 +230,7 @@ class DailyWritingFragment : BaseFragment<DailyWritingViewModel, FragmentDayWrit
                     )
                 }
                 is DailyState.Error -> {
+                    loading.dismiss()
                     // error code
                     loading.setError()
                 }

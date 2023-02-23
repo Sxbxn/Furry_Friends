@@ -1,9 +1,8 @@
-package com.fc.baeminclone.screen.base
+package com.k_bootcamp.furry_friends.view.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.k_bootcamp.furry_friends.view.base.BaseViewModel
 import kotlinx.coroutines.Job
 
 // 액티비티에 상속을 주기위한 틀 (추상화)

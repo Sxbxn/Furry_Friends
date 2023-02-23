@@ -25,14 +25,14 @@ fun setFancyDialog(
         .setMessage("사진 가져올 곳을 선택해주세요")
         .setPositiveBtnText("카메라")
         .onPositiveClicked {
-            it.dismiss()
             getCameraImage(mainActivity, permissionLauncher, getCameraImageLauncher)
+            it.dismiss()
         }
         .setPositiveBtnBackgroundRes(R.color.main_color)
         .setNegativeBtnText("갤러리")
         .onNegativeClicked {
-            it.dismiss()
             getGalleryImage(mainActivity, permissionLauncher, getGalleryImageLauncher)
+            it.dismiss()
         }
         .setNegativeBtnBackgroundRes(R.color.main_color)
         .isCancellable(true)
@@ -48,8 +48,8 @@ fun setAiFancyDialog(context: Context, runAiProfile:() -> Unit): FancyAlertDialo
         .setMessage("AI가 표현한 반려동물을 만나보세요")
         .setPositiveBtnText("네!")
         .onPositiveClicked {
-            it.dismiss()
             runAiProfile()
+            it.dismiss()
         }
         .setPositiveBtnBackgroundRes(R.color.main_color)
         .setNegativeBtnText("다음에..")

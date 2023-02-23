@@ -124,9 +124,10 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                         binding.shimmerLayout.hideShimmer()
                         binding.noteCardView.toVisible()
                         binding.recyclerView.toVisible()
-                        if(it.response.checklistDefault != null && it.response.checklistRoutine != null) {
+                        if(it.response.checklistDefault != null) {
                             initReadOnlyView(it.response.checklistDefault)
-                            initRecyclerViewReadOnly(it.response.checklistRoutine)
+                            if(it.response.checklistRoutine != null)
+                                initRecyclerViewReadOnly(it.response.checklistRoutine)
                         } else {
                             binding.noteCardView.toGone()
                             binding.infoTextView.toVisible()
@@ -238,10 +239,10 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
                 flag = 1
                 // routineStatusList가 백그라운드에서 돌아 여기가 먼저 실행되기에 강제로 딜레이시켜서 초기화된 상태를 받아오게함
                 Handler(Looper.getMainLooper()).postDelayed({
-//                    val list = date.split("-").toMutableList()
-//                    if(list[1].length == 1)
-//                        list[1] = "0" + list[1]
-//                    date = list.joinToString("-")
+                    val list = date.split("-").toMutableList()
+                    if(list[1].length == 1)
+                        list[1] = "0" + list[1]
+                    date = list.joinToString("-")
                     checkList = CheckList(date, eatQuantityStr, poobStatusStr, other, routineStatusList)
                     submitCheckList(checkList)
                 }, 300)
