@@ -40,6 +40,7 @@ import com.k_bootcamp.furry_friends.databinding.FragmentSettingBinding
 import com.k_bootcamp.furry_friends.extension.*
 import com.k_bootcamp.furry_friends.extension.toast
 import com.k_bootcamp.furry_friends.model.animal.Animal
+import com.k_bootcamp.furry_friends.util.dialog.CustomAlertDialog
 import com.k_bootcamp.furry_friends.util.dialog.setAiFancyDialog
 import com.k_bootcamp.furry_friends.util.dialog.setFancyDialog
 import com.k_bootcamp.furry_friends.util.dialog.setWithDrawUser
@@ -63,6 +64,7 @@ import java.util.*
 class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>() {
     override val viewModel: SettingViewModel by viewModels()
     private lateinit var loading: LoadingDialog
+    private lateinit var dialog: CustomAlertDialog
     private val session = Application.prefs.session
     private val animalId = Application.prefs.animalId
     // 이미지 링크를 파일로 바꿔줌
@@ -195,6 +197,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     override fun initViews() {
         loading = LoadingDialog(requireContext())
+        dialog = CustomAlertDialog(requireContext())
         initDialog()
         initSettings()
         initUpdateButton()
@@ -272,45 +275,50 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             deleteProfile.isFocusable = false
         } else {
             logout.setOnClickListener {
-                viewModel.logout()
-                viewModel.isSuccess.observe(viewLifecycleOwner) {
-                    when(it) {
-                        is SettingState.Error -> {
-                            loading.setError()
-                            requireContext().toast("로그아웃 실패")
+                dialog.init("로그아웃 하시겠습니까?", "예", "아니오") {
+                    viewModel.logout()
+                    viewModel.isSuccess.observe(viewLifecycleOwner) {
+                        when(it) {
+                            is SettingState.Error -> {
+                                loading.setError()
+                                requireContext().toast("로그아웃 실패")
+                            }
+                            is SettingState.Loading -> {
+                                loading.setVisible()
+                            }
+                            is SettingState.Success -> {
+                                loading.dismiss()
+                                backToLoginActivity()
+                            }
+                            is SettingState.SuccessGetInfo -> {}
                         }
-                        is SettingState.Loading -> {
-                            loading.setVisible()
-                        }
-                        is SettingState.Success -> {
-                            loading.dismiss()
-                            backToLoginActivity()
-                        }
-                        is SettingState.SuccessGetInfo -> {}
                     }
                 }
             }
+
             withdrawUser.setOnClickListener {
                 reallyWithDrawUser()
             }
             deleteProfile.setOnClickListener {
-                viewModel.deleteProfile()
-                viewModel.isSuccess.observe(viewLifecycleOwner) {
-                    when(it) {
-                        is SettingState.Error -> {
-                            loading.setError()
-                            requireContext().toast("프로필 삭제 실패")
+                dialog.init("동물 프로필을 삭제 하시겠습니까?", "예", "아니오") {
+                    viewModel.deleteProfile()
+                    viewModel.isSuccess.observe(viewLifecycleOwner) {
+                        when (it) {
+                            is SettingState.Error -> {
+                                loading.setError()
+                                requireContext().toast("프로필 삭제 실패")
+                            }
+                            is SettingState.Loading -> {
+                                loading.setVisible()
+                            }
+                            is SettingState.Success -> {
+                                loading.dismiss()
+                                Application.prefs.animalId = it.response.toInt()
+                                requireContext().toast("프로필 삭제에 성공하였습니다.")
+                                observeData()
+                            }
+                            is SettingState.SuccessGetInfo -> {}
                         }
-                        is SettingState.Loading -> {
-                            loading.setVisible()
-                        }
-                        is SettingState.Success -> {
-                            loading.dismiss()
-                            Application.prefs.animalId = it.response.toInt()
-                            requireContext().toast("프로필 삭제에 성공하였습니다.")
-                            observeData()
-                        }
-                        is SettingState.SuccessGetInfo -> {}
                     }
                 }
             }
@@ -340,7 +348,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                     is SettingState.SuccessGetInfo -> {}
                 }
             }
-        }
+        }.show()
     }
 
     private fun initDialog() {

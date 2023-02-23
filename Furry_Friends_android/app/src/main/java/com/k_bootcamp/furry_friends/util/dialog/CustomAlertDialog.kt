@@ -12,10 +12,10 @@ class CustomAlertDialog(context: Context) : AlertDialog(context) {
 
     private lateinit var dialog: AlertDialog
 
-    fun init(title: String, positiveText: String, negativeText: String) {
+    fun init(title: String, positiveText: String, negativeText: String, run:() -> Unit) {
         dialog = Builder(context, R.style.dialog)
             .setMessage(title)
-            .setPositiveButton(positiveText) { _, _ -> }
+            .setPositiveButton(positiveText) { _, _ -> run() }
             .setNegativeButton(negativeText) { _, _ -> }
             .create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
