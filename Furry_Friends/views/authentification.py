@@ -3,6 +3,7 @@ from sqlalchemy import and_
 import json
 from sqlalchemy import and_
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3, int_to_bool
 from Furry_Friends.models import User, Animal
@@ -92,9 +93,10 @@ def login():
                 animal['vet'] = user.vet
 
                 animal = int_to_bool(animal)
-
                 resp = make_response(jsonify(animal))
-                resp.set_cookie('login', user_id)
+
+                expire_date = datetime.datetime.now() + datetime.datetime.timedelta(days=90)
+                resp.set_cookie('login', user_id, expires=expire_date)
 
                 return resp
 
@@ -111,7 +113,9 @@ def login():
                         "vet": user.vet}
                 
                 resp = make_response(jsonify(obj))
-                resp.set_cookie('login', user_id)
+
+                expire_date = datetime.datetime.now() + datetime.datetime.timedelta(days=90)
+                resp.set_cookie('login', user_id, expires=expire_date)
 
                 return resp
             
