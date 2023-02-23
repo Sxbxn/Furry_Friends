@@ -45,11 +45,12 @@ def predict_result(model_path, img):
 def predict_result(model, img):
     # model = tf.keras.models.load_model(model_path, compile = False)
     result = model.predict(img)
+    f_result = float(result)
     if result > 0.5:
         str_result = "abnormal"
     else:
         str_result = "normal"
-    return str_result
+    return f_result, str_result
 
 
     """path_list = []

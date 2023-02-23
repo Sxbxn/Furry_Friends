@@ -108,12 +108,12 @@ def record_factory():
                 
                 # 모델 결과 
                 if kind == "고양이":
-                    result = predict_result(m_cat_eye, img)
+                    f_result, str_result = predict_result(m_cat_eye, img)
                 else:
-                    result = predict_result(m_dog_eye, img)
+                    f_result, str_result = predict_result(m_dog_eye, img)
 
                 # 진단 결과
-                comment = result
+                comment = str_result
 
                 content = record['content'] # 사용자 입력 사항
                 
@@ -122,7 +122,7 @@ def record_factory():
                 db.session.add(new_record)
                 db.session.commit()
 
-                return f"{result}"
+                return f"{str_result}"
             else:
                 return "error - no image to diagnose"
 
@@ -186,11 +186,20 @@ def check():
 
                 dog_ab_vd_diseases = ["거대신장","복부종양","비뇨기결석","탈장","복수"]
 
-                results = [predict_result(model, img) for model in m_dog_ab_VD]
-                json_results = dict(zip(dog_ab_vd_diseases, results))
+                # results = [predict_result(model, img) for model in m_dog_ab_VD]
+
+                container = []
+                for model in m_dog_ab_VD:
+                    lst = []
+                    f_result, str_result = predict_result(model, img)
+                    lst.append(str_result)
+                    lst.append(round(f_result*100, 2))
+                    container.append(lst)
+
+                results = dict(zip(dog_ab_vd_diseases, container))
                 
                 final_results = {}
-                final_results['diseases'] = json_results
+                final_results['diseases'] = results
                 final_results['image'] = img_url
 
                 return jsonify(final_results)
@@ -199,14 +208,22 @@ def check():
 
                 dog_ab_lt_diseases = ["간비대", '소간증', '복부종양', '비뇨기결석', '장폐색', '거대결장', '탈장', '복수']
 
-                results = [predict_result(model, img) for model in m_dog_ab_lateral]
-                json_results = dict(zip(dog_ab_lt_diseases, results))
+                # results = [predict_result(model, img) for model in m_dog_ab_lateral]
 
+                container = []
+                for model in m_dog_ab_lateral:
+                    lst = []
+                    f_result, str_result = predict_result(model, img)
+                    lst.append(str_result)
+                    lst.append(round(f_result*100, 2))
+                    container.append(lst)
+
+                results = dict(zip(dog_ab_lt_diseases, container))
+                
                 final_results = {}
-                final_results['diseases'] = json_results
+                final_results['diseases'] = results
                 final_results['image'] = img_url
 
-                print(final_results)
                 return jsonify(final_results)
 
         elif affected_area == "ch": # 흉부
@@ -214,11 +231,20 @@ def check():
                 
                 dog_ch_vd_diseases = ["종격동변위"]
 
-                results = [predict_result(model, img) for model in m_dog_ch_VD]
-                json_results = dict(zip(dog_ch_vd_diseases, results))
+                # results = [predict_result(model, img) for model in m_dog_ch_VD]
+
+                container = []
+                for model in m_dog_ch_VD:
+                    lst = []
+                    f_result, str_result = predict_result(model, img)
+                    lst.append(str_result)
+                    lst.append(round(f_result*100, 2))
+                    container.append(lst)
+
+                results = dict(zip(dog_ch_vd_diseases, container))
                 
                 final_results = {}
-                final_results['diseases'] = json_results
+                final_results['diseases'] = results
                 final_results['image'] = img_url
 
                 return jsonify(final_results)
@@ -227,11 +253,19 @@ def check():
                 
                 dog_ch_lt_diseases = ["심비대","기관허탈"]
 
-                results = [predict_result(model, img) for model in m_dog_ch_lateral]
-                json_results = dict(zip(dog_ch_lt_diseases, results))
+                # results = [predict_result(model, img) for model in m_dog_ch_lateral]
+                container = []
+                for model in m_dog_ch_lateral:
+                    lst = []
+                    f_result, str_result = predict_result(model, img)
+                    lst.append(str_result)
+                    lst.append(round(f_result*100, 2))
+                    container.append(lst)
+
+                results = dict(zip(dog_ch_lt_diseases, container))
                 
                 final_results = {}
-                final_results['diseases'] = json_results
+                final_results['diseases'] = results
                 final_results['image'] = img_url
 
                 return jsonify(final_results)
@@ -240,11 +274,19 @@ def check():
             # ap, 모델 3개
             dog_mu_ap_diseases = ["사지골절","엉덩관절탈구","슬개골탈구"]
 
-            results = [predict_result(model, img) for model in m_dog_mu_ap]
-            json_results = dict(zip(dog_mu_ap_diseases, results))
+            # results = [predict_result(model, img) for model in m_dog_mu_ap]
+            container = []
+            for model in m_dog_mu_ap:
+                lst = []
+                f_result, str_result = predict_result(model, img)
+                lst.append(str_result)
+                lst.append(round(f_result*100, 2))
+                container.append(lst)
 
+            results = dict(zip(dog_mu_ap_diseases, container))
+            
             final_results = {}
-            final_results['diseases'] = json_results
+            final_results['diseases'] = results
             final_results['image'] = img_url
 
             return jsonify(final_results)
@@ -257,11 +299,19 @@ def check():
                 
                 cat_ab_vd_diseases = ["거대신장", "복부종양","비뇨기결석", "탈장", "복수"]
 
-                results = [predict_result(model, img) for model in m_cat_ab_VD]
-                json_results = dict(zip(cat_ab_vd_diseases, results))
+                # results = [predict_result(model, img) for model in m_cat_ab_VD]
+                container = []
+                for model in m_cat_ab_VD:
+                    lst = []
+                    f_result, str_result = predict_result(model, img)
+                    lst.append(str_result)
+                    lst.append(round(f_result*100, 2))
+                    container.append(lst)
 
+                results = dict(zip(cat_ab_vd_diseases, container))
+                
                 final_results = {}
-                final_results['diseases'] = json_results
+                final_results['diseases'] = results
                 final_results['image'] = img_url
 
                 return jsonify(final_results)
@@ -271,11 +321,19 @@ def check():
                 
                 cat_ab_lt_diseases = ["간비대", "소간증", "복부종양", "비뇨기결석", "장폐색", "거대결장", "탈장", "복수"]
 
-                results = [predict_result(model, img) for model in m_cat_ab_lateral]
-                json_results = dict(zip(cat_ab_lt_diseases, results))
+                # results = [predict_result(model, img) for model in m_cat_ab_lateral]
+                container = []
+                for model in m_cat_ab_lateral:
+                    lst = []
+                    f_result, str_result = predict_result(model, img)
+                    lst.append(str_result)
+                    lst.append(round(f_result*100, 2))
+                    container.append(lst)
 
+                results = dict(zip(cat_ab_lt_diseases, container))
+                
                 final_results = {}
-                final_results['diseases'] = json_results
+                final_results['diseases'] = results
                 final_results['image'] = img_url
 
                 return jsonify(final_results)
@@ -284,11 +342,19 @@ def check():
                 
                 cat_ch_lt_diseases = ["심비대"]
 
-                results = [predict_result(model, img) for model in m_cat_ch_lateral]
-                json_results = dict(zip(cat_ch_lt_diseases, results))
+                # results = [predict_result(model, img) for model in m_cat_ch_lateral]
+                container = []
+                for model in m_cat_ch_lateral:
+                    lst = []
+                    f_result, str_result = predict_result(model, img)
+                    lst.append(str_result)
+                    lst.append(round(f_result*100, 2))
+                    container.append(lst)
 
+                results = dict(zip(cat_ch_lt_diseases, container))
+                
                 final_results = {}
-                final_results['diseases'] = json_results
+                final_results['diseases'] = results
                 final_results['image'] = img_url
 
                 return jsonify(final_results)
