@@ -204,7 +204,11 @@ class ChecklistFragment : BaseFragment<ChecklistViewModel, FragmentDayDetailBind
         otherInputLayout.isEnabled = false
         poobStatus.isEnabled = false
         editTextAnimalEat.setText(response.eatQuantity)
-        editTextAnimalOther.setText(response.note)
+        if(response.note.isNullOrEmpty()) {
+            editTextAnimalOther.hint = "작성하지 않았어요 :)"
+        } else {
+            editTextAnimalOther.setText(response.note)
+        }
         poobStatus.toGone()
         poobStatusTextView.toVisible()
         poobStatusTextView.text = response.poobStatus
