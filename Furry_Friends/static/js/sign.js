@@ -29,7 +29,7 @@ signUpForm.addEventListener("submit", event => {
     // .then(res => res.json())
     .then(data => console.log(data))
     .catch(error => console.log(error))
-  // .then(location.href = "sign.html")
+  .then(location.href = "/sign")
 });
 
 // 로그인
