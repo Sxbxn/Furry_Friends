@@ -13,6 +13,7 @@ import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.net.CookieManager
+import java.net.CookiePolicy
 import java.util.concurrent.TimeUnit
 
 import javax.inject.Singleton
@@ -24,6 +25,9 @@ class HttpClientModule {
     @Singleton
     @Provides
     fun providesHttpClient(@ApplicationContext context: Context): OkHttpClient {
+        val cookieManager = CookieManager().apply {
+            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
+        }
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }
@@ -31,7 +35,7 @@ class HttpClientModule {
             .addInterceptor(loggingInterceptor)
             .addNetworkInterceptor(AuthInterceptor())
             .addInterceptor(NoConnectionInterceptor(context))
-            .cookieJar(JavaNetCookieJar(CookieManager()))
+            .cookieJar(JavaNetCookieJar(cookieManager))
             .connectTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10,TimeUnit.MINUTES)
             .readTimeout(10, TimeUnit.MINUTES)
