@@ -154,60 +154,48 @@ startBtn.addEventListener("click", event => {
 
     fetch('/health/check', {
         method: 'POST',
-        // headers: {
-        // 'Content-Type': 'application/x-www-form-urlencoded'
-        // },
         body: formData
     })
+        .then(wait())
         .then((response) => response.json())
         .then((data) => {
             cycle(data);
         }
         )
-        // .then(result())
-        // .then(setTimeout(() => {
-        //     result();
-        //     reload();
-        //     console.log("??");
-        // }, 40000));
+    // .then(result())
+    // .then(setTimeout(() => {
+    //     result();
+    //     reload();
+    //     console.log("??");
+    // }, 40000));
 });
 
 async function cycle(data) {
     saveCheckResult(data);
     await callResultPage();
-
 }
 
-// function result() {
-//     const dl = sessionStorage.getItem('d_list');
+function wait() {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'center-center',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
 
-//     if (dl === undefined || dl === null) {
-//         const c2 = document.getElementById('c2');
-//         c2.style.display = 'none';
-
-//         const rc = document.getElementById('result-content');
-//         rc.style.display = 'none';
-
-//     } else {
-//         const c1 = document.getElementById('c1');
-//         c1.style.display = 'none';
-
-//         const cld = document.getElementById('col-lg-div');
-//         cld.style.display = 'none';
-//     }
-
-//     // reload();
-// }
-
-// function reload() {
-//     // window.location.reload();
-//     sessionStorage.removeItem('image');
-//     sessionStorage.removeItem('d_list');
-//     sessionStorage.removeItem('ab_list');
-// }
+    Toast.fire({
+        icon: 'info',
+        title: '검사가 시작 되었습니다. 조금만 기다려주세요!'
+    })
+};
 
 function callResultPage() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         location.href = "/check-result";
         resolve();
     })
@@ -219,13 +207,17 @@ function saveCheckResult(data) {
     const diseases = data.diseases;
 
     d_name = Object.keys(diseases);
+    d_value = [];
     // console.log(d_name);
 
     abnormal_list = [];
     for (let i = 0; i < d_name.length; i++) {
         // console.log(d_name[i]);
         // console.log(diseases[d_name[i]]);
-        const tmp = diseases[d_name[i]];
+        const v = diseases[d_name[i]][1];
+        d_value.push(v);
+
+        const tmp = diseases[d_name[i]][0];
 
         if (tmp == "abnormal") {
             abnormal_list.push(d_name[i]);
@@ -235,6 +227,7 @@ function saveCheckResult(data) {
     console.log(abnormal_list);
 
     sessionStorage.setItem('image', image);
-	sessionStorage.setItem('d_list', d_name);
-	sessionStorage.setItem('ab_list', abnormal_list);
+    sessionStorage.setItem('d_name_list', d_name);
+    sessionStorage.setItem('d_value_list', d_value);
+    sessionStorage.setItem('ab_list', abnormal_list);
 }

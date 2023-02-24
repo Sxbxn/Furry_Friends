@@ -8,6 +8,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../static/css/animate.css">
@@ -45,8 +46,7 @@
     </nav>
 
     <!-- END nav -->
-    <section class="hero-wrap hero-wrap-2" style="background-image: url('');"
-    data-stellar-background-ratio="0.5">
+    <section class="hero-wrap hero-wrap-2" data-stellar-background-ratio="0.5">
         <div class="overlay"></div>
         <div class="container">
             <div class="row no-gutters slider-text align-items-end">
@@ -68,30 +68,51 @@
 
     <section class="ftco-section ftco-degree-bg">
         <div class="container">
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-8 ftco-animate" id="col-lg-div">
-
                 </div>
-                <!-- <div class="col-lg-8 ftco-animate">
-                    <p>
-                        <img src="../images/image_1.jpg" alt="" class="img-fluid">
-                    </p>
-                    <h2 class="mb-3">It is a long established fact a reader be distracted</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, eius mollitia suscipit,
-                        quisquam doloremque distinctio perferendis et doloribus unde architecto optio laboriosam porro
-                        adipisci sapiente officiis nemo accusamus ad praesentium? Esse minima nisi et. Dolore
-                        perferendis, enim praesentium omnis, iste doloremque quia officia optio deserunt molestiae
-                        voluptates soluta architecto tempora.</p>
-                    <p>Molestiae cupiditate inventore animi, maxime sapiente optio, illo est nemo veritatis repellat
-                        sunt doloribus nesciunt! Minima laborum magni reiciendis qui voluptate quisquam voluptatem
-                        soluta illo eum ullam incidunt rem assumenda eveniet eaque sequi deleniti tenetur dolore amet
-                        fugit perspiciatis ipsa, odit. Nesciunt dolor minima esse vero ut ea, repudiandae suscipit!</p>
-                    <h2 class="mb-3 mt-5">#2. Creative WordPress Themes</h2>
-                    <p>Temporibus ad error suscipit exercitationem hic molestiae totam obcaecati rerum, eius aut, in.
-                        Exercitationem atque quidem tempora maiores ex architecto voluptatum aut officia doloremque.
-                        Error dolore voluptas, omnis molestias odio dignissimos culpa ex earum nisi consequatur quos
-                        odit quasi repellat qui officiis reiciendis incidunt hic non? Debitis commodi aut, adipisci.</p>
-                </div> -->
+            </div> -->
+            <div class="row new-row">
+                <div class="col-xl-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <span class="material-icons">image</span> X-ray Image
+                        </div>
+                        <div class="card-body" id="ximg"></div>
+                    </div>
+                </div>
+                <div class="col-xl-6 wide">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <span class="material-icons">signal_cellular_alt</span>Bar Chart
+                        </div>
+                        <div class="card-body"><canvas id="myBarChart" width="100%"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-14 wide right">
+                <div class="card mb-4" id="ximg">
+                    <div class="card-header">
+                        <span class="material-icons">description</span> Result
+                    <!-- </div>
+                    <div id="result-text">
+                    </div> -->
+                    <div class="container-btn">
+                        <h3 class="articleTitle">Look carefully at the diseases below.</h3>
+                        <div id="btn1" title="Button border blue/green" class="button btnFloat btnBlueGreen" style="display: none;"></div>
+                        <div id="btn2" title="Button border lightblue" class="button btnFloat btnLightBlue" style="display: none;"></div>
+                        <div id="btn3" title="Button border orange" class="button btnFloat btnOrange" style="display: none;"></div>
+                        <div id="btn4" title="Button border purple" class="button btnFloat btnPurple" style="display: none;"></div>
+                        <div id="btn5" title="Button border blue/green" class="button btnFloat btnBlueGreen" style="display: none;"></div>
+                        <div id="btn6" title="Button border lightblue" class="button btnFloat btnLightBlue" style="display: none;"></div>
+                        <div id="btn7" title="Button border orange" class="button btnFloat btnOrange" style="display: none;"></div>
+                        <div id="btn8" title="Button border purple" class="button btnFloat btnPurple" style="display: none;"></div>
+                    </div>
+                    <!-- <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div> -->
+                    <!-- <p>
+                            <img src="../static/images/about-0.jpg" alt="" class="img-fluid">
+                        </p> -->
+                </div>
             </div>
         </div>
     </section> <!-- .section -->
@@ -123,7 +144,9 @@
     <script src="../static/js/owl.carousel.min.js"></script>
     <script src="../static/js/jquery.magnific-popup.min.js"></script>
     <script src="../static/js/scrollax.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="../static/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="../static/js/check-result.js"></script>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 

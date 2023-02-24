@@ -1276,11 +1276,11 @@ pre code {
     -ms-flex: 0 0 91.66667%;
     flex: 0 0 91.66667%;
     max-width: 91.66667%;
-    margin-bottom: 30%;    
+    margin-bottom: 30%;
   }
 
   .col-md-11-1 {
-    margin-top: 20%;    
+    margin-top: 20%;
   }
 
   .col-md-12 {
@@ -5366,6 +5366,7 @@ input[type="button"].btn-block {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   padding: 1.25rem;
+  height: 100%;
 }
 
 .card-title {
@@ -11941,7 +11942,8 @@ h5,
 }
 
 .hero-wrap .slider-text h1 span {
-  color: #00bd56;overlay
+  color: #00bd56;
+  overlay
 }
 
 .hero-wrap .slider-text .subheading {
@@ -12191,6 +12193,7 @@ h5,
 }
 
 .img-video {
+  margin-top: 35px;
   background-position: center center;
 }
 
@@ -14115,7 +14118,8 @@ textarea.form-control {
   }
 }
 
-.form-control:active, .form-control:focus {
+.form-control:active,
+.form-control:focus {
   outline: none;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -14140,4 +14144,231 @@ textarea.form-control {
 
 .cont {
   font-size: 1.5rem;
+}
+
+/*  
+  Table Responsive
+  ===================
+  Author: https://github.com/pablorgarcia
+ */
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+/* body {
+   font-family: 'Open Sans', sans-serif;
+   font-weight: 300;
+   line-height: 1.42em;
+   color:#A7A1AE;
+   background-color:#1F2739;
+ } */
+
+/* h1 {
+   font-size:3em; 
+   font-weight: 300;
+   line-height:1em;
+   text-align: center;
+   color: #4DC3FA;
+ }
+ 
+ h2 {
+   font-size:1em; 
+   font-weight: 300;
+   text-align: center;
+   display: block;
+   line-height:1em;
+   padding-bottom: 2em;
+   color: #FB667A;
+ }
+ 
+ h2 a {
+   font-weight: 700;
+   text-transform: uppercase;
+   color: #FB667A;
+   text-decoration: none;
+ }
+ 
+ .blue { color: #185875; }
+ .yellow { color: #FFF842; } */
+
+.tcontainer th h1 {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: left;
+  color: #185875;
+}
+
+.tcontainer td {
+  font-weight: normal;
+  font-size: 1em;
+  -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+  -moz-box-shadow: 0 2px 2px -2px #0E1119;
+  box-shadow: 0 2px 2px -2px #0E1119;
+}
+
+.tcontainer {
+  text-align: left;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  display: table;
+  padding: 0 0 8em 0;
+}
+
+.tcontainer td,
+.tcontainer th {
+  padding-bottom: 2%;
+  padding-top: 2%;
+  padding-left: 2%;
+}
+
+/* Background-color of the odd rows */
+.tcontainer tr:nth-child(odd) {
+  background-color: #323C50;
+}
+
+/* Background-color of the even rows */
+.tcontainer tr:nth-child(even) {
+  background-color: #2C3446;
+}
+
+.tcontainer th {
+  background-color: #1F2739;
+}
+
+.tcontainer td:first-child {
+  color: #FB667A;
+}
+
+.tcontainer tr:hover {
+  background-color: #464A52;
+  -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+  -moz-box-shadow: 0 6px 6px -6px #0E1119;
+  box-shadow: 0 6px 6px -6px #0E1119;
+}
+
+.tcontainer td:hover {
+  background-color: #FFF842;
+  color: #403E10;
+  font-weight: bold;
+
+  box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+  transform: translate3d(6px, -6px, 0);
+
+  transition-delay: 0s;
+  transition-duration: 0.4s;
+  transition-property: all;
+  transition-timing-function: line;
+}
+
+/* @media (max-width: 800px) {
+
+  .tcontainer td:nth-child(4),
+  .tcontainer th:nth-child(4) {
+    display: none;
+  }
+} */
+.new-row {
+  display: flex;
+  /* justify-content: space-around; */
+  justify-content: space-between;
+}
+
+.wide {
+  width: 100%;
+}
+
+.right {
+  width: 100%;
+}
+
+.result-text {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container-btn {
+  padding-top: 1em;
+  margin-top: 1em;
+  border-top: 
+    solid
+    1px
+    #CCC;
+}
+
+div.button {
+  display: block;
+  position: relative;
+  float: left;
+  width: 120px;
+  padding: 0;
+  margin: 10px 20px 10px 0;
+  font-weight: 600;
+  text-align: center;
+  line-height: 50px;
+  color: #FFF;
+  border-radius: 5px;
+  transition: all 0.2s ;
+}
+
+.btnBlueGreen {
+  background: #00AE68;
+}
+
+.btnLightBlue {
+  background: #5DC8CD;
+}
+
+.btnOrange {
+  background: #FFAA40;
+}
+
+.btnPurple {
+  background: #A74982;
+}
+
+/* FLOAT */
+.btnFloat {
+  background: none;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.5);
+}
+
+.btnFloat {
+  content: 'Float';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 50px;
+  border-radius: 5px;
+  transition: all 0.2s ;
+}
+
+.btnBlueGreen.btnFloat {
+  background: #00AE68;
+}
+
+.btnLightBlue.btnFloat {
+  background: #5DC8CD;
+}
+
+.btnOrange.btnFloat {
+  background: #FFAA40;
+}
+
+.btnPurple.btnFloat {
+  background: #8D336A;
+}
+
+
+.btnFloat {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.4);
+}
+
+.btnFloat:hover {
+  margin-top: -2px;
+  margin-left: 0px;
+  transform: scale(1.1,1.1);
+  -ms-transform: scale(1.1,1.1);
+  -webkit-transform: scale(1.1,1.1);
+  box-shadow: 0px 5px 5px -2px rgba(0, 0, 0, 0.25);
 }
