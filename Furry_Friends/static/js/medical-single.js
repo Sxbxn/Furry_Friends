@@ -22,8 +22,8 @@ function createMedicalDetail(data) {
 	console.log(data);
 
 	const image = data.image;
-	const title = data.comment;
-	const content = data.content;
+	const title = data.content;
+	const content = data.kind + ', ' + data.affected_area + ', ' + data.comment;
 	const date = data.currdate;
 
 	let img_p = document.createElement("p");
