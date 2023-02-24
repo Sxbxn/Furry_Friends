@@ -8,8 +8,9 @@ const animal_id = sessionStorage.getItem('animal_id');
 function createMedicalRecord(data) {
 	index = data.index;
 	img_url = data.image;
-	title = data.title;
-	content = data.content;
+	title = data.content;
+	// title = data.kind + ', ' + data.affected_area + ' \n' + data.comment;
+	// content = data.comment;
 	date = data.currdate;
 
 	let col_div = document.createElement("div");
@@ -47,6 +48,11 @@ function createMedicalRecord(data) {
 	content_h3.setAttribute('class', 'heading');
 	content_h3.textContent = title;
 	document.getElementById('text_div' + index).append(content_h3);
+
+	// let content_h4 = document.createElement("h4");
+	// content_h4.setAttribute('class', 'heading');
+	// content_h4.textContent = content;
+	// document.getElementById('text_div' + index).append(content_h4);
 }
 
 function showMedicalRecord() {
@@ -78,7 +84,7 @@ document.addEventListener('click', function (e) {
 
 	sessionStorage.setItem('m_content_idx', idx);
 
-	console.log(e.target.id);
+	// console.log(e.target.id);
 	if (targetStr.indexOf(imgStr) != -1) {
 		location.href = "/medical-single"
 	}
