@@ -1,4 +1,4 @@
-from flask import url_for, redirect, jsonify, request, session, Blueprint
+from flask import jsonify, request, session, Blueprint
 from sqlalchemy import and_
 from PIL import Image
 import base64
@@ -8,10 +8,10 @@ from werkzeug.utils import secure_filename
 import json
 
 
-from Furry_Friends.connect_db import db
+from Furry_Friends.connector import db
 from Furry_Friends.models import User, Animal, Health
 from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3
-from Furry_Friends.predict import padding, mk_img, predict_result
+from Furry_Friends.predictor import mk_img, predict_result
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
 from Furry_Friends.tf_loader import *
 
@@ -56,9 +56,8 @@ def record_content():
     record_index = request.headers['index']
 
     health_record = Health.query.get(int(record_index))
-    health_record = health_record.__dict__
-    del health_record['_sa_instance_state']
-    health_record['content'] = str(health_record['content'])
+    health_record = query_to_dict(health_record)
+
     return jsonify(health_record)
 
 
@@ -112,8 +111,7 @@ def record_factory():
                 else:
                     f_result, str_result = predict_result(m_dog_eye, img)
 
-                # 진단 결과
-                comment = str_result
+                comment = str_result # 진단 결과
 
                 content = record['content'] # 사용자 입력 사항
                 
@@ -160,7 +158,7 @@ def check():
 
     extension = '.' + ((file.split(',')[0]).split('/')[1]).split(';')[0] # .png, .jpeg, ...
 
-    datenow = str(datetime.datetime.now()).replace(":",'-') # 
+    datenow = str(datetime.datetime.now()).replace(":",'-') 
     newname = '_'.join(datenow.split(" "))
     newname = newname + extension
 

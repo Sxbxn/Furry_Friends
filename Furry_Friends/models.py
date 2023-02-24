@@ -1,4 +1,4 @@
-from Furry_Friends.connect_db import db
+from Furry_Friends.connector import db
 # from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -122,7 +122,7 @@ class Journal(db.Model):
 
     title = db.Column(db.String, nullable=False)
     image = db.Column(db.String, nullable=False)
-    content = db.Column(db.String, nullable=False)
+    content = db.Column(db.String, nullable=False, default="")
     currdate = db.Column(db.String)
 
     def __init__(self, animal, user, title, image, content, currdate):

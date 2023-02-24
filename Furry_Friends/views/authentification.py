@@ -1,12 +1,13 @@
-from flask import request, jsonify, session, Blueprint, url_for, redirect, g, render_template, make_response
+from flask import request, jsonify, session, Blueprint, render_template, make_response
 from sqlalchemy import and_
 import json
 from sqlalchemy import and_
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3, int_to_bool
 from Furry_Friends.models import User, Animal
-from Furry_Friends.connect_db import db
+from Furry_Friends.connector import db
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
 
 
@@ -92,9 +93,10 @@ def login():
                 animal['vet'] = user.vet
 
                 animal = int_to_bool(animal)
-
                 resp = make_response(jsonify(animal))
-                resp.set_cookie('login', user_id)
+
+                expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+                resp.set_cookie('login', user_id, expires=expire_date)
 
                 return resp
 
@@ -111,7 +113,9 @@ def login():
                         "vet": user.vet}
                 
                 resp = make_response(jsonify(obj))
-                resp.set_cookie('login', user_id)
+
+                expire_date = datetime.datetime.now() + datetime.timedelta(days=90)
+                resp.set_cookie('login', user_id, expires=expire_date)
 
                 return resp
             

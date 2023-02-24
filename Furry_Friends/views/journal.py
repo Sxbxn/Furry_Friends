@@ -1,14 +1,12 @@
-from flask import url_for, redirect, jsonify, request, session, Blueprint
-import boto3
+from flask import jsonify, request, session, Blueprint
 import datetime
 from sqlalchemy import and_
 import json
-from werkzeug.utils import secure_filename
 
 
 # from predict import padding, mk_img, predict_result
 from Furry_Friends.util import s3_connection, query_to_dict, upload_file_to_s3
-from Furry_Friends.connect_db import db
+from Furry_Friends.connector import db
 from Furry_Friends.models import User, Animal, Journal
 from config import AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_REGION
 
@@ -24,7 +22,6 @@ s3 = s3_connection()
 def journals():
     user = request.cookies.get('login')
     asd = session._get_current_object()
-
 
     if 'login' in asd or user:
 
@@ -67,11 +64,12 @@ def journal_content():
 # 기록 생성
 @bp.route('/factory', methods=["POST"])
 def journal_factory():
+    asd = session._get_current_object()
 
     journal_entry = request.form
 
-    user = User.query.filter_by(user_id = session['login']).first()
-    animal = Animal.query.filter_by(animal_id = session['curr_animal']).first()
+    user = User.query.filter_by(user_id = asd['login']).first()
+    animal = Animal.query.filter_by(animal_id = asd['curr_animal']).first()
 
     journal_entry = json.loads(journal_entry['data'])
 
@@ -85,7 +83,7 @@ def journal_factory():
     # 사진 업로드 시 사진 링크 반환, 일상 기록 db 저장
     extension = '.' + f.filename.split('.')[-1]
 
-    newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
+    newname = user.user_id + '_' + animal.animal_name + '_' + (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
     img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
     f.filename = newname
 
@@ -110,13 +108,16 @@ def journal_update():
     if request.method == 'GET':
         editing_entry = Journal.query.get(journal_index)
         
-        existing_entry = editing_entry.__dict__
-        del existing_entry['_sa_instance_state']
+        existing_entry = query_to_dict(editing_entry)
         return jsonify(existing_entry)
 
 
     else: # PUT
+
+        asd = session._get_current_object()
         
+        animal = Animal.query.get(asd['curr_animal'])
+
         journal_index = request.headers['index']
         editing_entry = Journal.query.get(journal_index)
         
@@ -139,7 +140,7 @@ def journal_update():
         
         extension = '.' + f.filename.split('.')[-1]
 
-        newname = (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
+        newname = asd['login'] + '_' + animal.animal_name + '_' + (str(datetime.datetime.now()).replace(":","")).replace(" ","_") + extension
         img_url = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_S3_BUCKET_REGION}.amazonaws.com/{newname}"
         f.filename = newname
 
@@ -164,7 +165,6 @@ def journal_delete():
                     Bucket = AWS_S3_BUCKET_NAME,
                     Key = (deleting_journal.image).split('/')[-1]
                     )
-
 
     db.session.delete(deleting_journal)
     db.session.commit()
