@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="affected_area">
+        <item>안구</item>
+<!--        <item>피부(추가예정)</item>-->
+    </string-array>
+</resources>

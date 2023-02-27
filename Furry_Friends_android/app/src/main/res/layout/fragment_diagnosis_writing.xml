@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_margin="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/diagnosis_writing"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/save_writing"
+            android:background="?attr/selectableItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_gravity="start"
+            android:layout_margin="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/save_writing"
+            android:textColor="@color/teal_700"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/divide"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/gray_op"
+            app:layout_constraintTop_toBottomOf="@id/titleTv" />
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/divide"
+            app:shimmer_auto_start="false"
+            >
+            <androidx.cardview.widget.CardView
+                android:id="@+id/viewholder_day_writing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="vertical"
+                app:cardBackgroundColor="@color/ripple_color"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:id="@+id/diagnosisLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/diagnosisCardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="16dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp">
+
+                        <ImageButton
+                            android:id="@+id/imageButtonImageSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/dash_line"
+                            android:contentDescription="uploadFile"
+                            android:src="@drawable/add_screen_image_placeholder"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_select_another_location" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/diagnosisTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            tools:text="2023. 2.3 금요일"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/readOnlyTint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:text="@string/kindAndArea"
+                            android:layout_margin="3dp"
+                            android:textSize="16sp"
+                            android:layout_gravity="top"
+                            android:visibility="gone"
+                            />
+                        <TextView
+                            android:id="@+id/animalKindTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_margin="3dp"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            />
+                        <TextView
+                            android:id="@+id/animalAffectedAreaTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_margin="3dp"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/writeOnlyTint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:text="@string/kindAndArea"
+                            android:layout_margin="3dp"
+                            android:textSize="12sp"
+                            android:layout_gravity="top"
+                            />
+                        <Spinner
+                            android:id="@+id/animalKind"
+                            android:entries="@array/kind"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+                            android:spinnerMode="dropdown"/>
+                        <Spinner
+                            android:id="@+id/animalAffectedArea"
+                            android:entries="@array/affected_area"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbarSize="10dp"
+                            android:spinnerMode="dropdown"/>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/descriptionInputLayout"
+                        style="@style/EditTextAppStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColorHint="@color/menu_color"
+                        android:theme="@style/EditTextAppStyle">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTextDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|start"
+                            android:hint="@string/description"
+                            android:inputType="textMultiLine"
+                            android:textColor="@color/black"
+                            android:lines="5"
+                            android:maxWidth="5.0dp"
+                            android:minWidth="10.0dp"
+                            android:scrollHorizontally="false" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/shimmerLayout"
+            app:shimmer_auto_start="true"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/resultConstraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shimmerLayout"
+                >
+                <TextView
+                    android:id="@+id/feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/diagnosis_name"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/ripple_color"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    android:layout_marginBottom="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/feedback">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_margin="10dp"-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:textColor="@color/black"-->
+<!--                            android:text="@string/similar"/>-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/feedbackImageView"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="300dp"-->
+<!--                            android:src="@drawable/add_screen_image_placeholder"-->
+<!--                            />-->
+                        <TextView
+                            android:id="@+id/feedbackTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            tools:text="ext ever since the 1500s" />
+                        <include
+                            android:id="@+id/diagnosisListDog"
+                            layout="@layout/diagnosis_list_dog"
+                            android:visibility="gone"
+                            tools:visibility="visible"/>
+                        <include
+                            android:id="@+id/diagnosisListCat"
+                            layout="@layout/diagnosis_list_cat"
+                            android:visibility="gone"
+                            tools:visibility="visible"/>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
