@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/cornealUlcer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="각막궤양"
+        style="@style/Hyperlink"
+         />
+
+    <TextView
+        android:id="@+id/blepharitis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        style="@style/Hyperlink"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="안검염"
+        />
+
+
+    <TextView
+        android:id="@+id/conjunctivitis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        style="@style/Hyperlink"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="결막염"
+        />
+
+    <LinearLayout
+        android:id="@+id/abnormalList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/felineCornealSequesration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="각막부골편"
+            style="@style/Hyperlink"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>
